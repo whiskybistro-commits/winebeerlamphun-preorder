@@ -133,10 +133,15 @@
             กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ
           </p>
 
-          <!-- ภาพ QR Code -->
-          <div class="flex justify-center my-3">
-            <div class="bg-white p-2 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[280px]">
+          <!-- ภาพ QR Code (คลิกเพื่อเปิดขยายภาพใหญ่) -->
+          <div class="flex flex-col items-center justify-center my-3">
+            <div id="qrTrigger" class="bg-white p-2.5 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[260px] cursor-zoom-in transition-all hover:scale-105 hover:shadow-lg group">
               <img src="./qr-payment.png" alt="สแกน QR เพื่อชำระเงิน" class="w-full h-auto rounded-xl object-contain">
+              <div class="mt-2 text-center">
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full group-hover:bg-blue-100 transition">
+                  🔍 แตะเพื่อดูภาพใหญ่
+                </span>
+              </div>
             </div>
           </div>
 
@@ -147,7 +152,6 @@
               <span>ธนาคารไทยพาณิชย์ (SCB)</span>
               <span class="bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-mono font-bold">996-419001-4</span>
             </p>
-            <p class="text-purple-700 text-xs">Biller ID: 051556500153101</p>
           </div>
         </section>
 
@@ -178,6 +182,26 @@
         </button>
       </form>
     </main>
+  </div>
+
+  <!-- Modal ขยายภาพ QR Code ขนาดใหญ่เต็มจอ -->
+  <div id="qrModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center p-4 transition-opacity">
+    <!-- ปุ่มปิดมุมบนขวา -->
+    <button type="button" id="closeQrModal" class="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold transition">
+      ✕
+    </button>
+    
+    <!-- การ์ดแสดงภาพใหญ่ -->
+    <div class="bg-white p-3.5 sm:p-5 rounded-3xl shadow-2xl max-w-xs sm:max-w-md w-full flex flex-col items-center transform transition-transform" onclick="event.stopPropagation()">
+      <div class="text-center mb-3">
+        <h3 class="font-bold text-slate-900 text-base">สแกน QR เพื่อชำระเงิน</h3>
+        <p class="text-xs text-slate-500">บันทึกรูปภาพหรือสแกนผ่านแอปธนาคาร</p>
+      </div>
+      <img src="./qr-payment.png" alt="QR Code ขนาดใหญ่" class="w-full h-auto rounded-2xl object-contain shadow-sm border border-slate-100">
+      <button type="button" id="closeQrModalBtn" class="mt-4 w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs transition">
+        ปิดหน้าต่าง
+      </button>
+    </div>
   </div>
 
   <!-- Footer -->
@@ -215,10 +239,10 @@
       }
     }
 
-    // ⭐ URL ของ Google Apps Script ที่ได้จากขั้นตอนที่ 3 ⭐
+    // ⭐ URL ของ Google Apps Script ⭐
     const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
 
-// ฟังก์ชันโหลดสินค้าอัตโนมัติจาก Google Sheet (รองรับรูปภาพ + หมวดหมู่ + สต็อก)
+    // ฟังก์ชันโหลดสินค้าอัตโนมัติจาก Google Sheet (รองรับรูปภาพ + หมวดหมู่ + สต็อก)
     async function loadProducts() {
       const container = document.getElementById('productList');
       try {
@@ -235,17 +259,14 @@
           const div = document.createElement('div');
           div.className = 'flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition gap-3';
           
-          // ตรวจสอบว่ามีรูปภาพหรือไม่
           const imageHtml = item.image 
             ? `<img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-xl border border-slate-100 flex-shrink-0" onerror="this.style.display='none'">`
             : '';
 
-          // ตรวจสอบว่ามีหมวดหมู่หรือไม่
           const catHtml = item.category 
             ? `<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-normal mr-1">${item.category}</span>` 
             : '';
 
-          // ตรวจสอบ Max Stock
           const maxAttr = item.maxStock ? `max="${item.maxStock}"` : '';
 
           div.innerHTML = `
@@ -274,6 +295,23 @@
         console.error("Load products error:", err);
         container.innerHTML = '<div class="text-center py-4 text-rose-500 text-sm">ไม่สามารถโหลดข้อมูลสินค้าได้ กรุณาลองใหม่อีกครั้ง</div>';
       }
+    }
+
+    // ระบบขยายภาพ QR Code (Lightbox Modal)
+    const qrTrigger = document.getElementById('qrTrigger');
+    const qrModal = document.getElementById('qrModal');
+    const closeQrModal = document.getElementById('closeQrModal');
+    const closeQrModalBtn = document.getElementById('closeQrModalBtn');
+
+    if (qrTrigger && qrModal) {
+      qrTrigger.addEventListener('click', () => {
+        qrModal.classList.remove('hidden');
+      });
+
+      const hideModal = () => qrModal.classList.add('hidden');
+      if (closeQrModal) closeQrModal.addEventListener('click', hideModal);
+      if (closeQrModalBtn) closeQrModalBtn.addEventListener('click', hideModal);
+      qrModal.addEventListener('click', hideModal);
     }
 
     // เริ่มทำงานเมื่อเปิดเว็บ
