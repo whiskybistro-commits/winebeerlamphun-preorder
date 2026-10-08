@@ -27,14 +27,8 @@
       border-top: 1px solid #e2e8f0;
       background-color: #f8fafc;
     }
-    /* ซ่อน Scrollbar ของแท็บหมวดหมู่เพื่อให้แสดงผลสวยงามบนมือถือ */
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
@@ -111,19 +105,17 @@
           <input type="hidden" id="lineUserId" value="">
         </section>
 
-        <!-- 2. รายการสินค้า (แบ่งหน้าตามหมวดหมู่) -->
+        <!-- 2. รายการสินค้า (มีแท็บหมวดหมู่ + ปุ่ม +/-) -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-3 flex items-center gap-2">
             <span>🛍️</span> เลือกรายการสินค้า
           </h2>
 
-          <!-- แถบเลื่อนหมวดหมู่ (Category Tabs) -->
-          <div id="categoryTabs" class="flex gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-hide border-b border-slate-100">
-            <!-- จะโหลดรายการหมวดหมู่แบบ Dynamic มาไว้ที่นี่ -->
-          </div>
+          <!-- แถบหมวดหมู่เลื่อนซ้าย-ขวา -->
+          <div id="categoryTabs" class="flex gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-hide border-b border-slate-100"></div>
 
-          <!-- กล่องใส่รายการสินค้าที่โหลดมาจากชีท -->
-          <div id="productList" class="space-y-4">
+          <!-- กล่องรายการสินค้า -->
+          <div id="productList" class="space-y-3">
             <div class="text-center py-6 text-slate-400 text-sm">
               <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
             </div>
@@ -146,7 +138,7 @@
             กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ
           </p>
 
-          <!-- ภาพ QR Code (คลิกเพื่อเปิดขยายภาพใหญ่) -->
+          <!-- ภาพ QR Code -->
           <div class="flex flex-col items-center justify-center my-3">
             <div id="qrTrigger" class="bg-white p-2.5 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[260px] cursor-zoom-in transition-all hover:scale-105 hover:shadow-lg group">
               <img src="./qr-payment.png" alt="สแกน QR เพื่อชำระเงิน" class="w-full h-auto rounded-xl object-contain">
@@ -197,7 +189,7 @@
     </main>
   </div>
 
-  <!-- Modal ขยายภาพ QR Code ขนาดใหญ่เต็มจอ -->
+  <!-- Modal ขยายภาพ QR Code -->
   <div id="qrModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center p-4 transition-opacity">
     <button type="button" id="closeQrModal" class="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold transition">
       ✕
@@ -252,12 +244,24 @@
     // ⭐ URL ของ Google Apps Script ⭐
     const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
 
-    let allProducts = [];           // เก็บรายการสินค้าทั้งหมดที่ดึงมาจาก API
-    let categoriesList = [];        // เก็บรายการหมวดหมู่ทั้งหมด
-    let currentCategory = "ทั้งหมด"; // หมวดหมู่ที่กำลังแสดงอยู่ ณ ขณะนั้น
-    let selectedQuantities = {};    // 🛒 ตัวแปรเก็บจำนวนที่ลูกค้ากรอกแยกตามชื่อสินค้า เช่น { "เสื้อยืด": 2 }
+    let allProducts = [];
+    let categoriesList = [];
+    let currentCategory = "ทั้งหมด";
+    let selectedQuantities = {};
 
-    // ฟังก์ชันยิงโหลดข้อมูลและแบ่งประเภทสินค้า
+    // ฟังก์ชันช่วยแปลงลิงก์ Google Drive ให้เป็นภาพ Direct อัตโนมัติ
+    function getDirectImageUrl(url) {
+      if (!url) return 'https://placehold.co/120x120/e2e8f0/475569?text=🛍️';
+      if (url.includes('drive.google.com')) {
+        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) {
+          return `https://lh3.googleusercontent.com/d/${match[1]}`;
+        }
+      }
+      return url;
+    }
+
+    // โหลดสินค้า
     async function loadProducts() {
       const container = document.getElementById('productList');
       try {
@@ -269,7 +273,6 @@
           return;
         }
 
-        // ดึงหมวดหมู่สินค้าที่มีทั้งหมดออกมาทำเป็นปุ่มแท็บ
         const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
         categoriesList = ["ทั้งหมด", ...uniqueCategories];
 
@@ -282,7 +285,7 @@
       }
     }
 
-    // ฟังก์ชันสร้างปุ่มเมนูหมวดหมู่แบบ Slide เลื่อนได้ทางแนวนอน
+    // สร้างปุ่มแท็บหมวดหมู่
     function renderCategoryTabs() {
       const tabsContainer = document.getElementById('categoryTabs');
       tabsContainer.innerHTML = '';
@@ -290,7 +293,6 @@
       categoriesList.forEach(cat => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        // ใช้ดีไซน์แบบ Tag Pills โค้งมน สลับสถานะ Active อัตโนมัติเมื่อกดเลือก
         btn.className = `px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
           cat === currentCategory 
             ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10' 
@@ -299,19 +301,18 @@
         btn.innerText = cat;
         btn.addEventListener('click', () => {
           currentCategory = cat;
-          renderCategoryTabs(); // รีเรนเดอร์แถบสีแท็บปุ่มกด
-          renderProducts();     // รีเรนเดอร์เปลี่ยนหน้าสินค้าตามประเภท
+          renderCategoryTabs();
+          renderProducts();
         });
         tabsContainer.appendChild(btn);
       });
     }
 
-    // ฟังก์ชันแสดงรายการสินค้าตามหมวดหมู่ที่เลือก
+    // แสดงรายการสินค้า (ปุ่ม +/- และตัวหนังสือราคาใหญ่ขึ้น)
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
 
-      // กรองสินค้าตามหมวดหมู่
       const filtered = currentCategory === "ทั้งหมด" 
         ? allProducts 
         : allProducts.filter(p => p.category === currentCategory);
@@ -323,66 +324,74 @@
 
       filtered.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition gap-3';
+        div.className = 'flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:bg-slate-50/80 transition gap-3 bg-white';
         
-        // รูปสินค้าทางซ้ายมือ (หากชิ้นใดไม่มีรูปลิงก์ในชีท ระบบจะพ่นรูปกล่องของขวัญ Placeholder อัตโนมัติ)
-        // ฟังก์ชันแปลงลิงก์ Google Drive ให้เป็น Direct Image อัตโนมัติ
-        let imgUrl = item.image || '';
-        if (imgUrl.includes('drive.google.com')) {
-          const match = imgUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || imgUrl.match(/id=([a-zA-Z0-9_-]+)/);
-          if (match && match[1]) {
-            imgUrl = `https://lh3.googleusercontent.com/d/${match[1]}`;
-          }
-        }
-        if (!imgUrl) {
-          imgUrl = 'https://placehold.co/120x120/e2e8f0/475569?text=🛍️';
-        }
-        const imageHtml = `
-          <img src="${imgUrl}" alt="${item.name}" 
-            class="w-16 h-16 object-cover rounded-xl border border-slate-100 flex-shrink-0" 
-            onerror="this.src='https://placehold.co/120x120/e2e8f0/475569?text=🛍️'">
-        `;
-
-        const catHtml = item.category 
-          ? `<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-normal mr-1">${item.category}</span>` 
-          : '';
-
-        const maxAttr = item.maxStock ? `max="${item.maxStock}"` : '';
-        
-        // ดึงจำนวนสินค้าเดิมที่กรอกค้างไว้ (ถ้าสลับหน้าเดิมกลับมาจะได้คงเดิม ไม่หาย)
+        const imgUrl = getDirectImageUrl(item.image);
         const currentQty = selectedQuantities[item.name] || 0;
+        const unitName = item.unit || 'ชิ้น';
 
         div.innerHTML = `
           <div class="flex items-center gap-3 overflow-hidden">
-            ${imageHtml}
+            <img src="${imgUrl}" alt="${item.name}" 
+              class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-slate-100 flex-shrink-0" 
+              onerror="this.src='https://placehold.co/120x120/e2e8f0/475569?text=🛍️'">
             <div>
-              <p class="font-medium text-slate-900 leading-snug">${item.name}</p>
-              <div class="mt-1 flex items-center">
-                ${catHtml}
-                <span class="text-xs text-blue-600 font-semibold">${item.price.toLocaleString()} บาท</span>
+              <p class="font-medium text-slate-900 text-sm sm:text-base leading-snug line-clamp-2">${item.name}</p>
+              <!-- ตัวหนังสือราคาขนาดใหญ่ พร้อมหน่วยนับ Unit -->
+              <div class="mt-1 flex items-baseline gap-1">
+                <span class="text-base sm:text-lg font-bold text-blue-600">${item.price.toLocaleString()}</span>
+                <span class="text-xs text-slate-500 font-normal">บาท / ${unitName}</span>
               </div>
             </div>
           </div>
-          <input type="number" min="0" ${maxAttr} value="${currentQty}" data-name="${item.name}" data-price="${item.price}"
-            class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none flex-shrink-0">
+
+          <!-- ตัวปรับจำนวนสินค้าแบบปุ่ม [-] และ [+] -->
+          <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1 flex-shrink-0 shadow-xs">
+            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs disabled:opacity-40" 
+              data-name="${item.name}">-</button>
+            <span class="qty-display w-9 text-center font-semibold text-sm text-slate-900" id="qty_${item.name.replace(/\s+/g, '_')}">${currentQty}</span>
+            <button type="button" class="btn-plus w-8 h-8 flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold transition shadow-xs" 
+              data-name="${item.name}" data-max="${item.maxStock || 999}">+</button>
+          </div>
         `;
         container.appendChild(div);
       });
 
-      // จัดการดึงสิทธิ์และผูกการคำนวณเงินให้กับทุกช่องกรอกจำนวนสินค้า
-      document.querySelectorAll('.item-qty').forEach(input => {
-        input.addEventListener('input', (e) => {
-          const name = e.target.dataset.name;
-          const qty = parseInt(e.target.value) || 0;
-          
-          // บันทึกจำนวนลงถังเก็บข้อมูลตะกร้าแบบ Global
-          selectedQuantities[name] = qty; 
-          calculateTotal();
+      // ผูก Event ปุ่มกดลบ (-)
+      document.querySelectorAll('.btn-minus').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const name = e.currentTarget.dataset.name;
+          let qty = selectedQuantities[name] || 0;
+          if (qty > 0) {
+            qty--;
+            selectedQuantities[name] = qty;
+            const displayEl = document.getElementById(`qty_${name.replace(/\s+/g, '_')}`);
+            if (displayEl) displayEl.innerText = qty;
+            calculateTotal();
+          }
+        });
+      });
+
+      // ผูก Event ปุ่มกดบวก (+)
+      document.querySelectorAll('.btn-plus').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const name = e.currentTarget.dataset.name;
+          const max = parseInt(e.currentTarget.dataset.max) || 999;
+          let qty = selectedQuantities[name] || 0;
+          if (qty < max) {
+            qty++;
+            selectedQuantities[name] = qty;
+            const displayEl = document.getElementById(`qty_${name.replace(/\s+/g, '_')}`);
+            if (displayEl) displayEl.innerText = qty;
+            calculateTotal();
+          } else {
+            alert(`สินค้านี้สั่งได้สูงสุด ${max} ชิ้น`);
+          }
         });
       });
     }
 
-    // ฟังก์ชันคำนวณยอดรวมเงินทั้งหมดข้ามหน้าหมวดหมู่
+    // คำนวณยอดเงินรวมทั้งหมด
     const totalAmountEl = document.getElementById('totalAmount');
     function calculateTotal() {
       let total = 0;
@@ -396,30 +405,27 @@
       return total;
     }
 
-    // ระบบขยายภาพ QR Code (Lightbox Modal)
+    // ระบบขยายภาพ QR Code (Lightbox)
     const qrTrigger = document.getElementById('qrTrigger');
     const qrModal = document.getElementById('qrModal');
     const closeQrModal = document.getElementById('closeQrModal');
     const closeQrModalBtn = document.getElementById('closeQrModalBtn');
 
     if (qrTrigger && qrModal) {
-      qrTrigger.addEventListener('click', () => {
-        qrModal.classList.remove('hidden');
-      });
-
+      qrTrigger.addEventListener('click', () => qrModal.classList.remove('hidden'));
       const hideModal = () => qrModal.classList.add('hidden');
       if (closeQrModal) closeQrModal.addEventListener('click', hideModal);
       if (closeQrModalBtn) closeQrModalBtn.addEventListener('click', hideModal);
       qrModal.addEventListener('click', hideModal);
     }
 
-    // เริ่มทำงานเมื่อโหลดหน้า
+    // เริ่มทำงานเมื่อเปิดเว็บ
     window.addEventListener('DOMContentLoaded', () => {
       initLiff();
       loadProducts();
     });
 
-    // 1. คำนวณจุดรับของอัตโนมัติจากเลขโต๊ะ
+    // คำนวณจุดรับของอัตโนมัติจากเลขโต๊ะ
     const tableInput = document.getElementById('tableNumber');
     const pickupAlert = document.getElementById('pickupAlert');
 
@@ -436,7 +442,7 @@
       }
     });
 
-    // 3. จัดการเมื่อกดปุ่ม Submit ส่งเข้า n8n
+    // ส่งฟอร์มเข้า n8n
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const total = calculateTotal();
@@ -445,11 +451,12 @@
         return;
       }
 
-      // ดึงรายการสั่งจาก selectedQuantities ตะกร้ารวม
       let itemsBullet = [];
       for (const [name, qty] of Object.entries(selectedQuantities)) {
         if (qty > 0) {
-          itemsBullet.push(`• ${name} x ${qty}`);
+          const product = allProducts.find(p => p.name === name);
+          const unit = product ? (product.unit || 'ชิ้น') : 'ชิ้น';
+          itemsBullet.push(`• ${name} x ${qty} ${unit}`);
         }
       }
 
@@ -483,10 +490,10 @@
         if (response.ok && result.success) {
           alert(result.message || 'บันทึกการสั่งจองสำเร็จเรียบร้อยแล้ว!');
           document.getElementById('preorderForm').reset();
-          selectedQuantities = {}; // เคลียร์ตะกร้าสินค้าทั้งหมดหลังสั่งซื้อสำเร็จ
+          selectedQuantities = {};
           calculateTotal();
           pickupAlert.className = 'hidden';
-          renderProducts(); // รีเซ็ตตัวเลขแสดงผลที่หน้าจอด้วย
+          renderProducts();
         } else {
           alert('แจ้งเตือน: ' + (result.message || 'เกิดข้อผิดพลาดในการสั่งจอง'));
         }
