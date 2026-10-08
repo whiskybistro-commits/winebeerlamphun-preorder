@@ -249,13 +249,17 @@
     let currentCategory = "ทั้งหมด";
     let selectedQuantities = {};
 
-    // ฟังก์ชันช่วยแปลงลิงก์ Google Drive ให้เป็นภาพ Direct อัตโนมัติ
+    // ฟังก์ชันแปลงลิงก์ Google Drive ทุกรูปแบบให้แสดงผลได้ 100%
     function getDirectImageUrl(url) {
-      if (!url) return 'https://placehold.co/120x120/e2e8f0/475569?text=🛍️';
+      if (!url) return '';
+      url = url.trim();
+      
+      // ดึงรหัสไฟล์ ID จากลิงก์ Google Drive
       if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
         if (match && match[1]) {
-          return `https://lh3.googleusercontent.com/d/${match[1]}`;
+          // ใช้ Google Thumbnail API ขนาด 400px โหลดเร็วและไม่โดนบล็อก
+          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
         }
       }
       return url;
