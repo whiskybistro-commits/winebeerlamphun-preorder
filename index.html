@@ -4,189 +4,271 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MTL PARTY 2026 - ระบบพรีออเดอร์สินค้า</title>
+  
+  <!-- LINE LIFF SDK -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Prompt', sans-serif; }
+    .footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.75rem;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+    }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 pb-16">
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
 
-  <!-- Header Banner -->
-  <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white py-8 px-4 text-center shadow-lg">
-    <div class="max-w-2xl mx-auto">
-      <span class="bg-blue-900/60 text-blue-200 text-xs px-3 py-1 rounded-full font-medium uppercase tracking-wider">งานเลี้ยงสังสรรค์พนักงาน</span>
-      <h1 class="text-2xl sm:text-3xl font-bold mt-2">MTL PARTY 2026</h1>
-      <p class="text-blue-100 text-sm mt-1">แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า</p>
-    </div>
-  </header>
+  <div>
+    <!-- Header Banner -->
+    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white py-8 px-4 text-center shadow-lg">
+      <div class="max-w-2xl mx-auto">
+        <span class="bg-blue-900/60 text-blue-200 text-xs px-3 py-1 rounded-full font-medium uppercase tracking-wider">งานเลี้ยงสังสรรค์พนักงาน</span>
+        <h1 class="text-2xl sm:text-3xl font-bold mt-2">MTL PARTY 2026</h1>
+        <p class="text-blue-100 text-sm mt-1">แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า</p>
+      </div>
+    </header>
 
-  <main class="max-w-2xl mx-auto px-4 mt-6">
-    <form id="preorderForm" class="space-y-6">
+    <main class="max-w-2xl mx-auto px-4 mt-6 mb-16">
 
-      <!-- 1. ข้อมูลผู้สั่ง -->
-      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-          <span>👤</span> ข้อมูลผู้สั่งจอง
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- กล่องแสดงสถานะ LINE Login -->
+      <div id="lineProfileCard" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mb-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img id="userPicture" src="" alt="LINE Avatar" class="w-10 h-10 rounded-full border border-emerald-300 object-cover">
           <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">รหัสพนักงาน *</label>
-            <input type="text" id="employeeId" required placeholder="เช่น EMP1001"
-              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">ชื่อจริง - นามสกุล *</label>
-            <input type="text" id="fullName" required placeholder="สมชาย มั่นคง"
-              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">ฝ่าย / แผนก *</label>
-            <select id="department" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
-              <option value="">-- เลือกแผนก --</option>
-              <option value="ฝ่ายผลิต">ฝ่ายผลิต</option>
-              <option value="ฝ่ายบุคคล">ฝ่ายบุคคล</option>
-              <option value="ฝ่ายคลังสินค้า">ฝ่ายคลังสินค้า</option>
-              <option value="ฝ่ายวิศวกรรม">ฝ่ายวิศวกรรม</option>
-              <option value="ฝ่ายบัญชีและการเงิน">ฝ่ายบัญชีและการเงิน</option>
-              <option value="อื่นๆ">อื่นๆ</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">เลขโต๊ะนั่ง (1 - 700) *</label>
-            <input type="number" id="tableNumber" min="1" max="700" required placeholder="1 - 700"
-              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <p class="text-xs text-emerald-600 font-medium">เข้าสู่ระบบผ่าน LINE สำเร็จ</p>
+            <p id="userName" class="text-sm font-bold text-emerald-950">-</p>
           </div>
         </div>
+        <span class="text-xs bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-lg font-medium">เชื่อมต่อแล้ว</span>
+      </div>
 
-        <!-- แสดงจุดรับของอัตโนมัติ -->
-        <div id="pickupAlert" class="hidden mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2"></div>
-        <input type="hidden" id="lineUserId" value="">
-      </section>
+      <form id="preorderForm" class="space-y-6">
 
-      <!-- 2. รายการสินค้า -->
-      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-          <span>🛍️</span> เลือกรายการสินค้า
-        </h2>
-
-        <div class="space-y-4">
-          <!-- สินค้า 1 -->
-          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+        <!-- 1. ข้อมูลผู้สั่ง -->
+        <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+            <span>👤</span> ข้อมูลผู้สั่งจอง
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size S)</p>
-              <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+              <label class="block text-xs font-medium text-slate-600 mb-1">รหัสพนักงาน *</label>
+              <input type="text" id="employeeId" required placeholder="เช่น EMP1001"
+                class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase">
             </div>
-            <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size S)" data-price="250"
-              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          </div>
-
-          <!-- สินค้า 2 -->
-          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
             <div>
-              <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size M)</p>
-              <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+              <label class="block text-xs font-medium text-slate-600 mb-1">ชื่อจริง - นามสกุล *</label>
+              <input type="text" id="fullName" required placeholder="สมชาย มั่นคง"
+                class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
-            <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size M)" data-price="250"
-              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          </div>
-
-          <!-- สินค้า 3 -->
-          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
             <div>
-              <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size L)</p>
-              <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+              <label class="block text-xs font-medium text-slate-600 mb-1">ฝ่าย / แผนก *</label>
+              <select id="department" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+                <option value="">-- เลือกแผนก --</option>
+                <option value="ฝ่ายผลิต">ฝ่ายผลิต</option>
+                <option value="ฝ่ายบุคคล">ฝ่ายบุคคล</option>
+                <option value="ฝ่ายคลังสินค้า">ฝ่ายคลังสินค้า</option>
+                <option value="ฝ่ายวิศวกรรม">ฝ่ายวิศวกรรม</option>
+                <option value="ฝ่ายบัญชีและการเงิน">ฝ่ายบัญชีและการเงิน</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
             </div>
-            <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size L)" data-price="250"
-              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          </div>
-
-          <!-- สินค้า 4 -->
-          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
             <div>
-              <p class="font-medium text-slate-900">แก้วเก็บความเย็น MTL Tumbler</p>
-              <p class="text-xs text-blue-600 font-semibold">350 บาท</p>
+              <label class="block text-xs font-medium text-slate-600 mb-1">เลขโต๊ะนั่ง (1 - 700) *</label>
+              <input type="number" id="tableNumber" min="1" max="700" required placeholder="1 - 700"
+                class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
-            <input type="number" min="0" value="0" data-name="แก้วเก็บความเย็น MTL Tumbler" data-price="350"
-              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
 
-          <!-- สินค้า 5 -->
-          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-            <div>
-              <p class="font-medium text-slate-900">หมวกปาร์ตี้ Party Hat</p>
-              <p class="text-xs text-blue-600 font-semibold">100 บาท</p>
+          <!-- แสดงจุดรับของอัตโนมัติ -->
+          <div id="pickupAlert" class="hidden mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2"></div>
+          <input type="hidden" id="lineUserId" value="">
+        </section>
+
+        <!-- 2. รายการสินค้า -->
+        <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+            <span>🛍️</span> เลือกรายการสินค้า
+          </h2>
+
+          <div class="space-y-4">
+            <!-- สินค้า 1 -->
+            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+              <div>
+                <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size S)</p>
+                <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+              </div>
+              <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size S)" data-price="250"
+                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
-            <input type="number" min="0" value="0" data-name="หมวกปาร์ตี้ Party Hat" data-price="100"
-              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+
+            <!-- สินค้า 2 -->
+            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+              <div>
+                <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size M)</p>
+                <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+              </div>
+              <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size M)" data-price="250"
+                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <!-- สินค้า 3 -->
+            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+              <div>
+                <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size L)</p>
+                <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+              </div>
+              <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size L)" data-price="250"
+                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <!-- สินค้า 4 -->
+            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+              <div>
+                <p class="font-medium text-slate-900">แก้วเก็บความเย็น MTL Tumbler</p>
+                <p class="text-xs text-blue-600 font-semibold">350 บาท</p>
+              </div>
+              <input type="number" min="0" value="0" data-name="แก้วเก็บความเย็น MTL Tumbler" data-price="350"
+                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <!-- สินค้า 5 -->
+            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+              <div>
+                <p class="font-medium text-slate-900">หมวกปาร์ตี้ Party Hat</p>
+                <p class="text-xs text-blue-600 font-semibold">100 บาท</p>
+              </div>
+              <input type="number" min="0" value="0" data-name="หมวกปาร์ตี้ Party Hat" data-price="100"
+                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
           </div>
-        </div>
 
-        <!-- ยอดรวม -->
-        <div class="mt-5 p-4 bg-blue-50 rounded-xl flex justify-between items-center border border-blue-100">
-          <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
-          <span class="text-2xl font-bold text-blue-700"><span id="totalAmount">0</span> ฿</span>
-        </div>
-      </section>
-
-      <!-- 3. ส่วนแสดง QR Code ชำระเงิน (เพิ่มใหม่ต่อท้ายรายการออเดอร์) -->
-      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
-        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center justify-center gap-2">
-          <span>📲</span> สแกน QR Code เพื่อชำระเงิน
-        </h2>
-
-        <p class="text-xs sm:text-sm text-slate-500 mb-3">
-          กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ
-        </p>
-
-        <!-- ภาพ QR Code -->
-        <div class="flex justify-center my-3">
-          <div class="bg-white p-2 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[280px]">
-            <img src="qr-payment.png" alt="สแกน QR เพื่อชำระเงิน" class="w-full h-auto rounded-xl object-contain">
+          <!-- ยอดรวม -->
+          <div class="mt-5 p-4 bg-blue-50 rounded-xl flex justify-between items-center border border-blue-100">
+            <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
+            <span class="text-2xl font-bold text-blue-700"><span id="totalAmount">0</span> ฿</span>
           </div>
-        </div>
+        </section>
 
-        <!-- รายละเอียดบัญชี -->
-        <div class="mt-4 bg-purple-50 p-4 rounded-xl border border-purple-100 text-xs sm:text-sm text-purple-900 max-w-md mx-auto space-y-1">
-          <p class="font-bold text-base text-purple-950">บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด</p>
-          <p class="flex items-center justify-center gap-2 font-medium">
-            <span>ธนาคารไทยพาณิชย์ (SCB)</span>
-            <span class="bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-mono font-bold">996-419001-4</span>
+        <!-- 3. ส่วนแสดง QR Code ชำระเงิน -->
+        <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center justify-center gap-2">
+            <span>📲</span> สแกน QR Code เพื่อชำระเงิน
+          </h2>
+
+          <p class="text-xs sm:text-sm text-slate-500 mb-3">
+            กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ
           </p>
-          <p class="text-purple-700 text-xs">Biller ID: 051556500153101</p>
-        </div>
-      </section>
 
-      <!-- 4. แนบหลักฐานการโอนเงิน (สลิป) -->
-      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-          <span>💳</span> หลักฐานการชำระเงิน
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน</label>
-            <input type="date" id="payDate" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <!-- ภาพ QR Code -->
+          <div class="flex justify-center my-3">
+            <div class="bg-white p-2 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[280px]">
+              <img src="qr-payment.png" alt="สแกน QR เพื่อชำระเงิน" class="w-full h-auto rounded-xl object-contain">
+            </div>
+          </div>
+
+          <!-- รายละเอียดบัญชี -->
+          <div class="mt-4 bg-purple-50 p-4 rounded-xl border border-purple-100 text-xs sm:text-sm text-purple-900 max-w-md mx-auto space-y-1">
+            <p class="font-bold text-base text-purple-950">บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด</p>
+            <p class="flex items-center justify-center gap-2 font-medium">
+              <span>ธนาคารไทยพาณิชย์ (SCB)</span>
+              <span class="bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-mono font-bold">996-419001-4</span>
+            </p>
+            <p class="text-purple-700 text-xs">Biller ID: 051556500153101</p>
+          </div>
+        </section>
+
+        <!-- 4. แนบหลักฐานการโอนเงิน (สลิป) -->
+        <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+            <span>💳</span> หลักฐานการชำระเงิน
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน</label>
+              <input type="date" id="payDate" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน</label>
+              <input type="time" id="payTime" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน</label>
-            <input type="time" id="payTime" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG)</label>
+            <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
           </div>
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG)</label>
-          <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-        </div>
-      </section>
+        </section>
 
-      <!-- ปุ่มส่งแบบฟอร์ม -->
-      <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 rounded-xl shadow-md transition duration-150 flex justify-center items-center gap-2 text-base">
-        <span>ยืนยันการสั่งจอง</span>
-      </button>
-    </form>
-  </main>
+        <!-- ปุ่มส่งแบบฟอร์ม -->
+        <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 rounded-xl shadow-md transition duration-150 flex justify-center items-center gap-2 text-base">
+          <span>ยืนยันการสั่งจอง</span>
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2026 WINE BEER WHISKY LAMPHUN CO., LTD. All rights reserved.
+  </footer>
 
   <script>
+    // ตัวแปรและฟังก์ชันระบบ LINE LIFF
+    const LIFF_ID = "2011938038-bo6hoPh3";
+    let lineUserId = "";
+
+    async function initLiff() {
+      if (!LIFF_ID) {
+        console.error("LIFF_ID is missing! Please check your environment variables.");
+        return;
+      }
+
+      try {
+        await liff.init({ 
+          liffId: LIFF_ID,
+          withLoginOnExternalBrowser: false 
+        });
+
+        if (!liff.isLoggedIn()) { 
+          console.log("User is not logged in. Redirecting to LINE Login...");
+          liff.login(); 
+          return; 
+        }
+
+        console.log("User is already logged in.");
+        const profile = await liff.getProfile();
+        lineUserId = profile.userId;
+        document.getElementById('lineUserId').value = profile.userId;
+
+        // แสดงการล็อกอินบนหน้าเว็บ
+        const profileCard = document.getElementById('lineProfileCard');
+        if (profileCard) {
+          profileCard.classList.remove('hidden');
+          document.getElementById('userName').innerText = profile.displayName || 'LINE User';
+          if (profile.pictureUrl) {
+            document.getElementById('userPicture').src = profile.pictureUrl;
+          } else {
+            document.getElementById('userPicture').src = 'https://via.placeholder.com/40?text=LINE';
+          }
+        }
+
+      } catch (err) {
+        console.error("LIFF Init error", err);
+        alert("LIFF Init failed: " + err.message);
+      }
+    }
+
+    // เริ่มทำงาน LIFF เมื่อโหลดหน้าเว็บ
+    window.addEventListener('DOMContentLoaded', () => {
+      initLiff();
+    });
+
     // 1. คำนวณจุดรับของอัตโนมัติจากเลขโต๊ะ
     const tableInput = document.getElementById('tableNumber');
     const pickupAlert = document.getElementById('pickupAlert');
@@ -248,7 +330,7 @@
         total_amount: total,
         payment_date: document.getElementById('payDate').value || '',
         payment_time: document.getElementById('payTime').value || '',
-        line_user_id: document.getElementById('lineUserId').value || ''
+        line_user_id: lineUserId || document.getElementById('lineUserId').value || ''
       };
 
       const submitBtn = document.getElementById('submitBtn');
