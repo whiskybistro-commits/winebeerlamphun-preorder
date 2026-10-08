@@ -331,6 +331,9 @@
         div.className = 'flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:bg-slate-50/80 transition gap-3 bg-white';
         
         const imgUrl = getDirectImageUrl(item.image);
+        const imageElement = imgUrl 
+          ? `<img src="${imgUrl}" alt="${item.name}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-slate-100 flex-shrink-0" onerror="this.parentElement.innerHTML='<div class=\\'w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-slate-200\\'>🛍️</div>'">`
+          : `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-slate-200">🛍️</div>`;
         const currentQty = selectedQuantities[item.name] || 0;
         const unitName = item.unit || 'ชิ้น';
 
