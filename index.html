@@ -105,15 +105,28 @@
           <input type="hidden" id="lineUserId" value="">
         </section>
 
-        <!-- 2. รายการสินค้า (มีแท็บหมวดหมู่ + ปุ่ม +/-) -->
+        <!-- 2. รายการสินค้า (มีแท็บหมวดหมู่ + ปุ่มลูกศรเลื่อนซ้ายขวา) -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-3 flex items-center gap-2">
             <span>🛍️</span> เลือกรายการสินค้า
           </h2>
 
-          <!-- แถบหมวดหมู่: เพิ่ม p-1.5 และเว้นช่องไฟเพื่อไม่ให้ขอบปุ่มโดนตัด -->
-          <div class="overflow-hidden mb-4 border-b border-slate-100">
-            <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide items-center"></div>
+          <!-- แถบหมวดหมู่: พร้อมปุ่มลูกศร ❮ ❯ สำหรับคอมพิวเตอร์ -->
+          <div class="relative flex items-center mb-4 border-b border-slate-100 group">
+            <!-- ปุ่มลูกศรเลื่อนซ้าย (บนคอม) -->
+            <button type="button" id="tabScrollLeft" aria-label="เลื่อนซ้าย"
+              class="hidden sm:flex absolute left-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition active:scale-95">
+              ❮
+            </button>
+
+            <!-- ตัวแถบแท็บเลื่อน -->
+            <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide items-center scroll-smooth w-full sm:mx-8"></div>
+
+            <!-- ปุ่มลูกศรเลื่อนขวา (บนคอม) -->
+            <button type="button" id="tabScrollRight" aria-label="เลื่อนขวา"
+              class="hidden sm:flex absolute right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition active:scale-95">
+              ❯
+            </button>
           </div>
 
           <!-- กล่องรายการสินค้า -->
@@ -249,7 +262,6 @@
     let currentCategory = "ทั้งหมด";
     let selectedQuantities = {};
 
-    // ฟังก์ชันดึงรหัส ID จากลิงก์ Google Drive
     function extractDriveId(url) {
       if (!url) return '';
       url = url.trim();
@@ -283,7 +295,7 @@
       }
     }
 
-    // สร้างปุ่มหมวดหมู่ (แก้บั๊กขอบตัด: แสดงผลเต็มปุ่ม ไม่แหว่งแน่นอน)
+    // ปุ่มแท็บหมวดหมู่
     function renderCategoryTabs() {
       const tabsContainer = document.getElementById('categoryTabs');
       tabsContainer.innerHTML = '';
@@ -306,6 +318,32 @@
       });
     }
 
+    // ⭐ ระบบช่วยเลื่อนแถบหมวดหมู่ซ้าย-ขวาสำหรับคอมพิวเตอร์ (ปุ่มลูกศร + ลูกกลิ้งเมาส์) ⭐
+    const tabsContainer = document.getElementById('categoryTabs');
+    const scrollLeftBtn = document.getElementById('tabScrollLeft');
+    const scrollRightBtn = document.getElementById('tabScrollRight');
+
+    if (scrollLeftBtn && scrollRightBtn && tabsContainer) {
+      // 1. กดปุ่มลูกศรซ้าย
+      scrollLeftBtn.addEventListener('click', () => {
+        tabsContainer.scrollBy({ left: -220, behavior: 'smooth' });
+      });
+
+      // 2. กดปุ่มลูกศรขวา
+      scrollRightBtn.addEventListener('click', () => {
+        tabsContainer.scrollBy({ left: 220, behavior: 'smooth' });
+      });
+
+      // 3. หมุนลูกกลิ้งเมาส์ขึ้น-ลง เพื่อเลื่อนซ้าย-ขวาอัตโนมัติ
+      tabsContainer.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          tabsContainer.scrollLeft += e.deltaY;
+        }
+      }, { passive: false });
+    }
+
+    // แสดงรายการสินค้า (รองรับไฟล์จาก GitHub เช่น ./asahi.png)
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
@@ -327,19 +365,14 @@
         const currentQty = selectedQuantities[item.name] || 0;
         const unitName = item.unit || 'ชิ้น';
 
-        // ⭐ ระบบรูปภาพ Double Fallback:
-        // ขั้นที่ 1: ดึงผ่าน Google Drive Thumbnail API
-        // ขั้นที่ 2: หากโหลดไม่ติด สลับไปดึงผ่าน Google CDN (lh3)
-        // ขั้นที่ 3: หากยังไม่ติด ให้แสดงไอคอนกล่องของขวัญ 🛍️
         let primaryImgUrl = '';
         let fallbackImgUrl = '';
 
-        // โค้ดใหม่ (รองรับทั้งลิงก์เต็ม และลิงก์ภายในอย่าง ./asahi.png):
         if (driveId) {
           primaryImgUrl = `https://drive.google.com/thumbnail?id=${driveId}&sz=w400`;
           fallbackImgUrl = `https://lh3.googleusercontent.com/d/${driveId}`;
         } else if (item.image) {
-          primaryImgUrl = item.image.trim(); // รับลิงก์ ./asahi.png ได้ทันที
+          primaryImgUrl = item.image.trim();
         }
 
         const imageElement = primaryImgUrl
