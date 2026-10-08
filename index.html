@@ -103,61 +103,16 @@
           <input type="hidden" id="lineUserId" value="">
         </section>
 
-        <!-- 2. รายการสินค้า -->
+        <!-- 2. รายการสินค้า (โหลดอัตโนมัติจาก Google Sheet) -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
             <span>🛍️</span> เลือกรายการสินค้า
           </h2>
 
-          <div class="space-y-4">
-            <!-- สินค้า 1 -->
-            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-              <div>
-                <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size S)</p>
-                <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
-              </div>
-              <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size S)" data-price="250"
-                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            </div>
-
-            <!-- สินค้า 2 -->
-            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-              <div>
-                <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size M)</p>
-                <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
-              </div>
-              <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size M)" data-price="250"
-                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            </div>
-
-            <!-- สินค้า 3 -->
-            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-              <div>
-                <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size L)</p>
-                <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
-              </div>
-              <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size L)" data-price="250"
-                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            </div>
-
-            <!-- สินค้า 4 -->
-            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-              <div>
-                <p class="font-medium text-slate-900">แก้วเก็บความเย็น MTL Tumbler</p>
-                <p class="text-xs text-blue-600 font-semibold">350 บาท</p>
-              </div>
-              <input type="number" min="0" value="0" data-name="แก้วเก็บความเย็น MTL Tumbler" data-price="350"
-                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            </div>
-
-            <!-- สินค้า 5 -->
-            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
-              <div>
-                <p class="font-medium text-slate-900">หมวกปาร์ตี้ Party Hat</p>
-                <p class="text-xs text-blue-600 font-semibold">100 บาท</p>
-              </div>
-              <input type="number" min="0" value="0" data-name="หมวกปาร์ตี้ Party Hat" data-price="100"
-                class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <!-- กล่องใส่รายการสินค้าที่โหลดมาจากชีท -->
+          <div id="productList" class="space-y-4">
+            <div class="text-center py-6 text-slate-400 text-sm">
+              <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
             </div>
           </div>
 
@@ -236,49 +191,95 @@
     let lineUserId = "";
 
     async function initLiff() {
-      if (!LIFF_ID) {
-        console.error("LIFF_ID is missing! Please check your environment variables.");
-        return;
-      }
-
+      if (!LIFF_ID) return;
       try {
-        await liff.init({ 
-          liffId: LIFF_ID,
-          withLoginOnExternalBrowser: false 
-        });
-
+        await liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: false });
         if (!liff.isLoggedIn()) { 
-          console.log("User is not logged in. Redirecting to LINE Login...");
           liff.login(); 
           return; 
         }
-
-        console.log("User is already logged in.");
         const profile = await liff.getProfile();
         lineUserId = profile.userId;
         document.getElementById('lineUserId').value = profile.userId;
 
-        // แสดงการล็อกอินบนหน้าเว็บ
         const profileCard = document.getElementById('lineProfileCard');
         if (profileCard) {
           profileCard.classList.remove('hidden');
           document.getElementById('userName').innerText = profile.displayName || 'LINE User';
           if (profile.pictureUrl) {
             document.getElementById('userPicture').src = profile.pictureUrl;
-          } else {
-            document.getElementById('userPicture').src = 'https://via.placeholder.com/40?text=LINE';
           }
         }
-
       } catch (err) {
         console.error("LIFF Init error", err);
-        alert("LIFF Init failed: " + err.message);
       }
     }
 
-    // เริ่มทำงาน LIFF เมื่อโหลดหน้าเว็บ
+    // ⭐ URL ของ Google Apps Script ที่ได้จากขั้นตอนที่ 3 ⭐
+    const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
+
+// ฟังก์ชันโหลดสินค้าอัตโนมัติจาก Google Sheet (รองรับรูปภาพ + หมวดหมู่ + สต็อก)
+    async function loadProducts() {
+      const container = document.getElementById('productList');
+      try {
+        const res = await fetch(PRODUCT_API_URL);
+        const products = await res.json();
+
+        if (!products || products.length === 0) {
+          container.innerHTML = '<div class="text-center py-4 text-slate-500 text-sm">ไม่พบรายการสินค้าที่เปิดให้สั่งจองในขณะนี้</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        products.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition gap-3';
+          
+          // ตรวจสอบว่ามีรูปภาพหรือไม่
+          const imageHtml = item.image 
+            ? `<img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-xl border border-slate-100 flex-shrink-0" onerror="this.style.display='none'">`
+            : '';
+
+          // ตรวจสอบว่ามีหมวดหมู่หรือไม่
+          const catHtml = item.category 
+            ? `<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-normal mr-1">${item.category}</span>` 
+            : '';
+
+          // ตรวจสอบ Max Stock
+          const maxAttr = item.maxStock ? `max="${item.maxStock}"` : '';
+
+          div.innerHTML = `
+            <div class="flex items-center gap-3 overflow-hidden">
+              ${imageHtml}
+              <div>
+                <p class="font-medium text-slate-900 leading-snug">${item.name}</p>
+                <div class="mt-0.5 flex items-center">
+                  ${catHtml}
+                  <span class="text-xs text-blue-600 font-semibold">${item.price.toLocaleString()} บาท</span>
+                </div>
+              </div>
+            </div>
+            <input type="number" min="0" ${maxAttr} value="0" data-name="${item.name}" data-price="${item.price}"
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none flex-shrink-0">
+          `;
+          container.appendChild(div);
+        });
+
+        // ผูกฟังก์ชันคำนวณราคากับช่องจำนวนสินค้า
+        document.querySelectorAll('.item-qty').forEach(input => {
+          input.addEventListener('input', calculateTotal);
+        });
+
+      } catch (err) {
+        console.error("Load products error:", err);
+        container.innerHTML = '<div class="text-center py-4 text-rose-500 text-sm">ไม่สามารถโหลดข้อมูลสินค้าได้ กรุณาลองใหม่อีกครั้ง</div>';
+      }
+    }
+
+    // เริ่มทำงานเมื่อเปิดเว็บ
     window.addEventListener('DOMContentLoaded', () => {
       initLiff();
+      loadProducts();
     });
 
     // 1. คำนวณจุดรับของอัตโนมัติจากเลขโต๊ะ
@@ -299,20 +300,17 @@
     });
 
     // 2. คำนวณยอดรวมสินค้าแบบ Real-time
-    const qtyInputs = document.querySelectorAll('.item-qty');
     const totalAmountEl = document.getElementById('totalAmount');
-
     function calculateTotal() {
       let total = 0;
-      qtyInputs.forEach(input => {
+      document.querySelectorAll('.item-qty').forEach(input => {
         const qty = parseInt(input.value) || 0;
-        const price = parseInt(input.dataset.price);
+        const price = parseInt(input.dataset.price) || 0;
         total += qty * price;
       });
       totalAmountEl.innerText = total.toLocaleString();
       return total;
     }
-    qtyInputs.forEach(input => input.addEventListener('input', calculateTotal));
 
     // 3. จัดการเมื่อกดปุ่ม Submit ส่งเข้า n8n
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
@@ -323,16 +321,14 @@
         return;
       }
 
-      // รวบรวมรายการสินค้าในรูปแบบ Bullet
       let itemsBullet = [];
-      qtyInputs.forEach(input => {
+      document.querySelectorAll('.item-qty').forEach(input => {
         const qty = parseInt(input.value) || 0;
         if (qty > 0) {
           itemsBullet.push(`• ${input.dataset.name} x ${qty}`);
         }
       });
 
-      // จัดเตรียมข้อมูลส่งให้ n8n
       const payload = {
         employee_id: document.getElementById('employeeId').value.trim(),
         full_name: document.getElementById('fullName').value.trim(),
