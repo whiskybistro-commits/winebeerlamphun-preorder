@@ -3,1010 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เมนูอาหาร - Whisky Bistro</title>
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
-  
-  <!-- โหลดคลังไอคอน Google Material Symbols Outlined -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+  <title>MTL PARTY 2026 - ระบบพรีออเดอร์สินค้า</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    body, button, input, select, textarea { 
-      font-family: 'Noto Sans Thai', sans-serif; 
-    }
-    body { 
-      padding: 10px; 
-      background-color: #fbf9f6; /* โทนสีลินินอุ่นนุ่มสว่างพิเศษ */
-      color: #4e463f; /* สีน้ำตาลเทาเนื้อนุ่มสบายตา */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      vertical-align: middle;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-
-    .app-card {
-      width: 100%;
-      max-width: 580px;
-      background-color: #ffffff;
-      border-radius: 12px; 
-      box-shadow: 0 8px 32px rgba(130, 120, 110, 0.03); 
-      border: 1px solid #e8e2da; 
-      padding: 24px;
-      box-sizing: border-box;
-      margin: 15px auto;
-    }
-
-    .lang-switch-container {
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .lang-btn {
-      width: auto !important;
-      display: inline-block;
-      padding: 6px 14px !important;
-      margin-bottom: 0 !important;
-      background-color: #f2ede6; 
-      color: #7a7065;
-      border: none;
-      border-radius: 6px; 
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.15s ease;
-    }
-    .lang-btn.active {
-      background-color: #fbe6e5; 
-      color: #8a574e; 
-    }
-    .lang-btn.active:hover {
-      background-color: #f7d4cf;
-      color: #7a463d;
-    }
-    .lang-btn:not(.active):hover {
-      background-color: #e8e2da;
-    }
-
-    #title-heading {
-      font-size: 24px;
-      font-weight: 800;
-      color: #433c37; 
-      margin-top: 5px;
-      margin-bottom: 20px;
-      text-align: center;
-      letter-spacing: -0.5px;
-      display: flex;
-      flex-direction: column; 
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-
-    .center-logo {
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 90px; 
-      width: 30%;
-      margin-bottom: 15px;
-      opacity: 0.95;
-    }
-
-    /* Container ของแต่ละหน้า */
-    .step-page {
-      display: none;
-    }
-    .step-page.active {
-      display: block;
-    }
-
-    /* ส่วนหัวซุ้มอาหาร */
-    .stall-header-new {
-      margin-bottom: 20px;
-    }
-    .stall-header-top-bar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .stall-header-title-centered {
-      font-size: 21px;
-      font-weight: 800;
-      color: #433c37; 
-      text-align: center;
-      margin: 10px 0 0 0;
-      line-height: 1.3;
-      letter-spacing: -0.5px;
-      padding-bottom: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-close-stall {
-      background-color: #fdf0ee;
-      color: #ba7c72;
-      border: none;
-      border-radius: 6px;
-      width: 32px;
-      height: 32px;
-      box-sizing: border-box;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-    .btn-close-stall:hover {
-      background-color: #f9e2dd;
-      color: #a35d52;
-    }
-
-    /* ระบบกริด 6 ซุ้มอาหาร */
-    .stall-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-    .stall-btn {
-      background-color: #ffffff;
-      border: 1px solid #e8e2da; 
-      border-radius: 12px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      aspect-ratio: 1 / 1;
-      position: relative;
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-    .stall-btn:hover {
-      border-color: #c9beb0; 
-      background-color: #faf6f0;
-    }
-    .stall-btn-img {
-      width: 100%;
-      height: 60%;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      background-color: #faf9f6;
-    }
-    .stall-btn-title {
-      font-size: 12px; 
-      font-weight: 800;
-      color: #4e463f; 
-      line-height: 1.3;
-      text-align: center;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
-
-    .home-hint-box {
-      text-align: center; 
-      font-size: 14px; 
-      color: #466e51; 
-      font-weight: 800; 
-      margin-bottom: 20px; 
-      background: #ffffff; 
-      padding: 14px; 
-      border-radius: 8px; 
-      border: 1px solid #c2e3cc; 
-      line-height: 1.4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    /* สไลด์รูปภาพเมนู */
-    .menu-carousel {
-      width: 100%;
-      margin-bottom: 18px;
-      position: relative;
-    }
-    .carousel-track {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      gap: 12px;
-      border-radius: 8px;
-      padding-bottom: 4px;
-    }
-    .carousel-track::-webkit-scrollbar {
-      display: none; 
-    }
-    .carousel-item {
-      flex: 0 0 100%;
-      scroll-snap-align: start;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .carousel-img {
-      width: 100%;
-      max-width: 100%; 
-      aspect-ratio: 1 / 1.414; 
-      object-fit: contain;
-      background-color: #faf9f6;
-      border-radius: 8px;
-      border: none;
-      display: block;
-      margin: 0 auto;
-      cursor: zoom-in; 
-    }
-    .carousel-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: #eee9e2; 
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .dot.active {
-      background-color: #a8d6b4; 
-    }
-
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: rgba(255, 255, 255, 0.85);
-      border: 1px solid #e8e2da;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: none; 
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10;
-      transition: all 0.2s ease;
-      color: #7a7065;
-      padding: 0;
-      box-shadow: 0 2px 8px rgba(130, 120, 110, 0.08);
-    }
-    .carousel-btn:hover {
-      background-color: #ffffff;
-      color: #433c37;
-    }
-    .carousel-btn.prev { left: 10px; }
-    .carousel-btn.next { right: 10px; }
-
-    /* ตกแต่งกล่องรายการเมนูแนะนำ */
-    .recommend-list-container {
-      background: #ffffff;
-      border: 1px solid #e8e2da;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    .recommend-title {
-      font-weight: 800;
-      font-size: 14px;
-      color: #7a7065;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      border-bottom: 1px solid #eee9e2;
-      padding-bottom: 10px;
-    }
-    .recommend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid #faf9f6;
-      font-size: 14px;
-      color: #4e463f;
-      font-weight: 700;
-    }
-    .recommend-item:last-child {
-      border-bottom: none;
-    }
-    .recommend-number {
-      background-color: #edf7f1;
-      color: #466e51;
-      font-size: 11px;
-      font-weight: 800;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    /* กล่องข้อมูลโทรติดต่อสั่งอาหารล่วงหน้า */
-    .contact-card-container {
-      background: #fdfaf7;
-      border: 1px dashed #dcd4cb;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      box-sizing: border-box;
-    }
-    .contact-card-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: #7a7065;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-call-stall {
-      background-color: #fbe6e5;
-      color: #8a574e;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 24px;
-      font-weight: 800;
-      font-size: 16px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      width: 100%;
-      box-sizing: border-box;
-      transition: all 0.15s ease;
-    }
-    .btn-call-stall:hover {
-      background-color: #f7d4cf;
-      color: #7a463d;
-    }
-
-    /* ปุ่มกลับหน้าหลัก */
-    .btn-back-home {
-      background-color: #f2ede6;
-      color: #61584f;
-      border: 1px solid #d3c9be;
-      padding: 12px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-family: inherit;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .btn-back-home:hover {
-      background-color: #e5ddd3;
-      color: #4e463f;
-    }
-
-    @media (min-width: 769px) {
-      .stall-btn {
-        padding: 0 !important;
-        border-radius: 12px;
-        overflow: hidden;
-      }
-      .stall-btn-img {
-        width: 100% !important;
-        height: 75% !important;
-        border-radius: 8px 8px 0 0 !important;
-        margin-bottom: 0 !important;
-        object-fit: cover !important;
-      }
-      .stall-btn-title {
-        height: 25% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 8px 12px !important;
-        box-sizing: border-box !important;
-        font-size: 13px !important; 
-        font-weight: 800 !important;
-        background-color: #ffffff;
-      }
-      .carousel-btn {
-        display: flex; 
-      }
-    }
-
-    /* ลิงก์รูปภาพขยายใหญ่ (Lightbox Modal) */
-    .img-modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.95);
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .img-modal-content {
-      margin: auto;
-      display: block;
-      max-width: 95%;
-      max-height: 85vh;
-      object-fit: contain;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      cursor: zoom-in;
-    }
-    .img-modal-content.zoomed {
-      max-width: 180%;
-      max-height: none;
-      cursor: zoom-out;
-    }
-    .img-modal-close {
-      position: absolute;
-      top: 15px;
-      right: 25px;
-      color: #f1f1f1;
-      font-size: 40px;
-      font-weight: bold;
-      transition: 0.3s;
-      cursor: pointer;
-      user-select: none;
-      z-index: 10000;
-    }
-    .img-modal-close:hover {
-      color: #bbb;
-    }
-    #img-modal-caption {
-      margin: 15px auto;
-      display: block;
-      width: 80%;
-      max-width: 700px;
-      text-align: center;
-      color: #ccc;
-      font-size: 14px;
-      font-weight: 700;
-    }
+    body { font-family: 'Prompt', sans-serif; }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen text-slate-800 pb-16">
 
-  <div class="app-card">
-    <!-- ตัวสลับภาษา -->
-    <div class="lang-switch-container">
-      <button id="lang-th-btn" class="lang-btn active" onclick="switchLanguage('th')">🇹🇭 ภาษาไทย</button>
-      <button id="lang-en-btn" class="lang-btn" onclick="switchLanguage('en')">🇬🇧 English</button>
-      <button id="lang-ja-btn" class="lang-btn" onclick="switchLanguage('ja')">🇯🇵 日本語</button>
+  <!-- Header Banner -->
+  <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white py-8 px-4 text-center shadow-lg">
+    <div class="max-w-2xl mx-auto">
+      <span class="bg-blue-900/60 text-blue-200 text-xs px-3 py-1 rounded-full font-medium uppercase tracking-wider">งานเลี้ยงสังสรรค์พนักงาน</span>
+      <h1 class="text-2xl sm:text-3xl font-bold mt-2">MTL PARTY 2026</h1>
+      <p class="text-blue-100 text-sm mt-1">แบบฟอร์มพรีออเดอร์สินค้าที่ระลึกล่วงหน้า</p>
     </div>
+  </header>
 
-    <img src="https://drive.google.com/thumbnail?id=1GaSEE2KYAFK07ViNwkLKvM5YD3ZYtcc8&sz=w1000" alt="Whisky_Bistro_Logo" class="center-logo">
-    <h2 id="title-heading">เมนูอาหาร<br>Whisky Bistro Menu</h2>
+  <main class="max-w-2xl mx-auto px-4 mt-6">
+    <form id="preorderForm" class="space-y-6">
 
-    <!-- ────────────────────────────────────────────────────────
-         หน้าหลักเมนู 6 ซุ้ม (Step 0)
-         ──────────────────────────────────────────────────────── -->
-    <div id="step-page-0" class="step-page active">
-      <div id="home-hint-text" class="home-hint-box">
-        <span class="material-symbols-outlined" style="color: #466e51; font-size: 20px;">lightbulb</span> 
-        <span>แตะที่ซุ้มอาหารด้านล่างเพื่อเลือกดูเมนูแนะนำ</span>
-      </div>
-
-      <div class="stall-grid">
-        <!-- ป้อนปุ่มกริดจาก JS อัตโนมัติ -->
-      </div>
-    </div>
-
-    <!-- ────────────────────────────────────────────────────────
-         หน้าแสดงข้อมูลเมนูของแต่ละซุ้มอาหาร (Step 1 - 6)
-         ──────────────────────────────────────────────────────── -->
-    
-    <!-- หน้าโมดูลซุ้มอาหาร (แชร์โครงสร้างร่วมกันแบบไดนามิก) -->
-    <div id="step-page-stall-detail" class="step-page">
-      <div class="stall-header-new">
-        <div class="stall-header-top-bar">
-          <button class="btn-close-stall" onclick="goHome()">
-            <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
-          </button>
+      <!-- ข้อมูลผู้สั่ง -->
+      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+          <span>👤</span> ข้อมูลผู้สั่งจอง
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">รหัสพนักงาน *</label>
+            <input type="text" id="employeeId" required placeholder="เช่น EMP1001"
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">ชื่อจริง - นามสกุล *</label>
+            <input type="text" id="fullName" required placeholder="นายสมชาย มั่นคง"
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">ฝ่าย / แผนก *</label>
+            <select id="department" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+              <option value="">-- เลือกแผนก --</option>
+              <option value="ฝ่ายผลิต">ฝ่ายผลิต</option>
+              <option value="ฝ่ายบุคคล">ฝ่ายบุคคล</option>
+              <option value="ฝ่ายคลังสินค้า">ฝ่ายคลังสินค้า</option>
+              <option value="ฝ่ายวิศวกรรม">ฝ่ายวิศวกรรม</option>
+              <option value="ฝ่ายบัญชีและการเงิน">ฝ่ายบัญชีและการเงิน</option>
+              <option value="อื่นๆ">อื่นๆ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">เลขโต๊ะนั่ง (1 - 700) *</label>
+            <input type="number" id="tableNumber" min="1" max="700" required placeholder="1 - 700"
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
         </div>
-        <h1 class="stall-header-title-centered" id="title-stall-detail">
-          <span class="material-symbols-outlined" id="icon-stall-detail" style="font-size: 28px; color: #a66b62;">restaurant</span>
-          <span id="text-stall-detail">-</span>
-        </h1>
-      </div>
 
-      <!-- สไลด์รูปภาพ -->
-      <div class="menu-carousel">
-        <div class="carousel-track" id="carousel-track-detail"></div>
-        <div class="carousel-dots" id="carousel-dots-detail"></div>
-      </div>
+        <!-- แสดงจุดรับของอัตโนมัติ -->
+        <div id="pickupAlert" class="hidden mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2"></div>
+        <input type="hidden" id="lineUserId" value="">
+      </section>
 
-      <!-- กล่องแสดงรายการเมนูแนะนำประจำซุ้ม -->
-      <div class="recommend-list-container" id="recommend-list-detail">
-        <!-- ข้อมูลถูกส่งมาผ่าน JS -->
-      </div>
+      <!-- รายการสินค้า -->
+      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+          <span>🛍️</span> เลือกรายการสินค้า
+        </h2>
 
-      <!-- กล่องข้อมูลการติดต่อโทรสั่งอาหารล่วงหน้าของแต่ละซุ้ม -->
-      <div class="contact-card-container" id="contact-card-detail">
-        <!-- ข้อมูลถูกสร้างมาผ่าน JS ตามหมายเลขซุ้มที่ระบุ -->
-      </div>
+        <div class="space-y-4">
+          <!-- สินค้า 1 -->
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+            <div>
+              <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size S)</p>
+              <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+            </div>
+            <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size S)" data-price="250"
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
 
-      <button class="btn-back-home" onclick="goHome()">
-        <span class="material-symbols-outlined">home</span>
-        <span class="btn-back-text">กลับหน้าหลัก</span>
+          <!-- สินค้า 2 -->
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+            <div>
+              <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size M)</p>
+              <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+            </div>
+            <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size M)" data-price="250"
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+
+          <!-- สินค้า 3 -->
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+            <div>
+              <p class="font-medium text-slate-900">เสื้อยืด MTL 2026 (Size L)</p>
+              <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
+            </div>
+            <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size L)" data-price="250"
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+
+          <!-- สินค้า 4 -->
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+            <div>
+              <p class="font-medium text-slate-900">แก้วเก็บความเย็น MTL Tumbler</p>
+              <p class="text-xs text-blue-600 font-semibold">350 บาท</p>
+            </div>
+            <input type="number" min="0" value="0" data-name="แก้วเก็บความเย็น MTL Tumbler" data-price="350"
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+
+          <!-- สินค้า 5 -->
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+            <div>
+              <p class="font-medium text-slate-900">หมวกปาร์ตี้ Party Hat</p>
+              <p class="text-xs text-blue-600 font-semibold">100 บาท</p>
+            </div>
+            <input type="number" min="0" value="0" data-name="หมวกปาร์ตี้ Party Hat" data-price="100"
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- ยอดรวม -->
+        <div class="mt-5 p-4 bg-blue-50 rounded-xl flex justify-between items-center border border-blue-100">
+          <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
+          <span class="text-2xl font-bold text-blue-700"><span id="totalAmount">0</span> ฿</span>
+        </div>
+      </section>
+
+      <!-- แนบหลักฐานการโอนเงิน (สลิป) -->
+      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
+          <span>💳</span> หลักฐานการชำระเงิน
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน</label>
+            <input type="date" id="payDate" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน</label>
+            <input type="time" id="payTime" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG)</label>
+          <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+        </div>
+      </section>
+
+      <!-- ปุ่มส่งแบบฟอร์ม -->
+      <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 rounded-xl shadow-md transition duration-150 flex justify-center items-center gap-2 text-base">
+        <span>ยืนยันการสั่งจอง</span>
       </button>
-    </div>
-
-  </div>
-
-  <!-- Modal สำหรับซูมขยายรูปภาพเมนู -->
-  <div id="image-modal" class="img-modal" onclick="closeImageModal()">
-    <span class="img-modal-close" onclick="closeImageModal()">&times;</span>
-    <img class="img-modal-content" id="modal-img">
-    <div id="img-modal-caption"></div>
-  </div>
+    </form>
+  </main>
 
   <script>
-    // รูปภาพหน้าสไลด์เมนู (ใช้ชุดเดียวกับโค้ดเดิมของคุณ)
-    const stallMenuImages = {
-      1: [
-        "https://drive.google.com/thumbnail?id=1n94y6gT-U_2R_zmmBah2zhNFQbVLZSMQ&sz=w1200",
-        "https://drive.google.com/thumbnail?id=16HT34R_IhZdkEUDj9JC9eb5MmqmLJoOG&sz=w1200"
-      ],
-      2: [
-        "https://drive.google.com/thumbnail?id=13HDmTXKBxJ-2_QcNeGPCNyAXKAqM2BIw&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1Ti9Ocd7SULqLuBlqP24TnyE_-lYkkkFg&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1nhbaXF_xiN6vEdXyi-5mGXoLLLZCQbmR&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1ObztmnkG33h7JEdajXabbEOiBYL03ano&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1DcPkLB92bi5fUk4ob1d-1eoXWkGdxlTB&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1-nI9Nr8-zdDJGWPpGHryibDtkhQ1C3Vd&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1xi8nizhPTEfeUVdMq-x4wDTg4VRtvqc8&sz=w1200"
-      ],
-      3: [
-        "https://drive.google.com/thumbnail?id=1Daoj7KVnbTkT5Eroe_T_gj1leAWmcENq&sz=w1200"
-      ],
-      4: [
-        "https://drive.google.com/thumbnail?id=1g05UXCXc_LRGdUPsGwlk68Xk6YLR6VCw&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1u3RBzINURJEDdnX4XGjahRbZm9MYfNK1&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1fdQMB5074YoI1EyDNUMmEp0SJO4V2_7-&sz=w1200"
-      ],
-      5: [
-        "https://drive.google.com/thumbnail?id=1t_Yo93KkYyJg8SyXJKGtz_M97iUVFZ17&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1OKYNCyEcmsikNNdIli2-L96JgRCyl__L&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1293zZq-iU-DvSIz6dpDijGK5lqQ-SiUK&sz=w1200"
-      ],
-      6: [
-        "https://drive.google.com/thumbnail?id=1ju13NcZ03IdlQpkbk3w0Ibx0OtbCVjsf&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1iGg48aN6ayai9BqFA-jsBt6NHj54WXVG&sz=w1200",
-        "https://drive.google.com/thumbnail?id=10v_Zrkb13US-vwIustekWi4sccYwXNcs&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1B8O_CzGcskleVwc6loJMG5H_Z5W_f3g9&sz=w1200",
-        "https://drive.google.com/thumbnail?id=1CwBqw-jO36wNoI1lSm1jg79yXKlgavCT&sz=w1200"
-      ]
-    };
+    // 1. คำนวณจุดรับของอัตโนมัติจากเลขโต๊ะ
+    const tableInput = document.getElementById('tableNumber');
+    const pickupAlert = document.getElementById('pickupAlert');
 
-    // รายชื่อเมนูแนะนำอิงจากข้อมูลล่าสุด
-    const stallSuggestions = {
-      th: {
-        1: ["เค้กแซลม่อน", "เซทรวมซาชิมิ", "เนื้อทอด 10 วิ", "กุ้งดองซีอิ๊วญี่ปุ่น", "หอยนางรมญี่ปุ่น", "ซาบะย่างเทริยากิ", "กุ้งเทมปุระ", "ข้างด้ง 4 สหาย", "เกี๊ยวซ่า", "ทาโกะวาซาบิ"],
-        2: ["หม่าล่าหมูสามชั้นพันเห็ดเข็มทอง", "เมี่ยงปลาเผา", "กุ้งเผาเสียบไม้", "ชุดแจ่วฮ้อนหมูรวม", "หมูมะนาว", "กุ้งแช่น้ำปลา", "เอ็นไก่ทอด", "ต้มเล้ง", "ต้มแซ่บเอ็นไก่", "หอยโข่งนาอบสมุนไพร"],
-        3: ["เฟร้นฟรายส์ราดซอสชีส", "เฟร้นฟรายส์เขย่าผงปาปริก้า", "ไก่ทอดซอสครีมมะนาว", "หมูแดดเดียว", "ทอดมันกุ้ง", "นักเก็ตไก่", "ไก่ป๊อปสไปซี่", "ชีสบอล", "มันฝรั่ง Wedges", "สามชั้นทอดน้ำปลา"],
-        4: ["ยำแซลม่อน", "ยำปูม้า", "ยำกุ้งสด", "ยำปลาหมึก", "ยำหมูทอด", "ยำไข่ดาว", "ตำขนมจีน", "ตำปลาร้า", "ข้าวไข่เจียว", "ข้าวกระเพราหมู"],
-        5: ["ชาบูเซ็ต M", "ชาบูเซ็ต L", "ไส้ย่าง", "ย่างรวม", "จิ๊นส้มหมกไข่", "หม่าล่าทอด", "ต้มแซ่บหม้อไฟ", "สันคอทอดกระเทียม", "ผัดผักบุ้งไฟแดง", "จิ๊นควายย่าง"],
-        6: ["ลาบหมูคั่ว", "ลาบควายดิบ", "ซอยจุ๊(เนื้อควายดิบ)", "สันคอย่าง(หมู)", "ไส้ใหญ่ย่าง(หมู)", "แป้งนมย่าง(หมู)", "หมูน้ำตก", "ตับหวาน", "ต้มแซ่บเอ็นเนื้อ", "ข้าวเหนียว"]
-      },
-      en: {
-        1: ["Salmon Cake", "Sashimi Combo Set", "10-Second Fried Beef", "Japanese Soy Pickled Shrimp", "Japanese Oyster", "Saba Teriyaki", "Shrimp Tempura", "Four Companions Rice Bowl", "Gyoza", "Tako Wasabi"],
-        2: ["Mala Grilled Pork Belly Wrapped Enoki", "Grilled Fish Herb Wrap (Miang Pla Pao)", "Grilled Prawn Skewer", "Mixed Pork Jaew Hon Hotpot Set", "Spicy Lime Pork (Moo Manow)", "Raw Shrimp in Spicy Fish Sauce", "Fried Chicken Tendon", "Spicy Pork Bone Soup (Tom Leng)", "Spicy Chicken Tendon Soup (Tom Saap)", "Herbal Baked Paddy Field Snail"],
-        3: ["French Fries with Cheese Sauce", "Paprika Shaker French Fries", "Fried Chicken with Lime Cream Sauce", "Thai Sun-Dried Pork", "Fried Shrimp Cake", "Chicken Nuggets", "Spicy Chicken Pop", "Cheese Balls", "Potato Wedges", "Fried Pork Belly with Fish Sauce"],
-        4: ["Spicy Salmon Salad", "Spicy Blue Crab Salad", "Spicy Raw Shrimp Salad", "Spicy Squid Salad", "Spicy Fried Pork Salad", "Spicy Fried Egg Salad", "Spicy Papaya Salad with Rice Noodles", "Spicy Papaya Salad with Fermented Fish", "Thai Omelette on Rice", "Stir-Fried Pork and Holy Basil on Rice"],
-        5: ["Shabu Set M", "Shabu Set L", "Grilled Pork Chitterlings", "Mixed Grilled Meats", "Northern Thai Sour Pork Baked with Egg (Jin Som Mok Kai)", "Fried Mala Meats", "Spicy Hot Pot Soup (Tom Saap)", "Fried Pork Collar with Garlic", "Stir-Fried Morning Glory", "Grilled Buffalo Meat"],
-        6: ["Northern Thai Stir-Fried Spicy Minced Pork (Larb Moo Kua)", "Northern Thai Raw Spicy Minced Buffalo (Larb Kwai Dib)", "Soi Ju (Raw Buffalo Meat with Bitter Dipping Sauce)", "Grilled Pork Collar", "Grilled Large Pork Intestines", "Grilled Pork Udder", "Spicy Grilled Pork Salad (Nam Tok Moo)", "Spicy Pork Liver Salad (Tub Wan)", "Spicy Beef Tendon Soup", "Sticky Rice"]
-      },
-      ja: {
-        1: ["サーモンケーキ", "刺身盛り合わせ", "10秒牛ハラミ揚げ", "えびの日本醤油漬け", "日本産生牡蠣", "サバの照り焼き", "エビの天ぷら", "四銃士丼", "餃子", "たこわさび"],
-        2: ["豚バラえのき巻き麻辣串焼き", "魚のハーブ包み炭火焼き（ミアン・プラーパオ）", "エビの串焼き", "ジェオホーン（タイ風豚肉ハーブ鍋）セット", "豚肉のスパイシーライム和え（ムーマナオ）", "生エビのナンプラーソース漬け", "鶏軟骨揚げ", "豚骨ピリ辛スープ（トムレン）", "鶏軟骨のトムサープスープ", "タニシのハーブ蒸し焼き"],
-        3: ["フレンチフライのチーズソースがけ", "フレンチフライของ パプリカパウダー振り", "フライドチキンのライムクリームソースがけ", "タイ風干し豚肉（ムーデーッディアウ）", "タイ風エビカツ（トードマングン）", "チキンナゲット", "スパイシーチキンポップ", "チーズボール", "ポテトウェッジ", "豚バラ肉のナンプラー揚げ"],
-        4: ["サーモンのスパイシーサラダ（ヤム・サーモン）", "ワタリガニのスパイシーサラダ（ヤム・ปูม้า）", "生エビのスパイシーサラダ（ヤム・クンソット）", "イカのスパイシーサラダ（ヤム・プラーหมึก）", "フライドポークのスパイシーサラダ", "目玉焼きのスパイシーサラダ", "カノムジーン（米粉麺）のソムタム", "プラーラー（魚発酵ソース）ソムタム", "タイ風オムレツのせご飯", "豚肉のガパオ炒めご飯"],
-        5: ["しゃぶしゃぶセット M", "しゃぶしゃぶセット L", "豚ホルモン焼き", "ミックスグリル（焼き物盛り合わせ）", "ネーム（豚酸っぱソーセージ）の卵とじ蒸し焼き", "揚げ麻辣（マーラー）", "トムサープ鍋（ピリ辛ハーブスープ）", "豚肩ロースのにんにく揚げ", "空心菜炒め（パックブン・ファイデーン）", "水牛ของ肉焼き"],
-        6: ["北部風炒めラープムー（豚ひき肉ハーブ和え）", "北部風生ラープクワイ（生のラープ水牛肉）", "ソイジュ（生水牛肉のスパイシー苦味ソース添え）", "豚肩ロース焼き（コームーヤーン）", "豚の大腸焼き", "豚のおっぱい（ペーンノム）焼き", "ナムトックムー（豚スパイシー焼き肉和え）", "タップワーン (レバーのスパイシー和え)", "牛軟骨のトムサープスープ", "もち米"]
-      }
-    };
-
-    // หมายเลขโทรศัพท์ติดต่อของแต่ละซุ้ม
-    const stallPhones = {
-      1: { raw: "0956609160", display: "095-660-9160" },
-      2: { raw: "0629429655", display: "062-942-9655" },
-      3: { raw: "0966840414", display: "096-684-0414" },
-      4: { raw: "0647187556", display: "064-718-7556" },
-      5: { raw: "0960826163", display: "096-082-6163" },
-      6: { raw: "0926835465", display: "092-683-5465" }
-    };
-
-    const stallTitles = {
-      th: {
-        1: "บาร์ญี่ปุ่น",
-        2: "แซ่บริมทาง หม่าล่า",
-        3: "เฟร้นฟรายส์ ของทอด",
-        4: "สถานียำ 20",
-        5: "ซุ้มน้ำเงิน ชาบู ปิ้งย่าง",
-        6: "ลาบป้าแดง"
-      },
-      en: {
-        1: "Japanese Bar",
-        2: "Street Spicy Mala",
-        3: "French Fries & Snacks",
-        4: "Spicy Salad Station 20 Baht",
-        5: "Blue Stall Shabu & Grill",
-        6: "Larb Pa Daeng"
-      },
-      ja: {
-        1: "ジャパニーズバー",
-        2: "タイ風串焼麻辣",
-        3: "フレンチフライ＆スナック",
-        4: "ヤム・ステーション20バーツ",
-        5: "ブルー・ストール・しゃぶしゃぶ焼きもの",
-        6: "ラープ・パ・デーン"
-      }
-    };
-
-    const stallIcons = {
-      1: "set_meal",
-      2: "kebab_dining",
-      3: "fastfood",
-      4: "restaurant",
-      5: "soup_kitchen",
-      6: "flatware"
-    };
-
-    const translations = {
-      th: {
-        title: "เมนูอาหาร<br>Whisky Bistro Menu",
-        home_hint: "แตะที่ซุ้มอาหารด้านล่างเพื่อเลือกดูเมนูแนะนำ",
-        btn_back: "กลับหน้าหลัก",
-        recommend_header: "รายการแนะนำประจำซุ้ม",
-        call_to_order: "โทรสั่งอาหารล่วงหน้า"
-      },
-      en: {
-        title: "Food Menu<br>Whisky Bistro",
-        home_hint: "Tap on a food stall below to view the menu",
-        btn_back: "Back to Main",
-        recommend_header: "Kiosk Recommendations",
-        call_to_order: "Call to Pre-order"
-      },
-      ja: {
-        title: "フードメニュー<br>Whisky Bistro",
-        home_hint: "下のフードキオスクをタップしてメニューを表示します",
-        btn_back: "ホームへ戻る",
-        recommend_header: "おすすめメニュー",
-        call_to_order: "お電話での事前注文"
-      }
-    };
-
-    let currentLang = 'th';
-    let currentSelectedStall = null;
-
-    // แสดงหน้า
-    function showPage(pageId) {
-      document.querySelectorAll('.step-page').forEach(page => {
-        page.classList.remove('active');
-      });
-      const targetPage = document.getElementById(pageId);
-      if (targetPage) {
-        targetPage.classList.add('active');
-      }
-    }
-
-    function goHome() {
-      currentSelectedStall = null;
-      showPage('step-page-0');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // เปิดซุ้มอาหารและรันข้อมูลเมนูแบบไดนามิก
-    function openStall(stallId) {
-      currentSelectedStall = stallId;
-      showPage('step-page-stall-detail');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // อัปเดตข้อมูลหัวเรื่องซุ้ม
-      const titlesDict = stallTitles[currentLang] || stallTitles['th'];
-      const textStall = document.getElementById('text-stall-detail');
-      const iconStall = document.getElementById('icon-stall-detail');
-      if (textStall) textStall.innerText = titlesDict[stallId];
-      if (iconStall) iconStall.innerText = stallIcons[stallId];
-
-      // เริ่มทำงานระบบภาพสไลด์เฉพาะซุ้มที่เลือก
-      initCarouselForStall(stallId);
-
-      // แสดงลิสต์เมนูแนะนำ 10 รายการ
-      renderRecommendations(stallId);
-
-      // แสดงปุ่มและข้อมูลโทรติดต่อสั่งซื้อล่วงหน้า
-      renderPhoneContact(stallId);
-    }
-
-    // จัดทำลิสต์รายการแนะนำ
-    function renderRecommendations(stallId) {
-      const container = document.getElementById('recommend-list-detail');
-      if (!container) return;
-
-      const dict = translations[currentLang] || translations['th'];
-      const suggestions = stallSuggestions[currentLang] || stallSuggestions['th'];
-      const items = suggestions[stallId] || [];
-
-      let htmlContent = `
-        <div class="recommend-title">
-          <span class="material-symbols-outlined" style="color: #466e51; font-size: 18px;">featured_play_list</span>
-          <span>${dict.recommend_header}</span>
-        </div>
-      `;
-
-      items.forEach((item, index) => {
-        htmlContent += `
-          <div class="recommend-item">
-            <span class="recommend-number">${index + 1}</span>
-            <span>${item}</span>
-          </div>
-        `;
-      });
-
-      container.innerHTML = htmlContent;
-    }
-
-    // จัดวางโครงสร้างข้อมูลเบอร์โทรศัพท์ของแต่ละซุ้มแบบไดนามิก
-    function renderPhoneContact(stallId) {
-      const container = document.getElementById('contact-card-detail');
-      if (!container) return;
-
-      const phoneInfo = stallPhones[stallId];
-      if (!phoneInfo) {
-        container.style.display = 'none';
-        return;
-      }
-      container.style.display = 'flex';
-
-      const dict = translations[currentLang] || translations['th'];
-
-      container.innerHTML = `
-        <div class="contact-card-title">
-          <span class="material-symbols-outlined" style="color: #ba7c72; font-size: 18px;">phone_in_talk</span>
-          <span>${dict.call_to_order}</span>
-        </div>
-        <a href="tel:${phoneInfo.raw}" class="btn-call-stall">
-          <span class="material-symbols-outlined" style="font-size: 20px;">call</span>
-          <span>${phoneInfo.display}</span>
-        </a>
-      `;
-    }
-
-    // ทำงานส่วนภาพสไลด์ในหน้าย่อย
-    function initCarouselForStall(stallId) {
-      const track = document.getElementById('carousel-track-detail');
-      const dotsContainer = document.getElementById('carousel-dots-detail');
-      if (!track || !dotsContainer) return;
-
-      const carouselContainer = track.parentElement;
-      const images = stallMenuImages[stallId] || [];
-      track.innerHTML = '';
-      dotsContainer.innerHTML = '';
-      track.scrollLeft = 0; // ย้อนกลับสไลด์ไปตำแหน่งเริ่มต้น
-
-      images.forEach((imgUrl, idx) => {
-        const slide = document.createElement('div');
-        slide.className = 'carousel-item';
-        slide.innerHTML = `<img class="carousel-img" src="${imgUrl}" alt="Menu Page ${idx + 1}" onerror="this.src='https://drive.google.com/thumbnail?id=1GaSEE2KYAFK07ViNwkLKvM5YD3ZYtcc8&sz=w1000'" onclick="openImageModal('${imgUrl}', ${stallId}, ${idx + 1})">`;
-        track.appendChild(slide);
-
-        const dot = document.createElement('span');
-        dot.className = `dot ${idx === 0 ? 'active' : ''}`;
-        dot.addEventListener('click', () => {
-          track.scrollTo({
-            left: track.clientWidth * idx,
-            behavior: 'smooth'
-          });
-        });
-        dotsContainer.appendChild(dot);
-      });
-
-      // จัดการปุ่มนำทางสไลด์ซ้าย-ขวาบนหน้าจอ PC
-      const prevBtnExist = carouselContainer.querySelector('.carousel-btn.prev');
-      const nextBtnExist = carouselContainer.querySelector('.carousel-btn.next');
-      if (prevBtnExist) prevBtnExist.remove();
-      if (nextBtnExist) nextBtnExist.remove();
-
-      if (images.length > 1) {
-        const prevBtn = document.createElement('button');
-        prevBtn.className = 'carousel-btn prev';
-        prevBtn.setAttribute('type', 'button');
-        prevBtn.innerHTML = '<span class="material-symbols-outlined">chevron_left</span>';
-        prevBtn.onclick = (e) => {
-          e.preventDefault();
-          track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' });
-        };
-        carouselContainer.appendChild(prevBtn);
-
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'carousel-btn next';
-        nextBtn.setAttribute('type', 'button');
-        nextBtn.innerHTML = '<span class="material-symbols-outlined">chevron_right</span>';
-        nextBtn.onclick = (e) => {
-          e.preventDefault();
-          track.scrollBy({ left: track.clientWidth, behavior: 'smooth' });
-        };
-        carouselContainer.appendChild(nextBtn);
-      }
-
-      // ตรวจสอบ Dot ปัจจุบันขณะใช้นิ้วเลื่อนสกรอลล์จอภาพ
-      track.addEventListener('scroll', () => {
-        const width = track.clientWidth;
-        if (width <= 0) return;
-        const index = Math.round(track.scrollLeft / width);
-        const dots = dotsContainer.querySelectorAll('.dot');
-        dots.forEach((dot, idx) => {
-          dot.classList.toggle('active', idx === index);
-        });
-      });
-    }
-
-    // เรนเดอร์หน้ารวมซุ้มอาหาร (Home Hub)
-    function renderStallGrid() {
-      try {
-        const gridContainer = document.querySelector('.stall-grid');
-        if (!gridContainer) return;
-
-        gridContainer.innerHTML = '';
-        const titlesDict = stallTitles[currentLang] || stallTitles['th'];
-
-        for (let stallId = 1; stallId <= 6; stallId++) {
-          const title = titlesDict[stallId];
-          const imgUrl = (stallMenuImages[stallId] && stallMenuImages[stallId][0]) || 'https://drive.google.com/thumbnail?id=1GaSEE2KYAFK07ViNwkLKvM5YD3ZYtcc8&sz=w1000';
-
-          const button = document.createElement('div');
-          button.className = 'stall-btn';
-          button.onclick = () => openStall(stallId);
-          button.innerHTML = `
-            <img class="stall-btn-img" src="${imgUrl}" alt="${title}">
-            <div class="stall-btn-title" style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <span class="material-symbols-outlined" style="font-size: 20px; color: #a66b62;">${stallIcons[stallId]}</span>
-              <span>${title}</span>
-            </div>
-          `;
-          gridContainer.appendChild(button);
-        }
-      } catch (err) {
-        console.error("Error in renderStallGrid:", err);
-      }
-    }
-
-    // สลับภาษา
-    function switchLanguage(lang) {
-      try {
-        currentLang = lang;
-        const dict = translations[lang] || translations['th'];
-        
-        const btnTh = document.getElementById('lang-th-btn');
-        const btnEn = document.getElementById('lang-en-btn');
-        const btnJa = document.getElementById('lang-ja-btn');
-        
-        if (btnTh) btnTh.classList.toggle('active', lang === 'th');
-        if (btnEn) btnEn.classList.toggle('active', lang === 'en');
-        if (btnJa) btnJa.classList.toggle('active', lang === 'ja');
-
-        const titleHeading = document.getElementById('title-heading');
-        if (titleHeading) titleHeading.innerHTML = dict.title;
-
-        const homeHintEl = document.getElementById('home-hint-text');
-        if (homeHintEl) {
-          homeHintEl.innerHTML = `
-            <span class="material-symbols-outlined" style="color: #466e51; font-size: 20px;">lightbulb</span> 
-            <span>${dict.home_hint}</span>
-          `;
-        }
-
-        // แปลคำข้อความในปุ่มกลับหน้าหลัก
-        document.querySelectorAll('.btn-back-text').forEach(el => {
-          el.innerText = dict.btn_back;
-        });
-
-        // หากกำลังเปิดดูข้อมูลซุ้มอยู่ ให้ทำการอัปเดตภาษาทันที
-        if (currentSelectedStall !== null) {
-          const titlesDict = stallTitles[currentLang] || stallTitles['th'];
-          const textStall = document.getElementById('text-stall-detail');
-          if (textStall) textStall.innerText = titlesDict[currentSelectedStall];
-          renderRecommendations(currentSelectedStall);
-          renderPhoneContact(currentSelectedStall);
-        }
-
-        renderStallGrid();
-      } catch (err) {
-        console.error("Error inside switchLanguage:", err);
-      }
-    }
-
-    // ─── ระบบซูมภาพแบบ Lightbox Modal ───
-    function openImageModal(imgUrl, stallId, pageNum) {
-      const modal = document.getElementById('image-modal');
-      const modalImg = document.getElementById('modal-img');
-      const caption = document.getElementById('img-modal-caption');
-      
-      if (modal && modalImg) {
-        modal.style.display = 'flex';
-        modalImg.src = imgUrl;
-        modalImg.classList.remove('zoomed'); 
-        if (caption) {
-          const titlesDict = stallTitles[currentLang] || stallTitles['th'];
-          const title = titlesDict[stallId] || '';
-          
-          let pageWord = 'หน้า';
-          if (currentLang === 'en') pageWord = 'Page';
-          else if (currentLang === 'ja') pageWord = 'ページ';
-          
-          caption.innerText = `${title} - ${pageWord} ${pageNum}`;
-        }
-      }
-    }
-
-    function closeImageModal() {
-      const modal = document.getElementById('image-modal');
-      if (modal) {
-        modal.style.display = 'none';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const modalImg = document.getElementById('modal-img');
-      if (modalImg) {
-        modalImg.addEventListener('click', (e) => {
-          e.stopPropagation(); 
-          modalImg.classList.toggle('zoomed');
-        });
+    tableInput.addEventListener('input', () => {
+      const table = parseInt(tableInput.value);
+      if (table >= 1 && table <= 350) {
+        pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200';
+        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 1 (สำหรับโต๊ะ 1 - 350)';
+      } else if (table >= 351 && table <= 700) {
+        pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-purple-50 text-purple-800 border border-purple-200';
+        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 2 (สำหรับโต๊ะ 351 - 700)';
+      } else {
+        pickupAlert.className = 'hidden';
       }
     });
 
-    window.onload = function() {
-      switchLanguage('th'); // ภาษาเริ่มต้นคือภาษาไทย
-    };
+    // 2. คำนวณยอดรวมสินค้าแบบ Real-time
+    const qtyInputs = document.querySelectorAll('.item-qty');
+    const totalAmountEl = document.getElementById('totalAmount');
+
+    function calculateTotal() {
+      let total = 0;
+      qtyInputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        const price = parseInt(input.dataset.price);
+        total += qty * price;
+      });
+      totalAmountEl.innerText = total.toLocaleString();
+      return total;
+    }
+    qtyInputs.forEach(input => input.addEventListener('input', calculateTotal));
+
+    // 3. จัดการเมื่อกดปุ่ม Submit
+    document.getElementById('preorderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const total = calculateTotal();
+      if (total === 0) {
+        alert('กรุณาเลือกสินค้าอย่างน้อย 1 รายการ');
+        return;
+      }
+
+      // รวบรวมรายการสินค้าในรูปแบบ Bullet
+      let itemsBullet = [];
+      qtyInputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0) {
+          itemsBullet.push(`• ${input.dataset.name} x ${qty}`);
+        }
+      });
+
+      // จัดเตรียมข้อมูลส่งให้ n8n
+      const payload = {
+        employee_id: document.getElementById('employeeId').value.trim(),
+        full_name: document.getElementById('fullName').value.trim(),
+        department: document.getElementById('department').value,
+        table_number: parseInt(tableInput.value),
+        order_items: itemsBullet.join('\n'),
+        total_amount: total,
+        payment_date: document.getElementById('payDate').value || '',
+        payment_time: document.getElementById('payTime').value || '',
+        line_user_id: document.getElementById('lineUserId').value || ''
+      };
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'กำลังส่งข้อมูล...';
+
+      try {
+        // ** ใส่ Webhook URL ของ n8n ตรงนี้ **
+        const N8N_WEBHOOK_URL = 'https://YOUR-N8N-DOMAIN.com/webhook/preorder';
+
+        /* 
+        const response = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        */
+
+        // จำลองการส่งสำเร็จ
+        setTimeout(() => {
+          alert('บันทึกการสั่งจองสำเร็จเรียบร้อยแล้ว!');
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'ยืนยันการสั่งจอง';
+        }, 1000);
+
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'ยืนยันการสั่งจอง';
+      }
+    });
   </script>
 </body>
 </html>
