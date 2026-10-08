@@ -326,7 +326,17 @@
         div.className = 'flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition gap-3';
         
         // รูปสินค้าทางซ้ายมือ (หากชิ้นใดไม่มีรูปลิงก์ในชีท ระบบจะพ่นรูปกล่องของขวัญ Placeholder อัตโนมัติ)
-        const imgUrl = item.image || 'https://placehold.co/120x120/e2e8f0/475569?text=🛍️';
+        // ฟังก์ชันแปลงลิงก์ Google Drive ให้เป็น Direct Image อัตโนมัติ
+        let imgUrl = item.image || '';
+        if (imgUrl.includes('drive.google.com')) {
+          const match = imgUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || imgUrl.match(/id=([a-zA-Z0-9_-]+)/);
+          if (match && match[1]) {
+            imgUrl = `https://lh3.googleusercontent.com/d/${match[1]}`;
+          }
+        }
+        if (!imgUrl) {
+          imgUrl = 'https://placehold.co/120x120/e2e8f0/475569?text=🛍️';
+        }
         const imageHtml = `
           <img src="${imgUrl}" alt="${item.name}" 
             class="w-16 h-16 object-cover rounded-xl border border-slate-100 flex-shrink-0" 
