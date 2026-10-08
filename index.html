@@ -334,11 +334,12 @@
         let primaryImgUrl = '';
         let fallbackImgUrl = '';
 
+        // โค้ดใหม่ (รองรับทั้งลิงก์เต็ม และลิงก์ภายในอย่าง ./asahi.png):
         if (driveId) {
           primaryImgUrl = `https://drive.google.com/thumbnail?id=${driveId}&sz=w400`;
           fallbackImgUrl = `https://lh3.googleusercontent.com/d/${driveId}`;
-        } else if (item.image && item.image.startsWith('http')) {
-          primaryImgUrl = item.image;
+        } else if (item.image) {
+          primaryImgUrl = item.image.trim(); // รับลิงก์ ./asahi.png ได้ทันที
         }
 
         const imageElement = primaryImgUrl
