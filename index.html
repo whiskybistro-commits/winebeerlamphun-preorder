@@ -25,7 +25,7 @@
   <main class="max-w-2xl mx-auto px-4 mt-6">
     <form id="preorderForm" class="space-y-6">
 
-      <!-- ข้อมูลผู้สั่ง -->
+      <!-- 1. ข้อมูลผู้สั่ง -->
       <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
         <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
           <span>👤</span> ข้อมูลผู้สั่งจอง
@@ -38,7 +38,7 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">ชื่อจริง - นามสกุล *</label>
-            <input type="text" id="fullName" required placeholder="นายสมชาย มั่นคง"
+            <input type="text" id="fullName" required placeholder="สมชาย มั่นคง"
               class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
@@ -65,7 +65,7 @@
         <input type="hidden" id="lineUserId" value="">
       </section>
 
-      <!-- รายการสินค้า -->
+      <!-- 2. รายการสินค้า -->
       <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
         <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
           <span>🛍️</span> เลือกรายการสินค้า
@@ -79,7 +79,7 @@
               <p class="text-xs text-blue-600 font-semibold">250 บาท</p>
             </div>
             <input type="number" min="0" value="0" data-name="เสื้อยืด MTL 2026 (Size S)" data-price="250"
-              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:out-none">
+              class="item-qty w-16 text-center py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
 
           <!-- สินค้า 2 -->
@@ -130,7 +130,35 @@
         </div>
       </section>
 
-      <!-- แนบหลักฐานการโอนเงิน (สลิป) -->
+      <!-- 3. ส่วนแสดง QR Code ชำระเงิน (เพิ่มใหม่ต่อท้ายรายการออเดอร์) -->
+      <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+        <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center justify-center gap-2">
+          <span>📲</span> สแกน QR Code เพื่อชำระเงิน
+        </h2>
+
+        <p class="text-xs sm:text-sm text-slate-500 mb-3">
+          กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ
+        </p>
+
+        <!-- ภาพ QR Code -->
+        <div class="flex justify-center my-3">
+          <div class="bg-white p-2 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[280px]">
+            <img src="qr-payment.png" alt="สแกน QR เพื่อชำระเงิน" class="w-full h-auto rounded-xl object-contain">
+          </div>
+        </div>
+
+        <!-- รายละเอียดบัญชี -->
+        <div class="mt-4 bg-purple-50 p-4 rounded-xl border border-purple-100 text-xs sm:text-sm text-purple-900 max-w-md mx-auto space-y-1">
+          <p class="font-bold text-base text-purple-950">บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด</p>
+          <p class="flex items-center justify-center gap-2 font-medium">
+            <span>ธนาคารไทยพาณิชย์ (SCB)</span>
+            <span class="bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-mono font-bold">996-419001-4</span>
+          </p>
+          <p class="text-purple-700 text-xs">Biller ID: 051556500153101</p>
+        </div>
+      </section>
+
+      <!-- 4. แนบหลักฐานการโอนเงิน (สลิป) -->
       <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
         <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
           <span>💳</span> หลักฐานการชำระเงิน
@@ -192,7 +220,7 @@
     }
     qtyInputs.forEach(input => input.addEventListener('input', calculateTotal));
 
-    // 3. จัดการเมื่อกดปุ่ม Submit
+    // 3. จัดการเมื่อกดปุ่ม Submit ส่งเข้า n8n
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const total = calculateTotal();
@@ -228,26 +256,27 @@
       submitBtn.innerText = 'กำลังส่งข้อมูล...';
 
       try {
-        // ** ใส่ Webhook URL ของ n8n ตรงนี้ **
         const N8N_WEBHOOK_URL = 'https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-preoder';
 
-        /* 
         const response = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        */
 
-        // จำลองการส่งสำเร็จ
-        setTimeout(() => {
-          alert('บันทึกการสั่งจองสำเร็จเรียบร้อยแล้ว!');
-          submitBtn.disabled = false;
-          submitBtn.innerText = 'ยืนยันการสั่งจอง';
-        }, 1000);
+        const result = await response.json();
 
+        if (response.ok && result.success) {
+          alert(result.message || 'บันทึกการสั่งจองสำเร็จเรียบร้อยแล้ว!');
+          document.getElementById('preorderForm').reset();
+          calculateTotal();
+          pickupAlert.className = 'hidden';
+        } else {
+          alert('แจ้งเตือน: ' + (result.message || 'เกิดข้อผิดพลาดในการสั่งจอง'));
+        }
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+        alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง');
+      } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = 'ยืนยันการสั่งจอง';
       }
