@@ -112,7 +112,6 @@
           </h2>
 
           <!-- แถบหมวดหมู่เลื่อนซ้าย-ขวา -->
-          <!-- ปรับ gap-1.5 เป็น gap-2.5 pb-3 -->
           <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto pb-3 mb-4 scrollbar-hide border-b border-slate-100"></div>
 
           <!-- กล่องรายการสินค้า -->
@@ -213,7 +212,6 @@
   </footer>
 
   <script>
-    // ตัวแปรและฟังก์ชันระบบ LINE LIFF
     const LIFF_ID = "2011938038-bo6hoPh3";
     let lineUserId = "";
 
@@ -242,7 +240,6 @@
       }
     }
 
-    // ⭐ URL ของ Google Apps Script ⭐
     const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
 
     let allProducts = [];
@@ -250,23 +247,22 @@
     let currentCategory = "ทั้งหมด";
     let selectedQuantities = {};
 
-    // ฟังก์ชันแปลงลิงก์ Google Drive ทุกรูปแบบให้แสดงผลได้ 100%
+    // ฟังก์ชันแปลงลิงก์ Google Drive ทุกรูปแบบให้เป็น Direct Image URL ผ่าน Google CDN
     function getDirectImageUrl(url) {
       if (!url) return '';
       url = url.trim();
       
-      // ดึงรหัสไฟล์ ID จากลิงก์ Google Drive
+      // ตรวจสอบว่าเป็นลิงก์ Google Drive หรือไม่
       if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
         if (match && match[1]) {
-          // ใช้ Google Thumbnail API ขนาด 400px โหลดเร็วและไม่โดนบล็อก
-          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
+          // ใช้ CDN lh3.googleusercontent.com ซึ่งเป็นวิธีที่เปิดรูปภาพสาธารณะได้แน่นอนที่สุด
+          return `https://lh3.googleusercontent.com/d/${match[1]}`;
         }
       }
       return url;
     }
 
-    // โหลดสินค้า
     async function loadProducts() {
       const container = document.getElementById('productList');
       try {
@@ -290,7 +286,6 @@
       }
     }
 
-    // ฟังก์ชันสร้างปุ่มแท็บหมวดหมู่ (ขยายขนาดใหญ่ขึ้น แตะง่าย ชัดเจน)
     function renderCategoryTabs() {
       const tabsContainer = document.getElementById('categoryTabs');
       tabsContainer.innerHTML = '';
@@ -298,7 +293,6 @@
       categoriesList.forEach(cat => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        // ขยาย padding เป็น px-5 py-2.5 และตัวหนังสือเป็น text-sm sm:text-base
         btn.className = `px-5 py-2.5 sm:px-6 rounded-full text-sm sm:text-base font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0 active:scale-95 ${
           cat === currentCategory 
             ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 ring-2 ring-blue-500 ring-offset-2' 
@@ -314,7 +308,6 @@
       });
     }
 
-    // แสดงรายการสินค้า (ปุ่ม +/- และตัวหนังสือราคาใหญ่ขึ้น)
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
@@ -330,23 +323,24 @@
 
       filtered.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:bg-slate-50/80 transition gap-3 bg-white';
+        div.className = 'flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:bg-slate-50/80 transition gap-3 bg-white shadow-xs';
         
         const imgUrl = getDirectImageUrl(item.image);
-        const imageElement = imgUrl 
-          ? `<img src="${imgUrl}" alt="${item.name}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-slate-100 flex-shrink-0" onerror="this.parentElement.innerHTML='<div class=\\'w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-slate-200\\'>🛍️</div>'">`
-          : `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-slate-200">🛍️</div>`;
         const currentQty = selectedQuantities[item.name] || 0;
         const unitName = item.unit || 'ชิ้น';
 
+        // ⭐ โค้ดแสดงรูปภาพ: ถ้ารูปโหลดไม่ติด จะขึ้นกล่องไอคอน 🛍️ สำรองทันที ไม่เกิดรูปแตก ⭐
+        const imageElement = imgUrl
+          ? `<img src="${imgUrl}" alt="${item.name}" 
+              class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-slate-100 flex-shrink-0"
+              onerror="this.onerror=null; this.outerHTML='<div class=\\'w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-slate-200 text-slate-400\\'>🛍️</div>';">`
+          : `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-slate-200 text-slate-400">🛍️</div>`;
+
         div.innerHTML = `
           <div class="flex items-center gap-3 overflow-hidden">
-            <img src="${imgUrl}" alt="${item.name}" 
-              class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-slate-100 flex-shrink-0" 
-              onerror="this.src='https://placehold.co/120x120/e2e8f0/475569?text=🛍️'">
+            ${imageElement}
             <div>
               <p class="font-medium text-slate-900 text-sm sm:text-base leading-snug line-clamp-2">${item.name}</p>
-              <!-- ตัวหนังสือราคาขนาดใหญ่ พร้อมหน่วยนับ Unit -->
               <div class="mt-1 flex items-baseline gap-1">
                 <span class="text-base sm:text-lg font-bold text-blue-600">${item.price.toLocaleString()}</span>
                 <span class="text-xs text-slate-500 font-normal">บาท / ${unitName}</span>
@@ -354,7 +348,6 @@
             </div>
           </div>
 
-          <!-- ตัวปรับจำนวนสินค้าแบบปุ่ม [-] และ [+] -->
           <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1 flex-shrink-0 shadow-xs">
             <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs disabled:opacity-40" 
               data-name="${item.name}">-</button>
@@ -366,7 +359,6 @@
         container.appendChild(div);
       });
 
-      // ผูก Event ปุ่มกดลบ (-)
       document.querySelectorAll('.btn-minus').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const name = e.currentTarget.dataset.name;
@@ -381,7 +373,6 @@
         });
       });
 
-      // ผูก Event ปุ่มกดบวก (+)
       document.querySelectorAll('.btn-plus').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const name = e.currentTarget.dataset.name;
@@ -400,7 +391,6 @@
       });
     }
 
-    // คำนวณยอดเงินรวมทั้งหมด
     const totalAmountEl = document.getElementById('totalAmount');
     function calculateTotal() {
       let total = 0;
@@ -414,7 +404,6 @@
       return total;
     }
 
-    // ระบบขยายภาพ QR Code (Lightbox)
     const qrTrigger = document.getElementById('qrTrigger');
     const qrModal = document.getElementById('qrModal');
     const closeQrModal = document.getElementById('closeQrModal');
@@ -428,13 +417,11 @@
       qrModal.addEventListener('click', hideModal);
     }
 
-    // เริ่มทำงานเมื่อเปิดเว็บ
     window.addEventListener('DOMContentLoaded', () => {
       initLiff();
       loadProducts();
     });
 
-    // คำนวณจุดรับของอัตโนมัติจากเลขโต๊ะ
     const tableInput = document.getElementById('tableNumber');
     const pickupAlert = document.getElementById('pickupAlert');
 
@@ -451,7 +438,6 @@
       }
     });
 
-    // ส่งฟอร์มเข้า n8n
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const total = calculateTotal();
