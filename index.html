@@ -16,6 +16,9 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SweetAlert2 (แจ้งเตือนสวยงาม) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Prompt', sans-serif; }
@@ -107,22 +110,24 @@
 
         <!-- 2. รายการสินค้า (มีแท็บหมวดหมู่ + ปุ่มลูกศรเลื่อนซ้ายขวา) -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-3 flex items-center gap-2">
-            <span>🛍️</span> เลือกรายการสินค้า
-          </h2>
+          <div class="flex justify-between items-center border-b pb-2 mb-3">
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <span>🛍️</span> เลือกรายการสินค้า
+            </h2>
+            <button type="button" id="clearCartBtn" class="text-xs text-rose-500 hover:text-rose-700 underline hidden">
+              ล้างตะกร้า
+            </button>
+          </div>
 
           <!-- แถบหมวดหมู่: พร้อมปุ่มลูกศร ❮ ❯ สำหรับคอมพิวเตอร์ -->
           <div class="relative flex items-center mb-4 border-b border-slate-100 group">
-            <!-- ปุ่มลูกศรเลื่อนซ้าย (บนคอม) -->
             <button type="button" id="tabScrollLeft" aria-label="เลื่อนซ้าย"
               class="hidden sm:flex absolute left-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition active:scale-95">
               ❮
             </button>
 
-            <!-- ตัวแถบแท็บเลื่อน -->
             <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide items-center scroll-smooth w-full sm:mx-8"></div>
 
-            <!-- ปุ่มลูกศรเลื่อนขวา (บนคอม) -->
             <button type="button" id="tabScrollRight" aria-label="เลื่อนขวา"
               class="hidden sm:flex absolute right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition active:scale-95">
               ❯
@@ -193,6 +198,12 @@
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG)</label>
             <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+            
+            <!-- พรีวิวรูปสลิป -->
+            <div id="slipPreviewContainer" class="hidden mt-3 text-center">
+              <p class="text-xs text-slate-500 mb-1">ตัวอย่างสลิปที่แนบ:</p>
+              <img id="slipPreview" src="" alt="Slip Preview" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-sm object-contain">
+            </div>
           </div>
         </section>
 
@@ -228,8 +239,102 @@
 
   <script>
     const LIFF_ID = "2011938038-bo6hoPh3";
-    let lineUserId = "";
+    const N8N_WEBHOOK_URL = 'https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-preoder';
+    const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
 
+    let lineUserId = "";
+    let allProducts = [];
+    let categoriesList = [];
+    let currentCategory = "ทั้งหมด";
+    let selectedQuantities = {};
+    let compressedSlipBase64 = "";
+
+    // -------------------------------------------------------------
+    // 💾 ระบบ LocalStorage จัดการตะกร้า & ข้อมูลส่วนตัว
+    // -------------------------------------------------------------
+    function getCartStorageKey() {
+      return 'mtl_cart_' + (lineUserId || 'guest');
+    }
+
+    function saveCartToStorage() {
+      localStorage.setItem(getCartStorageKey(), JSON.stringify(selectedQuantities));
+      toggleClearCartBtn();
+    }
+
+    function loadCartFromStorage() {
+      const saved = localStorage.getItem(getCartStorageKey());
+      if (saved) {
+        try {
+          selectedQuantities = JSON.parse(saved) || {};
+          renderProducts();
+          calculateTotal();
+          toggleClearCartBtn();
+        } catch (e) {
+          console.error("Load cart error", e);
+        }
+      }
+    }
+
+    function clearCartStorage() {
+      localStorage.removeItem(getCartStorageKey());
+      selectedQuantities = {};
+      renderProducts();
+      calculateTotal();
+      toggleClearCartBtn();
+    }
+
+    function toggleClearCartBtn() {
+      const btn = document.getElementById('clearCartBtn');
+      const hasItems = Object.values(selectedQuantities).some(q => q > 0);
+      if (btn) {
+        if (hasItems) btn.classList.remove('hidden');
+        else btn.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('clearCartBtn').addEventListener('click', () => {
+      Swal.fire({
+        title: 'ยืนยันล้างตะกร้า?',
+        text: 'รายการสินค้าทั้งหมดที่เลือกไว้จะถูกรีเซ็ต',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ล้างตะกร้า',
+        cancelButtonText: 'ยกเลิก'
+      }).then((res) => {
+        if (res.isConfirmed) clearCartStorage();
+      });
+    });
+
+    // บันทึกข้อมูลพนักงานลงเครื่อง ไม่ต้องพิมพ์ซ้ำ
+    function saveUserInfo() {
+      const info = {
+        empId: document.getElementById('employeeId').value.trim(),
+        name: document.getElementById('fullName').value.trim(),
+        dept: document.getElementById('department').value,
+        table: document.getElementById('tableNumber').value
+      };
+      localStorage.setItem('mtl_user_info', JSON.stringify(info));
+    }
+
+    function loadUserInfo() {
+      const saved = localStorage.getItem('mtl_user_info');
+      if (saved) {
+        try {
+          const info = JSON.parse(saved);
+          if (info.empId) document.getElementById('employeeId').value = info.empId;
+          if (info.name) document.getElementById('fullName').value = info.name;
+          if (info.dept) document.getElementById('department').value = info.dept;
+          if (info.table) {
+            document.getElementById('tableNumber').value = info.table;
+            checkPickupPoint(parseInt(info.table));
+          }
+        } catch (e) {}
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 🚀 ระบบ LIFF Init
+    // -------------------------------------------------------------
     async function initLiff() {
       if (!LIFF_ID) return;
       try {
@@ -250,18 +355,18 @@
             document.getElementById('userPicture').src = profile.pictureUrl;
           }
         }
+
+        // โหลดตะกร้าที่ผูกกับ LINE ID นี้
+        loadCartFromStorage();
+
       } catch (err) {
         console.error("LIFF Init error", err);
       }
     }
 
-    const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
-
-    let allProducts = [];
-    let categoriesList = [];
-    let currentCategory = "ทั้งหมด";
-    let selectedQuantities = {};
-
+    // -------------------------------------------------------------
+    // 📦 โหลดสินค้าจาก Google Sheet
+    // -------------------------------------------------------------
     function extractDriveId(url) {
       if (!url) return '';
       url = url.trim();
@@ -288,6 +393,7 @@
 
         renderCategoryTabs();
         renderProducts();
+        loadCartFromStorage(); // โหลดตะกร้าที่บันทึกไว้
 
       } catch (err) {
         console.error("Load products error:", err);
@@ -295,7 +401,6 @@
       }
     }
 
-    // ปุ่มแท็บหมวดหมู่
     function renderCategoryTabs() {
       const tabsContainer = document.getElementById('categoryTabs');
       tabsContainer.innerHTML = '';
@@ -318,23 +423,14 @@
       });
     }
 
-    // ⭐ ระบบช่วยเลื่อนแถบหมวดหมู่ซ้าย-ขวาสำหรับคอมพิวเตอร์ (ปุ่มลูกศร + ลูกกลิ้งเมาส์) ⭐
+    // Scroll หมวดหมู่
     const tabsContainer = document.getElementById('categoryTabs');
     const scrollLeftBtn = document.getElementById('tabScrollLeft');
     const scrollRightBtn = document.getElementById('tabScrollRight');
 
     if (scrollLeftBtn && scrollRightBtn && tabsContainer) {
-      // 1. กดปุ่มลูกศรซ้าย
-      scrollLeftBtn.addEventListener('click', () => {
-        tabsContainer.scrollBy({ left: -220, behavior: 'smooth' });
-      });
-
-      // 2. กดปุ่มลูกศรขวา
-      scrollRightBtn.addEventListener('click', () => {
-        tabsContainer.scrollBy({ left: 220, behavior: 'smooth' });
-      });
-
-      // 3. หมุนลูกกลิ้งเมาส์ขึ้น-ลง เพื่อเลื่อนซ้าย-ขวาอัตโนมัติ
+      scrollLeftBtn.addEventListener('click', () => tabsContainer.scrollBy({ left: -220, behavior: 'smooth' }));
+      scrollRightBtn.addEventListener('click', () => tabsContainer.scrollBy({ left: 220, behavior: 'smooth' }));
       tabsContainer.addEventListener('wheel', (e) => {
         if (e.deltaY !== 0) {
           e.preventDefault();
@@ -343,7 +439,6 @@
       }, { passive: false });
     }
 
-    // แสดงรายการสินค้า (รองรับไฟล์จาก GitHub เช่น ./asahi.png)
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
@@ -394,7 +489,7 @@
           </div>
 
           <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1 flex-shrink-0 shadow-xs">
-            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs disabled:opacity-40" 
+            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs" 
               data-name="${item.name}">-</button>
             <span class="qty-display w-9 text-center font-semibold text-sm text-slate-900" id="qty_${item.name.replace(/\s+/g, '_')}">${currentQty}</span>
             <button type="button" class="btn-plus w-8 h-8 flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold transition shadow-xs" 
@@ -404,20 +499,25 @@
         container.appendChild(div);
       });
 
+      // Event Minus
       document.querySelectorAll('.btn-minus').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const name = e.currentTarget.dataset.name;
           let qty = selectedQuantities[name] || 0;
           if (qty > 0) {
             qty--;
-            selectedQuantities[name] = qty;
+            if (qty === 0) delete selectedQuantities[name];
+            else selectedQuantities[name] = qty;
+            
             const displayEl = document.getElementById(`qty_${name.replace(/\s+/g, '_')}`);
             if (displayEl) displayEl.innerText = qty;
             calculateTotal();
+            saveCartToStorage(); // 👈 บันทึกตะกร้า
           }
         });
       });
 
+      // Event Plus
       document.querySelectorAll('.btn-plus').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const name = e.currentTarget.dataset.name;
@@ -429,8 +529,9 @@
             const displayEl = document.getElementById(`qty_${name.replace(/\s+/g, '_')}`);
             if (displayEl) displayEl.innerText = qty;
             calculateTotal();
+            saveCartToStorage(); // 👈 บันทึกตะกร้า
           } else {
-            alert(`สินค้านี้สั่งได้สูงสุด ${max} ชิ้น`);
+            Swal.fire('ข้อจำกัด', `สินค้านี้สั่งได้สูงสุด ${max} ชิ้น`, 'info');
           }
         });
       });
@@ -449,6 +550,78 @@
       return total;
     }
 
+    // -------------------------------------------------------------
+    // 📸 ย่อขนาดภาพสลิปโอนเงิน (Image Compression)
+    // -------------------------------------------------------------
+    const slipFileInput = document.getElementById('slipFile');
+    const slipPreview = document.getElementById('slipPreview');
+    const slipPreviewContainer = document.getElementById('slipPreviewContainer');
+
+    slipFileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) {
+        compressedSlipBase64 = "";
+        slipPreviewContainer.classList.add('hidden');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 900; // ความละเอียดไม่เกิน 900px ป้องกันไฟล์ใหญ่เกินไป
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // แปลงเป็น Base64 แบบ JPEG ความชัด 70%
+          compressedSlipBase64 = canvas.toDataURL('image/jpeg', 0.7);
+          slipPreview.src = compressedSlipBase64;
+          slipPreviewContainer.classList.remove('hidden');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // -------------------------------------------------------------
+    // 🗺️ ตรวจสอบจุดรับสินค้าตามเลขโต๊ะ
+    // -------------------------------------------------------------
+    const tableInput = document.getElementById('tableNumber');
+    const pickupAlert = document.getElementById('pickupAlert');
+
+    function checkPickupPoint(table) {
+      if (table >= 1 && table <= 350) {
+        pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200';
+        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 1 (สำหรับโต๊ะ 1 - 350)';
+      } else if (table >= 351 && table <= 700) {
+        pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-purple-50 text-purple-800 border border-purple-200';
+        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 2 (สำหรับโต๊ะ 351 - 700)';
+      } else {
+        pickupAlert.className = 'hidden';
+      }
+    }
+
+    tableInput.addEventListener('input', () => {
+      checkPickupPoint(parseInt(tableInput.value));
+    });
+
+    // Modal QR Code
     const qrTrigger = document.getElementById('qrTrigger');
     const qrModal = document.getElementById('qrModal');
     const closeQrModal = document.getElementById('closeQrModal');
@@ -462,32 +635,15 @@
       qrModal.addEventListener('click', hideModal);
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      initLiff();
-      loadProducts();
-    });
-
-    const tableInput = document.getElementById('tableNumber');
-    const pickupAlert = document.getElementById('pickupAlert');
-
-    tableInput.addEventListener('input', () => {
-      const table = parseInt(tableInput.value);
-      if (table >= 1 && table <= 350) {
-        pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200';
-        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 1 (สำหรับโต๊ะ 1 - 350)';
-      } else if (table >= 351 && table <= 700) {
-        pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-purple-50 text-purple-800 border border-purple-200';
-        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 2 (สำหรับโต๊ะ 351 - 700)';
-      } else {
-        pickupAlert.className = 'hidden';
-      }
-    });
-
+    // -------------------------------------------------------------
+    // 🚀 ยืนยันและส่งคำสั่งซื้อเข้า n8n
+    // -------------------------------------------------------------
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
       const total = calculateTotal();
       if (total === 0) {
-        alert('กรุณาเลือกสินค้าอย่างน้อย 1 รายการ');
+        Swal.fire('ข้อผิดพลาด', 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนทำการสั่งซื้อค่ะ', 'warning');
         return;
       }
 
@@ -509,6 +665,7 @@
         total_amount: total,
         payment_date: document.getElementById('payDate').value || '',
         payment_time: document.getElementById('payTime').value || '',
+        slip_image_url: compressedSlipBase64 || '', // 👈 ส่งรูปสลิป
         line_user_id: lineUserId || document.getElementById('lineUserId').value || ''
       };
 
@@ -517,8 +674,6 @@
       submitBtn.innerText = 'กำลังส่งข้อมูล...';
 
       try {
-        const N8N_WEBHOOK_URL = 'https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-preoder';
-
         const response = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -528,21 +683,43 @@
         const result = await response.json();
 
         if (response.ok && result.success) {
-          alert(result.message || 'บันทึกการสั่งจองสำเร็จเรียบร้อยแล้ว!');
+          // จำข้อมูลผู้ใช้ไว้ใช้รอบถัดไป
+          saveUserInfo();
+          
+          // ล้างตะกร้าเมื่อสำเร็จ
+          clearCartStorage();
           document.getElementById('preorderForm').reset();
-          selectedQuantities = {};
-          calculateTotal();
+          compressedSlipBase64 = "";
+          slipPreviewContainer.classList.add('hidden');
           pickupAlert.className = 'hidden';
-          renderProducts();
+
+          await Swal.fire({
+            title: 'สั่งจองสำเร็จ!',
+            text: result.message || 'บันทึกการสั่งจองสำเร็จเรียบร้อยแล้วค่ะ ใบยืนยันถูกส่งเข้าแชท LINE ของคุณแล้ว',
+            icon: 'success',
+            confirmButtonText: 'ปิดหน้าต่าง'
+          });
+
+          if (liff.isInClient()) {
+            liff.closeWindow();
+          }
+
         } else {
-          alert('แจ้งเตือน: ' + (result.message || 'เกิดข้อผิดพลาดในการสั่งจอง'));
+          Swal.fire('แจ้งเตือน', result.message || 'ไม่สามารถสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง', 'error');
         }
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง');
+        Swal.fire('การเชื่อมต่อล้มเหลว', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง', 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = 'ยืนยันการสั่งจอง';
       }
+    });
+
+    // เริ่มต้นระบบเมื่อเปิดหน้าเว็บ
+    window.addEventListener('DOMContentLoaded', () => {
+      initLiff();
+      loadProducts();
+      loadUserInfo(); // คืนค่าข้อมูลพนักงานที่เคยพิมพ์ไว้
     });
   </script>
 </body>
