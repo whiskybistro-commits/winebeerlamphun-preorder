@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -154,7 +154,7 @@
           </div>
 
           <div class="bg-amber-50 rounded-xl p-3 text-xs text-amber-800 border border-amber-200">
-            💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"Cancel Requested"</b> เจ้าหน้าที่จะตรวจสอบยอดและโอนเงินคืนตามลำดับค่ะ
+            💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"ส่งคำขอยกเลิก/รอเงินคืน"</b> เจ้าหน้าที่จะตรวจสอบยอดและโอนเงินคืนตามลำดับค่ะ
           </div>
 
           <button type="submit" id="submitBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-98 text-white font-medium py-3 rounded-xl shadow-md transition duration-150">
@@ -258,9 +258,9 @@
             document.getElementById('accountName').value = data.Full_Name;
           }
 
-          if (data.Payment_Status === 'Cancel Requested') {
+          if (data.Payment_Status === 'ส่งคำขอยกเลิก/รอเงินคืน') {
             lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
-          } else if (data.Payment_Status === 'รับเงินคืนแล้ว refunded') {
+          } else if (data.Payment_Status === 'โอนเงินคืนสำเร็จ' || data.Payment_Status === 'รับเงินคืนแล้ว refunded') {
             lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800 border border-emerald-200');
           }
 
