@@ -260,7 +260,7 @@
 
           if (data.Payment_Status === 'ส่งคำขอยกเลิก/รอเงินคืน') {
             lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
-          } else if (data.Payment_Status === 'โอนเงินคืนสำเร็จ' || data.Payment_Status === 'รับเงินคืนแล้ว refunded') {
+          } else if (data.Payment_Status === 'โอนเงินคืนสำเร็จ') {
             lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800 border border-emerald-200');
           }
 
