@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- LINE LIFF SDK -->
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <!-- SweetAlert2 (แจ้งเตือนสวยๆ) -->
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <style>
@@ -40,7 +40,7 @@
       <p class="text-xs mt-1 text-red-600">สิ้นสุดสิทธิ์การยกเลิกเมื่อวันที่ 19 ธ.ค. 2569 เวลา 23:59 น. (7 วันก่อนเริ่มงาน)</p>
     </div>
 
-    <!-- ฟอร์มยกเลิก (จะซ่อนหากเลยเวลา) -->
+    <!-- ฟอร์มยกเลิก -->
     <form id="cancelForm" class="space-y-4">
       
       <!-- แสดงเลขออเดอร์ -->
@@ -82,22 +82,15 @@
                class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
       </div>
 
-      <!-- เหตุผลในการยกเลิก -->
-      <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">เหตุผลในการยกเลิก (ระบุหรือไม่ก็ได้)</label>
-        <textarea id="reason" rows="2" placeholder="เช่น ติดภารกิจด่วน, สั่งสินค้าผิด" 
-                  class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none"></textarea>
-      </div>
-
       <!-- คำเตือนเงื่อนไข -->
       <div class="bg-amber-50 rounded-xl p-3 text-xs text-amber-800">
-        💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"Cancel Requested"</b> และเจ้าหน้าที่จะดำเนินการโอนเงินคืนตามลำดับคิว
+        💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"Cancel Requested"</b> และเจ้าหน้าที่จะดำเนินการตรวจสอบยอดและโอนเงินคืนตามลำดับค่ะ
       </div>
 
       <!-- ปุ่มกดยืนยัน -->
       <div class="pt-2">
         <button type="submit" id="submitBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-xl shadow-md transition duration-200">
-          ยืนยันการขอยกเลิกและคืนเงิน
+          ยืนยันการขอยกเลิกและขอคืนเงิน
         </button>
       </div>
 
@@ -111,11 +104,11 @@
   </div>
 
   <script>
-    // ⚙️ 1. ตั้งค่าพื้นฐาน (นำ LIFF ID และ URL Webhook n8n มาใส่ที่นี่)
-    const MY_LIFF_ID = "2011938038-nrIfXhxA"; 
-    const N8N_CANCEL_WEBHOOK_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-cancelpo";
+    // ⚙️ 1. ตั้งค่าพื้นฐาน (นำ LIFF ID และ Webhook n8n มาใส่ที่นี่)
+    const MY_LIFF_ID = "ใส่_LIFF_ID_CANCEL_ของคุณที่นี่"; 
+    const N8N_CANCEL_WEBHOOK_URL = "https://<YOUR-N8N-DOMAIN>/webhook/mtl2026-cancel-order";
 
-    // กำหนดวันสิ้นสุด: 19 ธ.ค. 2569 เวลา 23:59:59 น.
+    // วันสิ้นสุด: 19 ธ.ค. 2569 เวลา 23:59:59 น.
     const DEADLINE = new Date("2026-12-19T23:59:59+07:00");
 
     let currentUserId = "";
@@ -129,7 +122,7 @@
           currentUserId = profile.userId;
         }
 
-        // 2. ดึง order_id จาก URL (?order_id=MTL-xxxxx)
+        // 2. ดึง order_id จาก URL
         const urlParams = new URLSearchParams(window.location.search);
         const orderId = urlParams.get('order_id');
 
@@ -140,7 +133,7 @@
           document.getElementById('displayOrderId').innerText = "ไม่พบเลขออเดอร์";
         }
 
-        // 3. ตรวจสอบเงื่อนไขเวลา
+        // 3. ตรวจสอบเวลา
         checkDeadline();
 
       } catch (err) {
@@ -151,14 +144,13 @@
     function checkDeadline() {
       const now = new Date();
       if (now > DEADLINE) {
-        // หากเลยเวลา ให้ซ่อนฟอร์มและเปิดกล่องแจ้งเตือน
         document.getElementById('cancelForm').classList.add('hidden');
         document.getElementById('expiredAlert').classList.remove('hidden');
         document.getElementById('closeBtn').classList.remove('hidden');
       }
     }
 
-    // 4. ฟังก์ชันส่งข้อมูลเข้า n8n
+    // 4. ส่งข้อมูลเข้า n8n
     document.getElementById('cancelForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -178,8 +170,7 @@
         bank_name: document.getElementById('bankName').value,
         account_no: document.getElementById('accountNo').value,
         account_name: document.getElementById('accountName').value,
-        reason: document.getElementById('reason').value,
-        timestamp: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })
+        timestamp: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ')
       };
 
       try {
@@ -192,7 +183,7 @@
         if (response.ok) {
           await Swal.fire({
             title: 'ส่งคำขอสำเร็จ!',
-            text: 'ระบบได้บันทึกคำขอยกเลิกและข้อมูลบัญชีของคุณแล้ว เจ้าหน้าที่จะดำเนินการตรวจสอบและโอนเงินคืนให้ค่ะ',
+            text: 'ระบบได้บันทึกข้อมูลบัญชีของคุณแล้ว เจ้าหน้าที่จะดำเนินการโอนเงินคืนให้ตามลำดับค่ะ',
             icon: 'success',
             confirmButtonText: 'ปิดหน้าต่าง'
           });
@@ -205,11 +196,10 @@
       } catch (err) {
         Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถส่งคำขอได้ กรุณาลองใหม่อีกครั้ง', 'error');
         submitBtn.disabled = false;
-        submitBtn.innerText = "ยืนยันการขอยกเลิกและคืนเงิน";
+        submitBtn.innerText = "ยืนยันการขอยกเลิกและขอคืนเงิน";
       }
     });
 
-    // เริ่มต้นระบบเมื่อหน้าเว็บโหลด
     window.onload = initLiff;
   </script>
 </body>
