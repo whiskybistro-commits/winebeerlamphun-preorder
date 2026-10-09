@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ขอยกเลิกออเดอร์ MTL PARTY 2026</title>
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- LINE LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!-- SweetAlert2 (แจ้งเตือนสวยๆ) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 flex flex-col justify-center items-center">
+
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-lg p-6">
+    
+    <!-- ส่วนหัว Header -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-red-100 text-red-600 rounded-full mb-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </div>
+      <h1 class="text-xl font-semibold text-gray-800">แบบฟอร์มขอยกเลิกออเดอร์</h1>
+      <p class="text-sm text-gray-500 mt-1">MTL PARTY 2026</p>
+    </div>
+
+    <!-- กล่องแจ้งเตือน: หมดเขตยกเลิก (จะแสดงเมื่อเลยเวลา) -->
+    <div id="expiredAlert" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-4 rounded-xl text-center mb-4">
+      <p class="font-medium">⚠️ หมดเขตการขอยกเลิกแล้ว</p>
+      <p class="text-xs mt-1 text-red-600">สิ้นสุดสิทธิ์การยกเลิกเมื่อวันที่ 19 ธ.ค. 2569 เวลา 23:59 น. (7 วันก่อนเริ่มงาน)</p>
+    </div>
+
+    <!-- ฟอร์มยกเลิก (จะซ่อนหากเลยเวลา) -->
+    <form id="cancelForm" class="space-y-4">
+      
+      <!-- แสดงเลขออเดอร์ -->
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">เลขออเดอร์ที่ต้องการยกเลิก</label>
+        <div class="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
+          <span class="text-red-600 font-semibold tracking-wider text-base" id="displayOrderId">กำลังโหลด...</span>
+          <input type="hidden" id="inputOrderId" name="order_id">
+        </div>
+      </div>
+
+      <!-- เลือกธนาคาร -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">ธนาคารสำหรับรับเงินคืน <span class="text-red-500">*</span></label>
+        <select id="bankName" required class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
+          <option value="">-- เลือกธนาคาร --</option>
+          <option value="กสิกรไทย (KBANK)">กสิกรไทย (KBANK)</option>
+          <option value="ไทยพาณิชย์ (SCB)">ไทยพาณิชย์ (SCB)</option>
+          <option value="กรุงไทย (KTB)">กรุงไทย (KTB)</option>
+          <option value="กรุงเทพ (BBL)">กรุงเทพ (BBL)</option>
+          <option value="กรุงศรีอยุธยา (BAY)">กรุงศรีอยุธยา (BAY)</option>
+          <option value="ทหารไทยธนชาต (TTB)">ทหารไทยธนชาต (TTB)</option>
+          <option value="ออมสิน (GSB)">ออมสิน (GSB)</option>
+          <option value="พร้อมเพย์ (PromptPay)">พร้อมเพย์ (PromptPay)</option>
+        </select>
+      </div>
+
+      <!-- เลขที่บัญชี -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">เลขที่บัญชี / เบอร์พร้อมเพย์ <span class="text-red-500">*</span></label>
+        <input type="tel" id="accountNo" required placeholder="ระบุเฉพาะตัวเลข" 
+               class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
+      </div>
+
+      <!-- ชื่อบัญชี -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">ชื่อเจ้าของบัญชี <span class="text-red-500">*</span></label>
+        <input type="text" id="accountName" required placeholder="ชื่อ - นามสกุล ตรงตามบัญชี" 
+               class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
+      </div>
+
+      <!-- เหตุผลในการยกเลิก -->
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">เหตุผลในการยกเลิก (ระบุหรือไม่ก็ได้)</label>
+        <textarea id="reason" rows="2" placeholder="เช่น ติดภารกิจด่วน, สั่งสินค้าผิด" 
+                  class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none"></textarea>
+      </div>
+
+      <!-- คำเตือนเงื่อนไข -->
+      <div class="bg-amber-50 rounded-xl p-3 text-xs text-amber-800">
+        💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"Cancel Requested"</b> และเจ้าหน้าที่จะดำเนินการโอนเงินคืนตามลำดับคิว
+      </div>
+
+      <!-- ปุ่มกดยืนยัน -->
+      <div class="pt-2">
+        <button type="submit" id="submitBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-xl shadow-md transition duration-200">
+          ยืนยันการขอยกเลิกและคืนเงิน
+        </button>
+      </div>
+
+    </form>
+
+    <!-- ปุ่มปิดหน้าต่างกรณีหมดเวลา -->
+    <button id="closeBtn" onclick="liff.closeWindow()" class="hidden w-full mt-4 bg-gray-200 text-gray-700 font-medium py-2.5 rounded-xl">
+      ปิดหน้านี้
+    </button>
+
+  </div>
+
+  <script>
+    // ⚙️ 1. ตั้งค่าพื้นฐาน (นำ LIFF ID และ URL Webhook n8n มาใส่ที่นี่)
+    const MY_LIFF_ID = "ใส่_LIFF_ID_CANCEL_ของคุณที่นี่"; 
+    const N8N_CANCEL_WEBHOOK_URL = "https://<YOUR-N8N-DOMAIN>/webhook/mtl2026-cancel-order";
+
+    // กำหนดวันสิ้นสุด: 19 ธ.ค. 2569 เวลา 23:59:59 น.
+    const DEADLINE = new Date("2026-12-19T23:59:59+07:00");
+
+    let currentUserId = "";
+
+    async function initLiff() {
+      try {
+        await liff.init({ liffId: MY_LIFF_ID });
+        
+        if (liff.isLoggedIn()) {
+          const profile = await liff.getProfile();
+          currentUserId = profile.userId;
+        }
+
+        // 2. ดึง order_id จาก URL (?order_id=MTL-xxxxx)
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id');
+
+        if (orderId) {
+          document.getElementById('displayOrderId').innerText = orderId;
+          document.getElementById('inputOrderId').value = orderId;
+        } else {
+          document.getElementById('displayOrderId').innerText = "ไม่พบเลขออเดอร์";
+        }
+
+        // 3. ตรวจสอบเงื่อนไขเวลา
+        checkDeadline();
+
+      } catch (err) {
+        console.error("LIFF Init Error:", err);
+      }
+    }
+
+    function checkDeadline() {
+      const now = new Date();
+      if (now > DEADLINE) {
+        // หากเลยเวลา ให้ซ่อนฟอร์มและเปิดกล่องแจ้งเตือน
+        document.getElementById('cancelForm').classList.add('hidden');
+        document.getElementById('expiredAlert').classList.remove('hidden');
+        document.getElementById('closeBtn').classList.remove('hidden');
+      }
+    }
+
+    // 4. ฟังก์ชันส่งข้อมูลเข้า n8n
+    document.getElementById('cancelForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const orderId = document.getElementById('inputOrderId').value;
+      if (!orderId) {
+        Swal.fire('ข้อผิดพลาด', 'ไม่พบเลขออเดอร์ ไม่สามารถทำรายการได้', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "กำลังส่งข้อมูล...";
+
+      const payload = {
+        order_id: orderId,
+        line_user_id: currentUserId,
+        bank_name: document.getElementById('bankName').value,
+        account_no: document.getElementById('accountNo').value,
+        account_name: document.getElementById('accountName').value,
+        reason: document.getElementById('reason').value,
+        timestamp: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })
+      };
+
+      try {
+        const response = await fetch(N8N_CANCEL_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          await Swal.fire({
+            title: 'ส่งคำขอสำเร็จ!',
+            text: 'ระบบได้บันทึกคำขอยกเลิกและข้อมูลบัญชีของคุณแล้ว เจ้าหน้าที่จะดำเนินการตรวจสอบและโอนเงินคืนให้ค่ะ',
+            icon: 'success',
+            confirmButtonText: 'ปิดหน้าต่าง'
+          });
+          if (liff.isInClient()) {
+            liff.closeWindow();
+          }
+        } else {
+          throw new Error('Server returned error');
+        }
+      } catch (err) {
+        Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถส่งคำขอได้ กรุณาลองใหม่อีกครั้ง', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerText = "ยืนยันการขอยกเลิกและคืนเงิน";
+      }
+    });
+
+    // เริ่มต้นระบบเมื่อหน้าเว็บโหลด
+    window.onload = initLiff;
+  </script>
+</body>
+</html>
