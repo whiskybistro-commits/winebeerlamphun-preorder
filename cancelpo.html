@@ -4,10 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ขอยกเลิกออเดอร์ MTL PARTY 2026</title>
+
+  <!-- Favicon & App Icons (Cancel PO) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="./ccpo apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./ccpo favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./ccpo favicon-16x16.png">
+  <link rel="manifest" href="./site.webmanifest">
+  <meta name="theme-color" content="#991b1b">
+
   <!-- Google Fonts: Prompt -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- LINE LIFF SDK -->
@@ -17,213 +26,249 @@
   
   <style>
     body { font-family: 'Prompt', sans-serif; }
+    .footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.75rem;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+    }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 flex flex-col justify-center items-center text-slate-800">
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
-  <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-5 sm:p-6 my-4 border border-slate-200">
-    
-    <!-- 1. ส่วนหัว Header -->
-    <div class="text-center mb-5">
-      <div class="inline-flex items-center justify-center w-12 h-12 bg-red-100 text-red-600 rounded-2xl mb-2 shadow-inner">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </div>
-      <h1 class="text-xl font-bold text-slate-900">แบบฟอร์มขอยกเลิกออเดอร์</h1>
-      <p class="text-xs text-slate-500 mt-0.5">MTL PARTY 2026</p>
-    </div>
-
-    <!-- 2. กล่องแสดงสถานะ LINE Login (เหมือนหน้าหลัก) -->
-    <div id="lineProfileCard" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mb-5 flex items-center justify-between shadow-xs">
-      <div class="flex items-center gap-3">
-        <img id="userPicture" src="" alt="LINE Avatar" class="w-10 h-10 rounded-full border border-emerald-300 object-cover shadow-inner">
-        <div>
-          <p class="text-[11px] text-emerald-600 font-medium">เข้าสู่ระบบผ่าน LINE สำเร็จ</p>
-          <p id="userName" class="text-sm font-bold text-emerald-950">-</p>
+  <div>
+    <!-- Header Banner โทนสีแดงเข้ม พร้อมโลโก้ muRata -->
+    <header class="bg-gradient-to-r from-red-800 via-rose-900 to-red-950 text-white pt-7 pb-8 px-4 text-center shadow-lg border-b border-red-900/40">
+      <div class="max-w-2xl mx-auto flex flex-col items-center">
+        
+        <div class="bg-white/95 backdrop-blur-sm px-8 py-3.5 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center transition-transform hover:scale-105">
+          <img src="./murata-logo.png" alt="Murata Logo" class="h-14 sm:h-[72px] w-auto object-contain">
         </div>
+
+        <span class="bg-red-950/70 text-red-200 text-xs px-3.5 py-1 rounded-full font-medium uppercase tracking-wider border border-red-400/20">
+          งานเลี้ยงสังสรรค์พนักงาน
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-bold mt-2 tracking-tight">MTL PARTY 2026</h1>
+        <p class="text-red-100 text-xs sm:text-sm mt-1 font-light">แบบฟอร์มขอยกเลิกออเดอร์และขอคืนเงิน</p>
       </div>
-      <span class="text-xs bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-lg font-medium">เชื่อมต่อแล้ว</span>
-    </div>
+    </header>
 
-    <!-- 3. กล่องแจ้งเตือนกรณีหมดเขต 19 ธ.ค. 2569 -->
-    <div id="expiredAlert" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3.5 rounded-2xl text-center mb-4">
-      <p class="font-bold text-sm">⚠️ หมดเขตการขอยกเลิกแล้ว</p>
-      <p class="text-xs mt-1 text-red-600">สิ้นสุดสิทธิ์การขอยกเลิกเมื่อวันที่ 19 ธ.ค. 2569 เวลา 23:59 น. (7 วันก่อนเริ่มงาน)</p>
-    </div>
+    <!-- กล่องเนื้อหาหลัก (Form Card) -->
+    <main class="max-w-md mx-auto px-4 mt-6 mb-16 w-full">
+      <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-slate-200">
 
-    <!-- 4. กล่องสรุปรายละเอียดออเดอร์เดิมที่จะยกเลิก -->
-    <div id="orderDetailCard" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5 space-y-2.5">
-      <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">เลขออเดอร์</span>
-        <span class="text-sm font-bold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-lg border border-red-200" id="displayOrderId">กำลังโหลด...</span>
-      </div>
-
-      <!-- สถานะการโหลดข้อมูลออเดอร์ -->
-      <div id="orderLoading" class="text-center py-3 text-slate-400 text-xs">
-        <span class="inline-block animate-spin mr-1">⏳</span> กำลังดึงรายละเอียดออเดอร์...
-      </div>
-
-      <!-- ข้อมูลผู้สั่ง & รายการสินค้า -->
-      <div id="orderInfoContent" class="hidden space-y-2 text-xs">
-        <div class="flex justify-between text-slate-600">
-          <span>ผู้สั่งจอง:</span>
-          <span class="font-medium text-slate-900" id="displayCustomerName">-</span>
+        <!-- 1. สถานะกำลังเชื่อมต่อ LINE -->
+        <div id="lineLoadingCard" class="bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-5 flex items-center justify-center gap-2 text-xs text-slate-500">
+          <span class="inline-block animate-spin">⏳</span> กำลังเชื่อมต่อบัญชี LINE...
         </div>
-        <div class="flex justify-between text-slate-600">
-          <span>ฝ่าย/แผนก & โต๊ะ:</span>
-          <span class="font-medium text-slate-900" id="displayTableDept">-</span>
+
+        <!-- 2. สถานะ LINE Login สำเร็จ -->
+        <div id="lineProfileCard" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mb-5 flex items-center justify-between shadow-xs">
+          <div class="flex items-center gap-3">
+            <img id="userPicture" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="LINE Avatar" class="w-10 h-10 rounded-full border border-emerald-300 object-cover shadow-inner">
+            <div>
+              <p class="text-[11px] text-emerald-600 font-medium">เข้าสู่ระบบผ่าน LINE สำเร็จ</p>
+              <p id="userName" class="text-sm font-bold text-emerald-950">-</p>
+            </div>
+          </div>
+          <span class="text-xs bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-lg font-medium">เชื่อมต่อแล้ว</span>
         </div>
-        <div class="border-t border-dashed border-slate-200 pt-2">
-          <span class="text-slate-500 block mb-1 font-medium">รายการที่สั่ง:</span>
-          <p class="text-slate-700 whitespace-pre-line bg-white p-2.5 rounded-xl border border-slate-200 text-[11px] leading-relaxed" id="displayItems">-</p>
+
+        <!-- ปุ่ม Login สำรองกรณีเปิดนอก LINE App -->
+        <div id="lineLoginBtnContainer" class="hidden mb-5">
+          <button type="button" onclick="triggerLineLogin()" class="w-full bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold py-2.5 rounded-2xl shadow flex items-center justify-center gap-2 text-sm transition">
+            <span>เข้าสู่ระบบด้วย LINE</span>
+          </button>
         </div>
-        <div class="flex justify-between items-center border-t border-slate-200 pt-2 text-sm">
-          <span class="font-bold text-slate-700">ยอดเงินที่ต้องคืน:</span>
-          <span class="font-bold text-blue-700 text-base"><span id="displayAmount">0</span> บาท</span>
+
+        <!-- 3. แจ้งเตือนหมดเขต 19 ธ.ค. 2569 -->
+        <div id="expiredAlert" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3.5 rounded-2xl text-center mb-4">
+          <p class="font-bold text-sm">⚠️ หมดเขตการขอยกเลิกแล้ว</p>
+          <p class="text-xs mt-1 text-red-600">สิ้นสุดสิทธิ์การขอยกเลิกเมื่อวันที่ 19 ธ.ค. 2569 เวลา 23:59 น. (7 วันก่อนเริ่มงาน)</p>
         </div>
-        <!-- สถานะปัจจุบัน -->
-        <div id="currentStatusBadge" class="mt-2 text-center hidden"></div>
+
+        <!-- 4. กล่องสรุปรายละเอียดออเดอร์ -->
+        <div id="orderDetailCard" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5 space-y-2.5">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">เลขออเดอร์</span>
+            <span class="text-sm font-bold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-lg border border-red-200" id="displayOrderId">กำลังตรวจสอบ...</span>
+          </div>
+
+          <div id="orderLoading" class="text-center py-3 text-slate-400 text-xs">
+            <span class="inline-block animate-spin mr-1">⏳</span> กำลังดึงรายละเอียดออเดอร์...
+          </div>
+
+          <div id="orderInfoContent" class="hidden space-y-2 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>ผู้สั่งจอง:</span>
+              <span class="font-medium text-slate-900" id="displayCustomerName">-</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>ฝ่าย/แผนก & โต๊ะ:</span>
+              <span class="font-medium text-slate-900" id="displayTableDept">-</span>
+            </div>
+            <div class="border-t border-dashed border-slate-200 pt-2">
+              <span class="text-slate-500 block mb-1 font-medium">รายการสินค้าที่สั่ง:</span>
+              <p class="text-slate-700 whitespace-pre-line bg-white p-2.5 rounded-xl border border-slate-200 text-[11px] leading-relaxed" id="displayItems">-</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-slate-200 pt-2 text-sm">
+              <span class="font-bold text-slate-700">ยอดเงินที่ต้องคืน:</span>
+              <span class="font-bold text-blue-700 text-base"><span id="displayAmount">0</span> บาท</span>
+            </div>
+            <div id="currentStatusBadge" class="mt-2 text-center hidden"></div>
+          </div>
+        </div>
+
+        <!-- 5. ฟอร์มกรอกบัญชีรับเงินคืน -->
+        <form id="cancelForm" class="space-y-4">
+          <input type="hidden" id="inputOrderId" name="order_id">
+          <input type="hidden" id="lineUserId" name="line_user_id">
+
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">ธนาคารสำหรับรับเงินคืน <span class="text-red-500">*</span></label>
+            <select id="bankName" required class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
+              <option value="">-- เลือกธนาคาร --</option>
+              <option value="กสิกรไทย (KBANK)">กสิกรไทย (KBANK)</option>
+              <option value="ไทยพาณิชย์ (SCB)">ไทยพาณิชย์ (SCB)</option>
+              <option value="กรุงไทย (KTB)">กรุงไทย (KTB)</option>
+              <option value="กรุงเทพ (BBL)">กรุงเทพ (BBL)</option>
+              <option value="กรุงศรีอยุธยา (BAY)">กรุงศรีอยุธยา (BAY)</option>
+              <option value="ทหารไทยธนชาต (TTB)">ทหารไทยธนชาต (TTB)</option>
+              <option value="ออมสิน (GSB)">ออมสิน (GSB)</option>
+              <option value="พร้อมเพย์ (PromptPay)">พร้อมเพย์ (PromptPay)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">เลขที่บัญชี / เบอร์พร้อมเพย์ <span class="text-red-500">*</span></label>
+            <input type="tel" id="accountNo" required placeholder="ระบุเฉพาะตัวเลข" 
+                   class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1">ชื่อเจ้าของบัญชี <span class="text-red-500">*</span></label>
+            <input type="text" id="accountName" required placeholder="ชื่อ - นามสกุล ตรงตามบัญชี" 
+                   class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
+          </div>
+
+          <div class="bg-amber-50 rounded-xl p-3 text-xs text-amber-800 border border-amber-200">
+            💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"Cancel Requested"</b> เจ้าหน้าที่จะตรวจสอบยอดและโอนเงินคืนตามลำดับค่ะ
+          </div>
+
+          <button type="submit" id="submitBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-98 text-white font-medium py-3 rounded-xl shadow-md transition duration-150">
+            ยืนยันการขอยกเลิกและขอคืนเงิน
+          </button>
+        </form>
+
+        <button id="closeBtn" onclick="liff.closeWindow()" class="hidden w-full mt-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition">
+          ปิดหน้านี้
+        </button>
+
       </div>
-    </div>
-
-    <!-- 5. ฟอร์มกรอกบัญชีรับเงินคืน -->
-    <form id="cancelForm" class="space-y-4">
-      <input type="hidden" id="inputOrderId" name="order_id">
-
-      <!-- เลือกธนาคาร -->
-      <div>
-        <label class="block text-xs font-medium text-slate-700 mb-1">ธนาคารสำหรับรับเงินคืน <span class="text-red-500">*</span></label>
-        <select id="bankName" required class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
-          <option value="">-- เลือกธนาคาร --</option>
-          <option value="กสิกรไทย (KBANK)">กสิกรไทย (KBANK)</option>
-          <option value="ไทยพาณิชย์ (SCB)">ไทยพาณิชย์ (SCB)</option>
-          <option value="กรุงไทย (KTB)">กรุงไทย (KTB)</option>
-          <option value="กรุงเทพ (BBL)">กรุงเทพ (BBL)</option>
-          <option value="กรุงศรีอยุธยา (BAY)">กรุงศรีอยุธยา (BAY)</option>
-          <option value="ทหารไทยธนชาต (TTB)">ทหารไทยธนชาต (TTB)</option>
-          <option value="ออมสิน (GSB)">ออมสิน (GSB)</option>
-          <option value="พร้อมเพย์ (PromptPay)">พร้อมเพย์ (PromptPay)</option>
-        </select>
-      </div>
-
-      <!-- เลขที่บัญชี -->
-      <div>
-        <label class="block text-xs font-medium text-slate-700 mb-1">เลขที่บัญชี / เบอร์พร้อมเพย์ <span class="text-red-500">*</span></label>
-        <input type="tel" id="accountNo" required placeholder="ระบุเฉพาะตัวเลข" 
-               class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
-      </div>
-
-      <!-- ชื่อบัญชี -->
-      <div>
-        <label class="block text-xs font-medium text-slate-700 mb-1">ชื่อเจ้าของบัญชี <span class="text-red-500">*</span></label>
-        <input type="text" id="accountName" required placeholder="ชื่อ - นามสกุล ตรงตามบัญชี" 
-               class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
-      </div>
-
-      <div class="bg-amber-50 rounded-xl p-3 text-xs text-amber-800 border border-amber-200">
-        💡 เมื่อส่งข้อมูลแล้ว สถานะจะเปลี่ยนเป็น <b>"Cancel Requested"</b> เจ้าหน้าที่จะตรวจสอบยอดและโอนเงินคืนตามลำดับค่ะ
-      </div>
-
-      <button type="submit" id="submitBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-98 text-white font-medium py-3 rounded-xl shadow-md transition duration-150">
-        ยืนยันการขอยกเลิกและขอคืนเงิน
-      </button>
-    </form>
-
-    <button id="closeBtn" onclick="liff.closeWindow()" class="hidden w-full mt-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition">
-      ปิดหน้านี้
-    </button>
-
+    </main>
   </div>
 
+  <!-- Footer -->
+  <footer class="footer">
+    © 2026 WINE BEER WHISKY LAMPHUN CO., LTD. All rights reserved.
+  </footer>
+
   <script>
-    // ⚙️ 1. ตั้งค่าพื้นฐาน (ใช้ LIFF ID หน้าแคนเซิลของคุณ)
     const MY_LIFF_ID = "ใส่_LIFF_ID_CANCEL_ของคุณที่นี่"; 
     const N8N_CANCEL_WEBHOOK_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-cancelpo";
     const N8N_GET_ORDER_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-searchpo";
 
-    // วันหมดเขต: 19 ธ.ค. 2569 เวลา 23:59:59 น.
     const DEADLINE = new Date("2026-12-19T23:59:59+07:00");
 
     let currentUserId = "";
     let targetOrderId = "";
 
+    function triggerLineLogin() {
+      liff.login({ redirectUri: window.location.href });
+    }
+
     async function initLiff() {
+      const loadingCard = document.getElementById('lineLoadingCard');
+      const profileCard = document.getElementById('lineProfileCard');
+      const loginBtnContainer = document.getElementById('lineLoginBtnContainer');
+
       try {
-        await liff.init({ liffId: MY_LIFF_ID, withLoginOnExternalBrowser: false });
+        await liff.init({ liffId: MY_LIFF_ID, withLoginOnExternalBrowser: true });
         
         if (!liff.isLoggedIn()) {
-          liff.login();
+          loadingCard.classList.add('hidden');
+          loginBtnContainer.classList.remove('hidden');
+          liff.login({ redirectUri: window.location.href });
           return;
         }
 
-        // ดึงโปรไฟล์ LINE มาแสดง
         const profile = await liff.getProfile();
         currentUserId = profile.userId;
+        document.getElementById('lineUserId').value = profile.userId;
 
-        const profileCard = document.getElementById('lineProfileCard');
-        if (profileCard) {
-          profileCard.classList.remove('hidden');
-          document.getElementById('userName').innerText = profile.displayName || 'LINE User';
-          if (profile.pictureUrl) {
-            document.getElementById('userPicture').src = profile.pictureUrl;
-          }
+        loadingCard.classList.add('hidden');
+        loginBtnContainer.classList.add('hidden');
+        profileCard.classList.remove('hidden');
+
+        document.getElementById('userName').innerText = profile.displayName || 'LINE User';
+        if (profile.pictureUrl) {
+          document.getElementById('userPicture').src = profile.pictureUrl;
         }
 
-        // ดึง order_id จาก URL (?order_id=MTL-xxxxx)
         const urlParams = new URLSearchParams(window.location.search);
         targetOrderId = urlParams.get('order_id');
 
-        if (targetOrderId) {
-          document.getElementById('displayOrderId').innerText = targetOrderId;
-          document.getElementById('inputOrderId').value = targetOrderId;
-          
-          // โหลดข้อมูลออเดอร์มาแสดง
-          await loadOrderDetails(targetOrderId);
-        } else {
-          document.getElementById('displayOrderId').innerText = "ไม่พบเลขออเดอร์";
-          document.getElementById('orderLoading').innerText = "⚠️ กรุณาเปิดลิงก์ผ่านปุ่มใน LINE E-Ticket เท่านั้น";
-        }
-
+        await loadOrderDetails(targetOrderId, currentUserId);
         checkDeadline();
 
       } catch (err) {
         console.error("LIFF Init Error:", err);
+        loadingCard.innerText = "⚠️ ไม่สามารถเชื่อมต่อ LINE LIFF ได้";
       }
     }
 
-    // 📥 ดึงข้อมูลออเดอร์จาก n8n มาแสดงให้ผู้ใช้ตรวจทาน
-    async function loadOrderDetails(orderId) {
+    async function loadOrderDetails(orderId, userId) {
       const loadingEl = document.getElementById('orderLoading');
       const contentEl = document.getElementById('orderInfoContent');
 
       try {
-        const res = await fetch(`${N8N_GET_ORDER_URL}?order_id=${encodeURIComponent(orderId)}`);
+        const query = new URLSearchParams();
+        if (orderId) query.append('order_id', orderId);
+        if (userId) query.append('line_user_id', userId);
+
+        const res = await fetch(`${N8N_GET_ORDER_URL}?${query.toString()}`);
         const data = await res.json();
 
         if (res.ok && data && data.Order_ID) {
+          targetOrderId = data.Order_ID;
+          document.getElementById('displayOrderId').innerText = data.Order_ID;
+          document.getElementById('inputOrderId').value = data.Order_ID;
+
           loadingEl.classList.add('hidden');
           contentEl.classList.remove('hidden');
 
-          document.getElementById('displayCustomerName').innerText = `${data.Full_Name} (${data.Employee_ID || '-'})`;
+          document.getElementById('displayCustomerName').innerText = `${data.Full_Name || '-'} (${data.Employee_ID || '-'})`;
           document.getElementById('displayTableDept').innerText = `${data.Department || '-'} | โต๊ะ ${data.Table_Number || '-'}`;
           document.getElementById('displayItems').innerText = data.Order_Items || '-';
           document.getElementById('displayAmount').innerText = Number(data.Total_Amount || 0).toLocaleString();
 
-          // เติมชื่อเจ้าของบัญชีอัตโนมัติจากชื่อผู้สั่งเพื่อความสะดวก
           if (data.Full_Name && !document.getElementById('accountName').value) {
             document.getElementById('accountName').value = data.Full_Name;
           }
 
-          // ตรวจสอบว่าออเดอร์นี้ถูกยกเลิกไปแล้วหรือยัง
           if (data.Payment_Status === 'Cancel Requested') {
-            lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800');
+            lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
           } else if (data.Payment_Status === 'รับเงินคืนแล้ว refunded') {
-            lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800');
+            lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800 border border-emerald-200');
           }
 
         } else {
-          loadingEl.innerText = "ไม่พบข้อมูลออเดอร์นี้ในระบบ";
+          document.getElementById('displayOrderId').innerText = orderId || "ไม่พบออเดอร์";
+          loadingEl.innerText = "ไม่พบรายการสั่งซื้อที่สามารถยกเลิกได้ในระบบ";
+          document.getElementById('submitBtn').disabled = true;
+          document.getElementById('submitBtn').classList.add('opacity-50', 'cursor-not-allowed');
         }
       } catch (err) {
         loadingEl.innerText = "ไม่สามารถเชื่อมต่อเพื่อดึงข้อมูลออเดอร์ได้";
@@ -233,7 +278,7 @@
     function lockForm(msg, cssClass) {
       document.getElementById('cancelForm').classList.add('hidden');
       const badge = document.getElementById('currentStatusBadge');
-      badge.className = `p-2.5 rounded-xl text-xs font-semibold ${cssClass}`;
+      badge.className = `p-3 rounded-xl text-xs font-semibold ${cssClass}`;
       badge.innerText = msg;
       badge.classList.remove('hidden');
       document.getElementById('closeBtn').classList.remove('hidden');
@@ -248,7 +293,6 @@
       }
     }
 
-    // 🚀 ยืนยันการส่งขอยกเลิก
     document.getElementById('cancelForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -257,14 +301,13 @@
         return;
       }
 
-      // ถามยืนยันอีกครั้งก่อนส่ง
       const confirmResult = await Swal.fire({
         title: 'ยืนยันการยกเลิก?',
-        text: `คุณต้องการยกเลิกออเดอร์ ${targetOrderId} และขอคืนเงินใช่หรือไม่?`,
+        text: `คุณต้องการยกเลิกออเดอร์ ${targetOrderId} และขอรับเงินคืนใช่หรือไม่?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6b7280',
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
         confirmButtonText: 'ยืนยันยกเลิก',
         cancelButtonText: 'ย้อนกลับ'
       });
@@ -277,7 +320,7 @@
 
       const payload = {
         order_id: targetOrderId,
-        line_user_id: currentUserId,
+        line_user_id: currentUserId || document.getElementById('lineUserId').value,
         bank_name: document.getElementById('bankName').value,
         account_no: document.getElementById('accountNo').value.trim(),
         account_name: document.getElementById('accountName').value.trim(),
@@ -303,6 +346,8 @@
 
           if (liff.isInClient()) {
             liff.closeWindow();
+          } else {
+            window.location.reload();
           }
         } else {
           throw new Error(result.message || 'Server error');
@@ -314,7 +359,7 @@
       }
     });
 
-    window.onload = initLiff;
+    window.addEventListener('DOMContentLoaded', initLiff);
   </script>
 </body>
 </html>
