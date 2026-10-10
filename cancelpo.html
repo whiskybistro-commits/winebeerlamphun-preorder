@@ -251,8 +251,8 @@
 
           loadingEl.classList.add('hidden');
 
-          // ตรวจสอบสถานะการโอนเงินคืนสำเร็จ
-          if (data.Payment_Status === 'โอนเงินคืนสำเร็จ') {
+          // ตรวจสอบสถานะการโอนเงินคืนสำเร็จ/ยกเลิกแล้ว
+          if (data.Payment_Status === 'โอนเงินคืนสำเร็จ/ยกเลิกแล้ว') {
             // ไม่แสดง orderInfoContent
             contentEl.classList.add('hidden');
             lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800 border border-emerald-200');
