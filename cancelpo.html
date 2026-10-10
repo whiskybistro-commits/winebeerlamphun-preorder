@@ -120,7 +120,7 @@
             </div>
           </div>
 
-          <!-- ป้ายแสดงสถานะ (ย้ายออกมาด้านนอกเพื่อให้แสดงได้แม้ orderInfoContent ถูกซ่อน) -->
+          <!-- ป้ายแสดงสถานะ -->
           <div id="currentStatusBadge" class="mt-2 text-center hidden"></div>
         </div>
 
@@ -235,6 +235,8 @@
     async function loadOrderDetails(orderId, userId) {
       const loadingEl = document.getElementById('orderLoading');
       const contentEl = document.getElementById('orderInfoContent');
+      const cancelForm = document.getElementById('cancelForm');
+      const closeBtn = document.getElementById('closeBtn');
 
       try {
         const query = new URLSearchParams();
@@ -245,33 +247,42 @@
         const data = await res.json();
 
         if (res.ok && data && data.Order_ID) {
+          // 🚫 1. กรณีสถานะคือ "โอนเงินคืนสำเร็จ/ยกเลิกแล้ว" -> บล็อคไม่แสดงข้อมูลเด็ดขาด
+          if (data.Payment_Status === 'โอนเงินคืนสำเร็จ/ยกเลิกแล้ว') {
+            document.getElementById('displayOrderId').innerText = data.Order_ID;
+            contentEl.classList.add('hidden');
+            cancelForm.classList.add('hidden');
+
+            loadingEl.className = "text-center py-4 bg-red-50 text-red-700 rounded-2xl border border-red-200 mt-2 px-3";
+            loadingEl.innerHTML = `
+              <p class="font-bold text-sm mb-1">❌ ไม่สามารถทำรายการได้</p>
+              <p class="text-xs text-red-600">ออเดอร์นี้ได้ทำการโอนเงินคืนสำเร็จและปิดรายการเรียบร้อยแล้วค่ะ</p>
+            `;
+            loadingEl.classList.remove('hidden');
+            closeBtn.classList.remove('hidden');
+            return;
+          }
+
+          // ✅ 2. กรณีออเดอร์ยังไม่ถูกยกเลิก แสดงข้อมูลตามปกติ
           targetOrderId = data.Order_ID;
           document.getElementById('displayOrderId').innerText = data.Order_ID;
           document.getElementById('inputOrderId').value = data.Order_ID;
 
           loadingEl.classList.add('hidden');
+          contentEl.classList.remove('hidden');
 
-          // ตรวจสอบสถานะการโอนเงินคืนสำเร็จ/ยกเลิกแล้ว
-          if (data.Payment_Status === 'โอนเงินคืนสำเร็จ/ยกเลิกแล้ว') {
-            // ไม่แสดง orderInfoContent
-            contentEl.classList.add('hidden');
-            lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800 border border-emerald-200');
-          } else {
-            // กรณีสถานะอื่นๆ ให้แสดง orderInfoContent ตามปกติ
-            contentEl.classList.remove('hidden');
+          document.getElementById('displayCustomerName').innerText = `${data.Full_Name || '-'} (${data.Employee_ID || '-'})`;
+          document.getElementById('displayTableDept').innerText = `${data.Department || '-'} | โต๊ะ ${data.Table_Number || '-'}`;
+          document.getElementById('displayItems').innerText = data.Order_Items || '-';
+          document.getElementById('displayAmount').innerText = Number(data.Total_Amount || 0).toLocaleString();
 
-            document.getElementById('displayCustomerName').innerText = `${data.Full_Name || '-'} (${data.Employee_ID || '-'})`;
-            document.getElementById('displayTableDept').innerText = `${data.Department || '-'} | โต๊ะ ${data.Table_Number || '-'}`;
-            document.getElementById('displayItems').innerText = data.Order_Items || '-';
-            document.getElementById('displayAmount').innerText = Number(data.Total_Amount || 0).toLocaleString();
+          if (data.Full_Name && !document.getElementById('accountName').value) {
+            document.getElementById('accountName').value = data.Full_Name;
+          }
 
-            if (data.Full_Name && !document.getElementById('accountName').value) {
-              document.getElementById('accountName').value = data.Full_Name;
-            }
-
-            if (data.Payment_Status === 'ส่งคำขอยกเลิก/รอเงินคืน') {
-              lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
-            }
+          // กรณีเคยส่งคำขอยกเลิกไปแล้ว และกำลังรอแอดมินโอนเงิน
+          if (data.Payment_Status === 'ส่งคำขอยกเลิก/รอเงินคืน') {
+            lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
           }
 
         } else {
