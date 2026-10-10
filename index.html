@@ -102,7 +102,7 @@
             </div>
           </div>
 
-          <!-- แสดงจุดรับของอัตโนมัติ -->
+          <!-- แสดงของอัตโนมัติ -->
           <div id="pickupAlert" class="hidden mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2"></div>
           <input type="hidden" id="lineUserId" value="">
         </section>
@@ -611,10 +611,10 @@
     function checkPickupPoint(table) {
       if (table >= 1 && table <= 350) {
         pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200';
-        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 1 (สำหรับโต๊ะ 1 - 350)';
+        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดที่ 1 (สำหรับโต๊ะ 1 - 350)';
       } else if (table >= 351 && table <= 700) {
         pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-purple-50 text-purple-800 border border-purple-200';
-        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดรับ 2 (สำหรับโต๊ะ 351 - 700)';
+        pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดที่ 2 (สำหรับโต๊ะ 351 - 700)';
       } else {
         pickupAlert.className = 'hidden';
       }
