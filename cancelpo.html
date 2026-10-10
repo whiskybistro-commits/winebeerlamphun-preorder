@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -100,6 +100,7 @@
             <span class="inline-block animate-spin mr-1">⏳</span> กำลังดึงรายละเอียดออเดอร์...
           </div>
 
+          <!-- กล่องรายละเอียดออเดอร์ (จะถูกซ่อนถ้าคืนเงินสำเร็จ) -->
           <div id="orderInfoContent" class="hidden space-y-2 text-xs">
             <div class="flex justify-between text-slate-600">
               <span>ผู้สั่งจอง:</span>
@@ -117,8 +118,10 @@
               <span class="font-bold text-slate-700">ยอดเงินที่ต้องคืน:</span>
               <span class="font-bold text-blue-700 text-base"><span id="displayAmount">0</span> บาท</span>
             </div>
-            <div id="currentStatusBadge" class="mt-2 text-center hidden"></div>
           </div>
+
+          <!-- ป้ายแสดงสถานะ (ย้ายออกมาด้านนอกเพื่อให้แสดงได้แม้ orderInfoContent ถูกซ่อน) -->
+          <div id="currentStatusBadge" class="mt-2 text-center hidden"></div>
         </div>
 
         <!-- 5. ฟอร์มกรอกบัญชีรับเงินคืน -->
@@ -162,7 +165,7 @@
           </button>
         </form>
 
-        <button id="closeBtn" onclick=".closeWindow()" class="hidden w-full mt-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition">
+        <button id="closeBtn" onclick="liff.closeWindow()" class="hidden w-full mt-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition">
           ปิดหน้านี้
         </button>
 
@@ -247,21 +250,28 @@
           document.getElementById('inputOrderId').value = data.Order_ID;
 
           loadingEl.classList.add('hidden');
-          contentEl.classList.remove('hidden');
 
-          document.getElementById('displayCustomerName').innerText = `${data.Full_Name || '-'} (${data.Employee_ID || '-'})`;
-          document.getElementById('displayTableDept').innerText = `${data.Department || '-'} | โต๊ะ ${data.Table_Number || '-'}`;
-          document.getElementById('displayItems').innerText = data.Order_Items || '-';
-          document.getElementById('displayAmount').innerText = Number(data.Total_Amount || 0).toLocaleString();
-
-          if (data.Full_Name && !document.getElementById('accountName').value) {
-            document.getElementById('accountName').value = data.Full_Name;
-          }
-
-          if (data.Payment_Status === 'ส่งคำขอยกเลิก/รอเงินคืน') {
-            lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
-          } else if (data.Payment_Status === 'โอนเงินคืนสำเร็จ') {
+          // ตรวจสอบสถานะการโอนเงินคืนสำเร็จ
+          if (data.Payment_Status === 'โอนเงินคืนสำเร็จ') {
+            // ไม่แสดง orderInfoContent
+            contentEl.classList.add('hidden');
             lockForm('✅ ออเดอร์นี้ได้รับการโอนเงินคืนเรียบร้อยแล้วค่ะ', 'bg-emerald-100 text-emerald-800 border border-emerald-200');
+          } else {
+            // กรณีสถานะอื่นๆ ให้แสดง orderInfoContent ตามปกติ
+            contentEl.classList.remove('hidden');
+
+            document.getElementById('displayCustomerName').innerText = `${data.Full_Name || '-'} (${data.Employee_ID || '-'})`;
+            document.getElementById('displayTableDept').innerText = `${data.Department || '-'} | โต๊ะ ${data.Table_Number || '-'}`;
+            document.getElementById('displayItems').innerText = data.Order_Items || '-';
+            document.getElementById('displayAmount').innerText = Number(data.Total_Amount || 0).toLocaleString();
+
+            if (data.Full_Name && !document.getElementById('accountName').value) {
+              document.getElementById('accountName').value = data.Full_Name;
+            }
+
+            if (data.Payment_Status === 'ส่งคำขอยกเลิก/รอเงินคืน') {
+              lockForm('⚠️ ออเดอร์นี้ได้ส่งเรื่องขอยกเลิกแล้ว อยู่ระหว่างรอตรวจสอบและโอนเงินคืนค่ะ', 'bg-amber-100 text-amber-800 border border-amber-200');
+            }
           }
 
         } else {
