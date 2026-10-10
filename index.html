@@ -41,7 +41,6 @@
     <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-indigo-800 text-white pt-7 pb-8 px-4 text-center shadow-lg">
       <div class="max-w-2xl mx-auto flex flex-col items-center">
         
-        <!-- โลโก้บริษัท muRata -->
         <div class="bg-white/95 backdrop-blur-sm px-8 py-3.5 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center transition-transform hover:scale-105">
           <img src="./murata-logo.png" alt="Murata Logo" class="h-14 sm:h-[72px] w-auto object-contain">
         </div>
@@ -146,6 +145,19 @@
             <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
             <span class="text-2xl font-bold text-blue-700"><span id="totalAmount">0</span> ฿</span>
           </div>
+
+          <!-- ✅ กล่องแจ้งเตือนใต้รวมยอดชำระ (เพิ่มใหม่) -->
+          <div class="mt-3 p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 leading-relaxed shadow-xs">
+            <div class="flex items-start gap-2">
+              <span class="text-base leading-none mt-0.5">⚠️</span>
+              <div>
+                <p class="font-semibold text-amber-950 mb-1">กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน</p>
+                <p>เมื่อดำเนินการชำระเงินเรียบร้อยแล้วจะไม่สามารถแก้ไขรายการได้</p>
+                <p class="mt-1.5">• กรณีต้องการ<strong>เพิ่มรายการสินค้า</strong> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์</p>
+                <p class="mt-1">• กรณีต้องการ<strong>ลดรายการสินค้า</strong> ให้ทำการยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อนแล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง</p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- 3. ส่วนแสดง QR Code ชำระเงิน -->
@@ -178,13 +190,12 @@
           </div>
         </section>
 
-        <!-- 4. แนบหลักฐานการโอนเงิน (ปรับขนาดช่องวัน/เวลาให้พอดีจอมือถือ) -->
+        <!-- 4. แนบหลักฐานการโอนเงิน -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
             <span>💳</span> หลักฐานการชำระเงิน
           </h2>
           
-          <!-- ✅ ช่องวันที่ และ เวลา ปรับเป็น 2 คอลัมน์คู่กันพอดีจอมือถือ -->
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div>
               <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน</label>
@@ -200,7 +211,6 @@
             <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG)</label>
             <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
             
-            <!-- ✅ ขยายตัวอย่างรูปสลิปให้ใหญ่และชัดเจนขึ้น -->
             <div id="slipPreviewContainer" class="hidden mt-4 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
               <p class="text-xs text-slate-500 mb-2 font-medium">ตัวอย่างสลิปที่แนบ:</p>
               <img id="slipPreview" src="" alt="Slip Preview" class="max-h-72 sm:max-h-80 w-auto mx-auto rounded-xl border border-slate-200 shadow-md object-contain">
@@ -233,7 +243,6 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="footer">
     © 2026 WINE BEER WHISKY LAMPHUN CO., LTD. All rights reserved.
   </footer>
@@ -250,9 +259,6 @@
     let selectedQuantities = {};
     let compressedSlipBase64 = "";
 
-    // -------------------------------------------------------------
-    // 💾 ระบบ LocalStorage จัดการตะกร้า & ข้อมูลส่วนตัวพนักงาน
-    // -------------------------------------------------------------
     function getCartStorageKey() {
       return 'mtl_cart_' + (lineUserId || 'guest');
     }
@@ -310,7 +316,6 @@
       });
     });
 
-    // ✅ บันทึกข้อมูลพนักงานอัตโนมัติทันทีที่พิมพ์ (Auto-Save on Type)
     function saveUserInfo() {
       const info = {
         empId: document.getElementById('employeeId').value.trim(),
@@ -319,7 +324,7 @@
         table: document.getElementById('tableNumber').value
       };
       localStorage.setItem(getUserInfoStorageKey(), JSON.stringify(info));
-      localStorage.setItem('mtl_user_info_common', JSON.stringify(info)); // สำรอง
+      localStorage.setItem('mtl_user_info_common', JSON.stringify(info));
     }
 
     function loadUserInfo() {
@@ -338,7 +343,6 @@
       }
     }
 
-    // ผูก Event ให้จำข้อมูลทันทีที่ผู้ใช้พิมพ์
     ['employeeId', 'fullName', 'department', 'tableNumber'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
@@ -347,9 +351,6 @@
       }
     });
 
-    // -------------------------------------------------------------
-    // 🚀 ระบบ LIFF Init
-    // -------------------------------------------------------------
     async function initLiff() {
       if (!LIFF_ID) return;
       try {
@@ -371,7 +372,6 @@
           }
         }
 
-        // โหลดข้อมูลและตะกร้าที่ผูกกับ LINE บัญชีนี้
         loadUserInfo();
         loadCartFromStorage();
 
@@ -380,9 +380,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 📦 โหลดสินค้าจาก Google Sheet
-    // -------------------------------------------------------------
     function extractDriveId(url) {
       if (!url) return '';
       url = url.trim();
@@ -563,9 +560,6 @@
       return total;
     }
 
-    // -------------------------------------------------------------
-    // 📸 ย่อขนาดภาพสลิปโอนเงิน (Image Compression)
-    // -------------------------------------------------------------
     const slipFileInput = document.getElementById('slipFile');
     const slipPreview = document.getElementById('slipPreview');
     const slipPreviewContainer = document.getElementById('slipPreviewContainer');
@@ -611,9 +605,6 @@
       reader.readAsDataURL(file);
     });
 
-    // -------------------------------------------------------------
-    // 🗺️ ตรวจสอบจุดรับสินค้าตามเลขโต๊ะ
-    // -------------------------------------------------------------
     const tableInput = document.getElementById('tableNumber');
     const pickupAlert = document.getElementById('pickupAlert');
 
@@ -633,7 +624,6 @@
       checkPickupPoint(parseInt(tableInput.value));
     });
 
-    // Modal QR Code
     const qrTrigger = document.getElementById('qrTrigger');
     const qrModal = document.getElementById('qrModal');
     const closeQrModal = document.getElementById('closeQrModal');
@@ -648,7 +638,7 @@
     }
 
     // -------------------------------------------------------------
-    // 🚀 ยืนยันและส่งคำสั่งซื้อเข้า n8n + ปิดหน้าต่างทันทีเมื่อสำเร็จ
+    // 🚀 ยืนยันและส่งคำสั่งซื้อเข้า n8n + ป็อปอัพยืนยันเงื่อนไข
     // -------------------------------------------------------------
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -656,6 +646,34 @@
       const total = calculateTotal();
       if (total === 0) {
         Swal.fire('ข้อผิดพลาด', 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนทำการสั่งซื้อค่ะ', 'warning');
+        return;
+      }
+
+      // ✅ ป็อปอัพแจ้งเตือนและยืนยันเงื่อนไขก่อนส่งคำสั่งซื้อ
+      const confirmResult = await Swal.fire({
+        title: 'ยืนยันการสั่งจอง',
+        html: `
+          <div class="text-left text-xs sm:text-sm text-slate-700 space-y-2 bg-amber-50 p-4 rounded-2xl border border-amber-200">
+            <p class="font-bold text-amber-950 flex items-center gap-1.5 text-sm">
+              <span>⚠️</span> กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน
+            </p>
+            <p class="text-amber-900">เมื่อดำเนินการชำระเงินเรียบร้อยแล้วจะไม่สามารถแก้ไขรายการได้</p>
+            <div class="pt-2 border-t border-amber-200/80 space-y-1.5 text-xs text-amber-900">
+              <p>• กรณีต้องการ<strong>เพิ่มรายการสินค้า</strong> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์</p>
+              <p>• กรณีต้องการ<strong>ลดรายการสินค้า</strong> ให้ทำการยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง</p>
+            </div>
+          </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยันสั่งซื้อ',
+        cancelButtonText: 'กลับไปตรวจสอบ',
+        confirmButtonColor: '#2563eb',
+        cancelButtonColor: '#64748b'
+      });
+
+      // ถ้าผู้ใช้กดยกเลิกหรือไม่ยืนยัน ให้หยุดการทำงาน
+      if (!confirmResult.isConfirmed) {
         return;
       }
 
@@ -695,15 +713,14 @@
         const result = await response.json();
 
         if (response.ok && result.success) {
-          saveUserInfo(); // บันทึกข้อมูลพนักงานไว้ใช้รอบถัดไป
-          clearCartStorage(); // ล้างตะกร้าเมื่อสำเร็จ
+          saveUserInfo();
+          clearCartStorage();
           
           document.getElementById('preorderForm').reset();
           compressedSlipBase64 = "";
           slipPreviewContainer.classList.add('hidden');
           pickupAlert.className = 'hidden';
 
-          // ✅ แสดงข้อความสำเร็จ และสั่งปิดหน้าต่าง LIFF ทันทีเมื่อกดยืนยัน
           await Swal.fire({
             title: 'สั่งจองสำเร็จ!',
             text: result.message || 'บันทึกการสั่งจองสำเร็จเรียบร้อยแล้วค่ะ ใบยืนยันถูกส่งเข้าแชท LINE ของคุณแล้ว',
@@ -712,7 +729,6 @@
             allowOutsideClick: false
           });
 
-          // 🔒 คำสั่งปิดหน้าจอ index ลงทันที
           try {
             if (typeof liff !== 'undefined' && liff.isInClient()) {
               liff.closeWindow();
@@ -737,7 +753,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       initLiff();
       loadProducts();
-      loadUserInfo(); // โหลดข้อมูลพนักงานเดิมที่เคยบันทึกไว้
+      loadUserInfo();
     });
   </script>
 </body>
