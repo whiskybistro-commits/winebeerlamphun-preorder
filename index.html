@@ -32,6 +32,14 @@
     }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* แก้ไขปัญหาความกว้างและการทับซ้อนของ Date/Time บน Safari / iOS */
+    input[type="date"], input[type="time"] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      min-width: 0 !important;
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
@@ -140,13 +148,29 @@
             </div>
           </div>
 
+          <!-- 🛒 กรอบสรุปรายการที่สั่งซื้อ -->
+          <div id="orderSummaryContainer" class="hidden mt-6 bg-slate-50 rounded-2xl p-4 border border-slate-200">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80">
+              <span class="font-bold text-sm sm:text-base text-slate-800 flex items-center gap-1.5">
+                <span>📋</span> สรุปรายการสินค้าที่เลือก
+              </span>
+              <span id="summaryItemCount" class="text-xs text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200">
+                0 รายการ
+              </span>
+            </div>
+            
+            <div id="orderSummaryItems" class="divide-y divide-slate-100 space-y-2 text-xs sm:text-sm">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
           <!-- ยอดรวม -->
-          <div class="mt-5 p-4 bg-blue-50 rounded-xl flex justify-between items-center border border-blue-100">
+          <div class="mt-4 p-4 bg-blue-50 rounded-xl flex justify-between items-center border border-blue-100">
             <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
             <span class="text-2xl font-bold text-blue-700"><span id="totalAmount">0</span> ฿</span>
           </div>
 
-          <!-- ⚠️ กล่องแจ้งเตือนใต้รวมยอดชำระ (ขยายใหญ่ขึ้น + เน้นสีแดงจุดสำคัญ) -->
+          <!-- ⚠️ กล่องแจ้งเตือนใต้รวมยอดชำระ -->
           <div class="mt-4 p-4 sm:p-4.5 bg-amber-50/90 rounded-2xl border-2 border-amber-300 text-slate-800 leading-relaxed shadow-sm">
             <div class="flex items-start gap-2.5">
               <span class="text-2xl leading-none mt-0.5">⚠️</span>
@@ -200,20 +224,23 @@
           </div>
         </section>
 
-        <!-- 4. แนบหลักฐานการโอนเงิน -->
+        <!-- 4. แนบหลักฐานการโอนเงิน (ปรับปรุงช่องวันที่และเวลาให้ไม่ซ้อนทับกันใน iPhone) -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
             <span>💳</span> หลักฐานการชำระเงิน
           </h2>
           
-          <div class="grid grid-cols-2 gap-3 mb-4">
-            <div>
+          <!-- ปรับความกว้างสูงสุดให้อยู่กึ่งกลาง และเพิ่ม gap ระหว่าง 2 ช่อง -->
+          <div class="max-w-md mx-auto grid grid-cols-2 gap-4 sm:gap-6 mb-5">
+            <div class="min-w-0">
               <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน</label>
-              <input type="date" id="payDate" class="w-full px-2.5 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50/50">
+              <input type="date" id="payDate" 
+                class="w-full min-w-0 px-2 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50/50 block text-slate-700">
             </div>
-            <div>
+            <div class="min-w-0">
               <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน</label>
-              <input type="time" id="payTime" class="w-full px-2.5 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50/50">
+              <input type="time" id="payTime" 
+                class="w-full min-w-0 px-2 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50/50 block text-slate-700">
             </div>
           </div>
 
@@ -558,17 +585,64 @@
     }
 
     const totalAmountEl = document.getElementById('totalAmount');
+    const orderSummaryContainer = document.getElementById('orderSummaryContainer');
+    const orderSummaryItems = document.getElementById('orderSummaryItems');
+    const summaryItemCount = document.getElementById('summaryItemCount');
+
     function calculateTotal() {
       let total = 0;
+      let totalItemsCount = 0;
+      let summaryRowsHTML = '';
+
       for (const [name, qty] of Object.entries(selectedQuantities)) {
-        const product = allProducts.find(p => p.name === name);
-        if (product && qty > 0) {
-          total += qty * product.price;
+        if (qty > 0) {
+          const product = allProducts.find(p => p.name === name);
+          if (product) {
+            const subtotal = qty * product.price;
+            total += subtotal;
+            totalItemsCount += qty;
+
+            summaryRowsHTML += `
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex-1 pr-2">
+                  <p class="font-medium text-slate-800 leading-tight">${name}</p>
+                  <p class="text-[11px] text-slate-500">${product.price.toLocaleString()} ฿ x ${qty} ${product.unit || 'ชิ้น'}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="font-semibold text-slate-800">${subtotal.toLocaleString()} ฿</span>
+                  <button type="button" class="text-rose-500 hover:text-rose-700 text-xs p-1 rounded hover:bg-rose-50 transition" title="ลบรายการ" onclick="removeItem('${name.replace(/'/g, "\\'")}')">
+                    ✕
+                  </button>
+                </div>
+              </div>
+            `;
+          }
         }
       }
+
       totalAmountEl.innerText = total.toLocaleString();
+
+      if (totalItemsCount > 0) {
+        orderSummaryContainer.classList.remove('hidden');
+        orderSummaryItems.innerHTML = summaryRowsHTML;
+        summaryItemCount.innerText = `${totalItemsCount} รายการ`;
+      } else {
+        orderSummaryContainer.classList.add('hidden');
+        orderSummaryItems.innerHTML = '';
+      }
+
       return total;
     }
+
+    window.removeItem = function(name) {
+      if (selectedQuantities[name]) {
+        delete selectedQuantities[name];
+        const displayEl = document.getElementById(`qty_${name.replace(/\s+/g, '_')}`);
+        if (displayEl) displayEl.innerText = 0;
+        calculateTotal();
+        saveCartToStorage();
+      }
+    };
 
     const slipFileInput = document.getElementById('slipFile');
     const slipPreview = document.getElementById('slipPreview');
@@ -659,7 +733,6 @@
         return;
       }
 
-      // ✅ ป็อปอัพแจ้งเตือนและยืนยันเงื่อนไขก่อนส่งคำสั่งซื้อ (ปรับขนาดและเน้นสีแดง)
       const confirmResult = await Swal.fire({
         title: 'ยืนยันการสั่งจอง',
         html: `
