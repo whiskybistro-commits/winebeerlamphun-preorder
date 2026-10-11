@@ -6,10 +6,11 @@
   <title>รับสินค้า MTL PARTY 2026</title>
 
   <!-- Favicon & App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/check-apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/check-favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/check-favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="./check-apple-touch-icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="./check-favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="./check-favicon-16x16.png?v=2">
+  <link rel="shortcut icon" href="./check-favicon-32x32.png?v=2">
+  <link rel="manifest" href="./site.webmanifest">
   <meta name="theme-color" content="#15803d">
 
   <!-- Google Fonts: Prompt -->
@@ -228,10 +229,11 @@
             <div class="flex-1 space-y-2">
               <div class="flex justify-between items-start gap-2">
                 <div>
-                  <!-- 🔥 ไฮไลท์เลขออเดอร์ให้เด่น เข้ม ชัดเจน -->
-                  <div class="inline-flex items-center gap-1.5 bg-blue-100/90 text-blue-900 border border-blue-300 font-mono font-bold text-xs sm:text-sm px-2.5 py-0.5 rounded-lg shadow-2xs mb-1">
-                    <span class="text-blue-500 text-xs">🏷️</span>
-                    <span>${order.Order_ID}</span>
+                  <!-- 🔥 เพิ่มคำว่า 'เลขออเดอร์:' ข้างหน้า Order_ID ให้เด่นชัด -->
+                  <div class="inline-flex items-center gap-1.5 bg-blue-100/90 text-blue-900 border border-blue-300 font-bold text-xs sm:text-sm px-2.5 py-0.5 rounded-lg shadow-2xs mb-1">
+                    <span class="text-xs">🏷️</span>
+                    <span class="font-medium text-blue-700">เลขออเดอร์:</span>
+                    <span class="font-mono">${order.Order_ID}</span>
                   </div>
                   <p class="text-sm font-bold text-slate-900 leading-snug">${order.Full_Name || '-'} <span class="text-xs font-normal text-slate-500">(${order.Employee_ID || '-'})</span></p>
                 </div>
@@ -239,7 +241,11 @@
                   <span class="inline-block bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2 py-0.5 rounded-lg border border-emerald-200">
                     ${order.Pickup_Point || 'จุดรับสินค้า'}
                   </span>
-                  <p class="text-xs font-extrabold text-rose-600 mt-0.5 tracking-tight font-mono">${order.Pickup_Code || ''}</p>
+                  <!-- 🔥 เพิ่มคำว่า 'รหัสรับสินค้า:' ข้างหน้า Pickup_Code -->
+                  <div class="mt-0.5 text-right">
+                    <span class="text-[10px] text-slate-500 font-medium block">รหัสรับสินค้า:</span>
+                    <span class="text-xs font-extrabold text-rose-600 tracking-tight font-mono">${order.Pickup_Code || '-'}</span>
+                  </div>
                 </div>
               </div>
 
