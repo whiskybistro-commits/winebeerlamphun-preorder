@@ -188,7 +188,7 @@
         // กรองเงื่อนไขฝั่ง Client ซ้ำเพื่อความปลอดภัย: ตรวจสอบสลิปแล้ว & ยังไม่เคลม
         ordersList = list.filter(o => 
           o.Payment_Status === 'ตรวจสอบสลิปแล้ว' && 
-          (o.Pickup_Status === 'Not Claimed' || o.Pickup_Status === 'ยังไม่ได้รับ' || !o.Pickup_Status)
+          (o.Pickup_Status === 'Not Claimed' || o.Pickup_Status === 'ยังไม่ได้รับสินค้า' || !o.Pickup_Status)
         );
 
         // เรียงลำดับตามวันที่สั่ง Created_At จากเก่าไปใหม่
