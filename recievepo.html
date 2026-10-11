@@ -42,7 +42,7 @@
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
   <div>
-    <!-- Header Banner โทนสีเขียวสดชื่น -->
+    <!-- Header Banner -->
     <header class="bg-gradient-to-r from-emerald-800 via-green-800 to-teal-900 text-white pt-7 pb-8 px-4 text-center shadow-lg border-b border-emerald-900/40">
       <div class="max-w-2xl mx-auto flex flex-col items-center">
         <div class="bg-white/95 backdrop-blur-sm px-8 py-3.5 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center transition-transform hover:scale-105">
@@ -79,7 +79,6 @@
       <!-- กล่องรายการออเดอร์ -->
       <div class="bg-white rounded-3xl shadow-xl p-5 sm:p-6 border border-slate-200">
         
-        <!-- Header ส่วนรายการ -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-2 mb-4">
           <div>
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -88,7 +87,6 @@
             <p class="text-xs text-slate-500">เลือกออเดอร์ที่ต้องการรับ แล้วแสดง QR Code ให้พนักงาน</p>
           </div>
 
-          <!-- ตัวเลือกเลือกทั้งหมด -->
           <div id="selectAllWrapper" class="hidden items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 self-start sm:self-auto">
             <input type="checkbox" id="selectAllCheckbox" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer">
             <label for="selectAllCheckbox" class="text-xs font-semibold text-slate-700 cursor-pointer select-none">เลือกทั้งหมด</label>
@@ -103,7 +101,6 @@
         <!-- รายการออเดอร์ Card List -->
         <div id="orderCardsContainer" class="space-y-4"></div>
 
-        <!-- กล่องกรณีไม่พบออเดอร์ที่รับได้ -->
         <div id="noOrderAlert" class="hidden text-center py-10 px-4">
           <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">📭</div>
           <h3 class="text-base font-bold text-slate-800">ไม่พบออเดอร์ที่รอรับสินค้า</h3>
@@ -112,7 +109,6 @@
           </p>
         </div>
 
-        <!-- Action Panel ด้านล่าง -->
         <div id="actionPanel" class="hidden mt-6 pt-4 border-t border-slate-200">
           <div class="flex justify-between items-center mb-3 px-1 text-sm">
             <span class="text-slate-600 font-medium">จำนวนที่เลือก:</span>
@@ -129,7 +125,7 @@
     </main>
   </div>
 
-  <!-- Modal แสดง QR Code รวมออเดอร์สำหรับให้เจ้าหน้าที่สแกน -->
+  <!-- Modal แสดง QR Code -->
   <div id="qrModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center p-4">
     <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-2xl max-w-sm w-full flex flex-col items-center border border-slate-100 relative" onclick="event.stopPropagation()">
       <button type="button" id="closeQrModalBtn" class="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold transition">
@@ -144,7 +140,6 @@
         <p class="text-xs text-slate-500">แสดงหน้าจอนี้ให้พนักงานประจำจุดจ่ายเครื่องดื่ม</p>
       </div>
 
-      <!-- กล่องภาพ QR Code -->
       <div id="qrcodeBox" class="bg-white p-3 rounded-2xl shadow-inner border-2 border-dashed border-emerald-400 flex items-center justify-center my-2 min-w-[200px] min-h-[200px]"></div>
 
       <div class="w-full mt-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
@@ -174,9 +169,6 @@
   <script>
     const LIFF_ID = "2011938038-cHurNETB";
     const N8N_GET_ORDERS_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-get-claimable";
-    
-    // ชี้ QR Code ไปยังหน้าเว็บตรวจสอบของเจ้าหน้าที่ (staff-verify.html)
-    const STAFF_VERIFY_PAGE = window.location.origin + window.location.pathname.replace('recievepo.html', 'staff-verify.html');
 
     let currentUserId = "";
     let currentUserName = "";
@@ -226,7 +218,6 @@
         const result = await res.json();
 
         loader.classList.add('hidden');
-
         const list = Array.isArray(result) ? result : (result.data || []);
         
         ordersList = list.filter(o => 
@@ -336,8 +327,10 @@
 
       if (selectedOrderIds.length === 0) return;
 
-      // สร้าง URL นำทางไปยังหน้า staff-verify.html
-      const staffVerifyUrl = `${STAFF_VERIFY_PAGE}?orders=${encodeURIComponent(selectedOrderIds.join(','))}&uid=${encodeURIComponent(currentUserId)}`;
+      // 🔍 คำนวณ Base URL ปลายทางชี้ไปที่ staffverify.html โดยตรง
+      const currentCleanUrl = window.location.href.split('?')[0].split('#')[0];
+      const baseUrl = currentCleanUrl.substring(0, currentCleanUrl.lastIndexOf('/'));
+      const staffVerifyUrl = `${baseUrl}/staffverify.html?orders=${encodeURIComponent(selectedOrderIds.join(','))}&uid=${encodeURIComponent(currentUserId)}`;
 
       document.getElementById('qrModalCustomerName').innerText = currentUserName;
       document.getElementById('qrModalOrderCount').innerText = selectedOrderIds.length;
