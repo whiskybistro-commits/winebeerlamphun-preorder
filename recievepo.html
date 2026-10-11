@@ -24,6 +24,8 @@
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     body { font-family: 'Prompt', sans-serif; }
@@ -40,7 +42,7 @@
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
   <div>
-    <!-- Header Banner โทนสีเขียวสดชื่น (Green / Emerald) -->
+    <!-- Header Banner โทนสีเขียวสดชื่น -->
     <header class="bg-gradient-to-r from-emerald-800 via-green-800 to-teal-900 text-white pt-7 pb-8 px-4 text-center shadow-lg border-b border-emerald-900/40">
       <div class="max-w-2xl mx-auto flex flex-col items-center">
         <div class="bg-white/95 backdrop-blur-sm px-8 py-3.5 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center transition-transform hover:scale-105">
@@ -51,7 +53,7 @@
           จุดรับของพรีออเดอร์
         </span>
         <h1 class="text-2xl sm:text-3xl font-bold mt-2 tracking-tight">MTL PARTY 2026</h1>
-        <p class="text-emerald-100 text-xs sm:text-sm mt-1 font-light">ตรวจสอบและยืนยันการรับสินค้า</p>
+        <p class="text-emerald-100 text-xs sm:text-sm mt-1 font-light">แสดง QR Code ให้พนักงานสแกนจ่ายของ</p>
       </div>
     </header>
 
@@ -83,7 +85,7 @@
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
               <span>📦</span> รายการที่พร้อมรับสินค้า
             </h2>
-            <p class="text-xs text-slate-500">เฉพาะออเดอร์ที่ตรวจสอบสลิปผ่านแล้ว</p>
+            <p class="text-xs text-slate-500">เลือกออเดอร์ที่ต้องการรับ แล้วแสดง QR Code ให้พนักงาน</p>
           </div>
 
           <!-- ตัวเลือกเลือกทั้งหมด -->
@@ -106,7 +108,7 @@
           <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">📭</div>
           <h3 class="text-base font-bold text-slate-800">ไม่พบออเดอร์ที่รอรับสินค้า</h3>
           <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
-            ท่านอาจยังไม่มีออเดอร์, ออเดอร์กำลังรอตรวจสลิป, ถูกยกเลิก หรือได้รับสินค้าไปครบถ้วนแล้ว
+            ท่านอาจยังไม่มีออเดอร์, ออเดอร์กำลังรอตรวจสลิป, ถูกยกเลิก หรือได้รับสินค้าครบแล้ว
           </p>
         </div>
 
@@ -117,14 +119,52 @@
             <span class="font-bold text-emerald-700"><span id="selectedCount">0</span> รายการ</span>
           </div>
 
-          <button type="button" id="confirmReceiveBtn" disabled
+          <button type="button" id="showQrBtn" disabled
             class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium py-3.5 rounded-xl shadow-md transition duration-150 flex items-center justify-center gap-2 text-base">
-            <span>✅ ยืนยันการรับสินค้าตามที่เลือก</span>
+            <span>🎟️ แสดง QR Code ให้เจ้าหน้าที่สแกนจ่ายของ</span>
           </button>
         </div>
 
       </div>
     </main>
+  </div>
+
+  <!-- Modal แสดง QR Code รวมออเดอร์สำหรับให้เจ้าหน้าที่สแกน -->
+  <div id="qrModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center p-4">
+    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-2xl max-w-sm w-full flex flex-col items-center border border-slate-100 relative" onclick="event.stopPropagation()">
+      <button type="button" id="closeQrModalBtn" class="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold transition">
+        ✕
+      </button>
+
+      <div class="text-center mb-3">
+        <span class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">
+          สำหรับเจ้าหน้าที่สแกนจ่ายของ
+        </span>
+        <h3 class="font-bold text-slate-900 text-lg mt-1">QR Code รับสินค้า</h3>
+        <p class="text-xs text-slate-500">แสดงหน้าจอนี้ให้พนักงานประจำจุดจ่ายเครื่องดื่ม</p>
+      </div>
+
+      <!-- กล่องภาพ QR Code -->
+      <div id="qrcodeBox" class="bg-white p-3 rounded-2xl shadow-inner border-2 border-dashed border-emerald-400 flex items-center justify-center my-2 min-w-[200px] min-h-[200px]"></div>
+
+      <div class="w-full mt-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
+        <div class="flex justify-between">
+          <span class="text-slate-500">ผู้สั่งจอง:</span>
+          <span class="font-bold text-slate-900" id="qrModalCustomerName">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">จำนวนออเดอร์:</span>
+          <span class="font-bold text-emerald-700"><span id="qrModalOrderCount">0</span> รายการ</span>
+        </div>
+        <div class="pt-1 border-t border-slate-200 text-[11px] font-mono text-blue-900 break-all" id="qrModalOrderList">
+          -
+        </div>
+      </div>
+
+      <p class="text-[11px] text-amber-700 mt-3 text-center bg-amber-50 p-2 rounded-lg border border-amber-200 w-full">
+        🔒 ป้องกันการรับซ้ำ: เจ้าหน้าที่ต้องใส่รหัส PIN ประจำจุดเพื่ออนุมัติ
+      </p>
+    </div>
   </div>
 
   <footer class="footer">
@@ -134,10 +174,14 @@
   <script>
     const LIFF_ID = "2011938038-cHurNETB";
     const N8N_GET_ORDERS_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-get-claimable";
-    const N8N_RECEIVE_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-claimpo";
+    
+    // ชี้ QR Code ไปยังหน้าเว็บตรวจสอบของเจ้าหน้าที่ (staff-verify.html)
+    const STAFF_VERIFY_PAGE = window.location.origin + window.location.pathname.replace('recievepo.html', 'staff-verify.html');
 
     let currentUserId = "";
+    let currentUserName = "";
     let ordersList = [];
+    let qrcodeInstance = null;
 
     async function initLiff() {
       const lineLoading = document.getElementById('lineLoadingCard');
@@ -153,10 +197,11 @@
 
         const profile = await liff.getProfile();
         currentUserId = profile.userId;
+        currentUserName = profile.displayName || 'LINE User';
 
         lineLoading.classList.add('hidden');
         lineProfile.classList.remove('hidden');
-        document.getElementById('userName').innerText = profile.displayName || 'LINE User';
+        document.getElementById('userName').innerText = currentUserName;
         if (profile.pictureUrl) {
           document.getElementById('userPicture').src = profile.pictureUrl;
         }
@@ -184,13 +229,11 @@
 
         const list = Array.isArray(result) ? result : (result.data || []);
         
-        // กรองเฉพาะสถานะตรวจสอบสลิปแล้ว และยังไม่ได้รับสินค้า
         ordersList = list.filter(o => 
           o.Payment_Status === 'ตรวจสอบสลิปแล้ว' && 
           (o.Pickup_Status === 'Not Claimed' || o.Pickup_Status === 'ยังไม่ได้รับสินค้า' || o.Pickup_Status === 'ยังไม่ได้รับ' || !o.Pickup_Status)
         );
 
-        // เรียงลำดับตามเวลาสร้างออเดอร์ Created_At
         ordersList.sort((a, b) => new Date(a.Created_At) - new Date(b.Created_At));
 
         if (ordersList.length === 0) {
@@ -217,7 +260,6 @@
       orders.forEach((order) => {
         const card = document.createElement('div');
         card.className = "border border-slate-200 rounded-2xl p-4 bg-slate-50/60 transition hover:bg-slate-50 relative shadow-sm";
-
         const orderDateFormatted = order.Created_At ? order.Created_At.replace('T', ' ').substring(0, 16) : '-';
 
         card.innerHTML = `
@@ -229,7 +271,6 @@
             <div class="flex-1 space-y-2">
               <div class="flex justify-between items-start gap-2">
                 <div>
-                  <!-- 🔥 เพิ่มคำว่า 'เลขออเดอร์:' ข้างหน้า Order_ID ให้เด่นชัด -->
                   <div class="inline-flex items-center gap-1.5 bg-blue-100/90 text-blue-900 border border-blue-300 font-bold text-xs sm:text-sm px-2.5 py-0.5 rounded-lg shadow-2xs mb-1">
                     <span class="text-xs">🏷️</span>
                     <span class="font-medium text-blue-700">เลขออเดอร์:</span>
@@ -241,7 +282,6 @@
                   <span class="inline-block bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2 py-0.5 rounded-lg border border-emerald-200">
                     ${order.Pickup_Point || 'จุดรับสินค้า'}
                   </span>
-                  <!-- 🔥 เพิ่มคำว่า 'รหัสรับสินค้า:' ข้างหน้า Pickup_Code -->
                   <div class="mt-0.5 text-right">
                     <span class="text-[10px] text-slate-500 font-medium block">รหัสรับสินค้า:</span>
                     <span class="text-xs font-extrabold text-rose-600 tracking-tight font-mono">${order.Pickup_Code || '-'}</span>
@@ -269,20 +309,14 @@
     function attachCheckboxEvents() {
       const selectAll = document.getElementById('selectAllCheckbox');
       const checkboxes = document.querySelectorAll('.order-checkbox');
-      const confirmBtn = document.getElementById('confirmReceiveBtn');
+      const showQrBtn = document.getElementById('showQrBtn');
       const countDisplay = document.getElementById('selectedCount');
 
       function updateState() {
         const checkedList = document.querySelectorAll('.order-checkbox:checked');
         const count = checkedList.length;
         countDisplay.innerText = count;
-
-        if (count > 0) {
-          confirmBtn.disabled = false;
-        } else {
-          confirmBtn.disabled = true;
-        }
-
+        showQrBtn.disabled = (count === 0);
         selectAll.checked = (count === checkboxes.length && checkboxes.length > 0);
       }
 
@@ -296,62 +330,35 @@
       });
     }
 
-    document.getElementById('confirmReceiveBtn').addEventListener('click', async () => {
+    document.getElementById('showQrBtn').addEventListener('click', () => {
       const selectedBoxes = document.querySelectorAll('.order-checkbox:checked');
       const selectedOrderIds = Array.from(selectedBoxes).map(b => b.value);
 
       if (selectedOrderIds.length === 0) return;
 
-      const confirmAlert = await Swal.fire({
-        title: 'ยืนยันรับสินค้า?',
-        html: `คุณกำลังยืนยันการรับสินค้า<br>จำนวน <b>${selectedOrderIds.length}</b> ออเดอร์<br><div class="mt-2 text-M font-mono bg-slate-100 p-2 rounded-xl text-blue-900 border border-slate-200">${selectedOrderIds.join(', ')}</div>`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#059669',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'ยืนยันรับของแล้ว',
-        cancelButtonText: 'ยกเลิก'
+      // สร้าง URL นำทางไปยังหน้า staff-verify.html
+      const staffVerifyUrl = `${STAFF_VERIFY_PAGE}?orders=${encodeURIComponent(selectedOrderIds.join(','))}&uid=${encodeURIComponent(currentUserId)}`;
+
+      document.getElementById('qrModalCustomerName').innerText = currentUserName;
+      document.getElementById('qrModalOrderCount').innerText = selectedOrderIds.length;
+      document.getElementById('qrModalOrderList').innerText = selectedOrderIds.join(', ');
+
+      const qrBox = document.getElementById('qrcodeBox');
+      qrBox.innerHTML = '';
+      qrcodeInstance = new QRCode(qrBox, {
+        text: staffVerifyUrl,
+        width: 190,
+        height: 190,
+        colorDark: "#065f46",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
       });
 
-      if (!confirmAlert.isConfirmed) return;
+      document.getElementById('qrModal').classList.remove('hidden');
+    });
 
-      const btn = document.getElementById('confirmReceiveBtn');
-      btn.disabled = true;
-      btn.innerText = "กำลังบันทึกข้อมูล...";
-
-      try {
-        const response = await fetch(N8N_RECEIVE_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            line_user_id: currentUserId,
-            order_ids: selectedOrderIds,
-            claimed_at: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ')
-          })
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          await Swal.fire({
-            title: 'รับสินค้าสำเร็จ!',
-            text: result.message || 'บันทึกสถานะรับสินค้าเรียบร้อยแล้วค่ะ',
-            icon: 'success',
-            confirmButtonText: 'ตกลง'
-          });
-
-          document.getElementById('orderCardsContainer').innerHTML = '';
-          document.getElementById('orderListLoading').classList.remove('hidden');
-          await fetchClaimableOrders(currentUserId);
-
-        } else {
-          throw new Error(result.message || 'ไม่สามารถทำรายการได้');
-        }
-      } catch (err) {
-        Swal.fire('เกิดข้อผิดพลาด', err.message || 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
-        btn.disabled = false;
-        btn.innerText = "✅ ยืนยันการรับสินค้าตามที่เลือก";
-      }
+    document.getElementById('closeQrModalBtn').addEventListener('click', () => {
+      document.getElementById('qrModal').classList.add('hidden');
     });
 
     window.addEventListener('DOMContentLoaded', initLiff);
