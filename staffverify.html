@@ -56,21 +56,21 @@
         <!-- ⏳ กล่องสถานะกำลังตรวจสอบออเดอร์ -->
         <div id="checkingStatusCard" class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700 text-center py-6">
           <span class="inline-block animate-spin text-2xl mb-2">⏳</span>
-          <p class="text-sm font-medium text-slate-300">กำลังตรวจสอบความถูกต้องของออเดอร์...</p>
+          <p class="text-sm font-medium text-slate-300">กำลังตรวจสอบสถานะออเดอร์...</p>
           <p class="text-xs text-slate-500 mt-1">กรุณารอสักครู่</p>
         </div>
 
-        <!-- ⛔ กล่องแจ้งเตือนถูกบล็อก (แสดงเมื่อสถานะไม่อนุญาตให้จ่าย) -->
+        <!-- ⛔ กล่องแจ้งเตือนถูกบล็อก -->
         <div id="blockedAlertCard" class="hidden bg-rose-950/70 border-2 border-rose-500/80 rounded-2xl p-4 text-center space-y-2">
           <div class="text-3xl">⛔</div>
           <h2 class="text-base font-bold text-rose-300">ไม่อนุญาตให้จ่ายสินค้า</h2>
           <div id="blockedReasonText" class="text-xs text-rose-200 leading-relaxed bg-rose-900/40 p-2.5 rounded-xl border border-rose-700/50 text-left">
             -
           </div>
-          <p class="text-[11px] text-rose-400 font-medium">กรุณาแจ้งลูกค้าติดต่อฝ่ายประสานงานหรือตรวจสอบสลิปก่อนค่ะ</p>
+          <p class="text-[11px] text-rose-400 font-medium">กรุณาให้ลูกค้าติดต่อจุดอำนวยการเพื่อตรวจสอบสลิปค่ะ</p>
         </div>
 
-        <!-- 🔑 ส่วนฟอร์มยืนยัน PIN (จะแสดงเฉพาะเมื่อผ่านการตรวจสอบสถานะแล้วเท่านั้น) -->
+        <!-- 🔑 ส่วนฟอร์มยืนยัน PIN -->
         <div id="pinFormSection" class="hidden space-y-4">
           <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 text-center">
             <label class="block text-xs font-medium text-slate-300 mb-1">
@@ -124,43 +124,44 @@
       blockedReason.innerText = "ไม่พบรหัสออเดอร์ในลิงก์ที่สแกนมา กรุณาให้ลูกค้าเปิด QR Code ใหม่อีกครั้ง";
     }
 
-    // 2. ฟังก์ชันตรวจสอบสถานะออเดอร์ทั้งหมดก่อนอนุญาตให้จ่ายของ
+    // 2. ฟังก์ชันตรวจสอบสถานะออเดอร์
     async function verifyOrderStatus() {
       if (orderList.length === 0) return;
 
       try {
-        const res = await fetch(`${N8N_GET_ORDERS_URL}?line_user_id=${encodeURIComponent(userIdParam)}`);
+        const queryParam = userIdParam 
+          ? `line_user_id=${encodeURIComponent(userIdParam)}` 
+          : `order_ids=${encodeURIComponent(orderList.join(','))}`;
+
+        const res = await fetch(`${N8N_GET_ORDERS_URL}?${queryParam}`);
         const result = await res.json();
         const allClaimableOrders = Array.isArray(result) ? result : (result.data || []);
 
         checkingCard.classList.add('hidden');
 
-        // กรองหาออเดอร์ที่กำลังจะจ่ายว่าผ่านเกณฑ์หรือไม่
         const blockedIssues = [];
 
         for (const orderId of orderList) {
           const matched = allClaimableOrders.find(o => o.Order_ID === orderId);
 
           if (!matched) {
-            // หากหาไม่เจอในรายการ claimable แปลว่าสถานะอาจเป็น รอยืนยันสลิป, ยกเลิกแล้ว หรือรับไปแล้ว
-            blockedIssues.push(`• <b>${orderId}</b>: สถานะไม่พร้อมจ่าย (อาจอยู่ระหว่าง "รอยืนยันสลิป", "ขอยกเลิก/คืนเงิน", หรือถูกตัดรับไปแล้ว)`);
+            blockedIssues.push(`• <b>${orderId}</b>: ออเดอร์นี้ไม่พร้อมจ่าย (สถานะอาจเป็น "รอยืนยันสลิป", "ขอยกเลิก", หรือถูกตัดรับไปแล้ว)`);
           } else {
             const pStatus = (matched.Payment_Status || '').trim();
             const claimStatus = (matched.Pickup_Status || '').trim();
 
             if (pStatus === 'รอยืนยันสลิป') {
-              blockedIssues.push(`• <b>${orderId}</b>: สถานะ "รอยืนยันสลิป" (ยังไม่ได้รับการอนุมัติการชำระเงิน)`);
+              blockedIssues.push(`• <b>${orderId}</b>: สถานะ "รอยืนยันสลิป" (ยังไม่ได้รับการอนุมัติ)`);
             } else if (pStatus === 'ส่งคำขอยกเลิก/รอเงินคืน') {
-              blockedIssues.push(`• <b>${orderId}</b>: สถานะ "ส่งคำขอยกเลิก/รอเงินคืน" (ออเดอร์อยู่ระหว่างขอยกเลิก)`);
+              blockedIssues.push(`• <b>${orderId}</b>: สถานะ "ส่งคำขอยกเลิก/รอเงินคืน"`);
             } else if (pStatus === 'โอนเงินคืนสำเร็จ/ยกเลิกแล้ว') {
-              blockedIssues.push(`• <b>${orderId}</b>: สถานะ "โอนเงินคืนสำเร็จ/ยกเลิกแล้ว" (ออเดอร์ถูกยกเลิกแล้ว)`);
+              blockedIssues.push(`• <b>${orderId}</b>: สถานะ "โอนเงินคืนสำเร็จ/ยกเลิกแล้ว"`);
             } else if (claimStatus === 'รับสินค้าแล้ว' || claimStatus === 'Claimed') {
-              blockedIssues.push(`• <b>${orderId}</b>: มีการ "รับสินค้าแล้ว" ไปก่อนหน้านี้แล้ว`);
+              blockedIssues.push(`• <b>${orderId}</b>: ได้ทำการ "รับสินค้าแล้ว" ไปก่อนหน้านี้`);
             }
           }
         }
 
-        // ⛔ ถ้ามีออเดอร์ที่มีปัญหาอย่างน้อย 1 รายการ -> สั่งบล็อกทันที
         if (blockedIssues.length > 0) {
           blockedCard.classList.remove('hidden');
           pinSection.classList.add('hidden');
@@ -168,7 +169,7 @@
           return;
         }
 
-        // ✅ ผ่านทุกเงื่อนไข -> เปิดฟอร์มให้เจ้าหน้าที่ใส่ PIN
+        // ผ่านเงื่อนไข -> เปิดฟอร์มใส่ PIN
         pinSection.classList.remove('hidden');
         document.getElementById('staffPinInput').focus();
 
@@ -176,11 +177,11 @@
         console.error("Verify status error:", err);
         checkingCard.classList.add('hidden');
         blockedCard.classList.remove('hidden');
-        blockedReason.innerText = "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์เพื่อตรวจสอบสถานะออเดอร์ได้ กรุณาลองใหม่อีกครั้ง";
+        blockedReason.innerText = "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์เพื่อตรวจสอบสถานะได้ กรุณาลองสแกนใหม่อีกครั้ง";
       }
     }
 
-    // 3. ฟังก์ชันกดยืนยันจ่ายของด้วย PIN
+    // 3. กดยืนยันจ่ายของด้วย PIN
     document.getElementById('confirmReleaseBtn').addEventListener('click', async () => {
       const pin = document.getElementById('staffPinInput').value.trim();
 
@@ -197,7 +198,7 @@
 
       const btn = document.getElementById('confirmReleaseBtn');
       btn.disabled = true;
-      btn.innerText = "กำลังตรวจสอบ PIN และบันทึก...";
+      btn.innerText = "กำลังตรวจสอบ PIN...";
 
       try {
         const response = await fetch(N8N_CLAIM_URL, {
