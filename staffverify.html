@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เจ้าหน้าที่จ่ายสินค้า - MTL PARTY 2026</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="./check-apple-touch-icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="./check-favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="./check-favicon-16x16.png?v=2">
+  <link rel="manifest" href="./site.webmanifest">
+  <meta name="theme-color" content="#1e293b">
+
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+    .pin-input {
+      letter-spacing: 0.5em;
+      text-align: center;
+      font-size: 1.75rem;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 min-h-screen text-slate-100 flex flex-col justify-between">
+
+  <div>
+    <!-- Header สำหรับ Staff -->
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-4 text-center shadow-lg">
+      <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-amber-400 text-xs font-semibold uppercase tracking-wider mb-1">
+        👮‍♂️ ระบบสำหรับเจ้าหน้าที่เท่านั้น
+      </div>
+      <h1 class="text-xl font-bold tracking-tight text-white">ตรวจสอบและยืนยันจ่ายสินค้า</h1>
+      <p class="text-xs text-slate-400">MTL PARTY 2026</p>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-5 mb-10 w-full">
+      <div class="bg-slate-800 rounded-3xl p-5 shadow-2xl border border-slate-700 space-y-4">
+        
+        <!-- ข้อมูลสรุปออเดอร์ -->
+        <div class="border-b border-slate-700 pb-3">
+          <span class="text-xs text-slate-400">รายการออเดอร์ที่ลูกค้าเลือก:</span>
+          <div id="orderBadgeContainer" class="flex flex-wrap gap-1.5 mt-1.5">
+            <span class="text-xs text-slate-500">กำลังอ่านข้อมูล...</span>
+          </div>
+        </div>
+
+        <!-- กล่องใส่ PIN พนักงาน -->
+        <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 text-center">
+          <label class="block text-xs font-medium text-slate-300 mb-1">
+            🔑 ระบุ PIN เจ้าหน้าที่ (4 หลัก)
+          </label>
+          <input type="password" id="staffPinInput" maxlength="4" placeholder="••••"
+            class="pin-input w-full bg-slate-950 border border-slate-600 rounded-xl py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono tracking-widest placeholder:text-slate-600">
+          <p class="text-[11px] text-slate-400 mt-1.5">เฉพาะผู้ดูแลประจำจุดจ่ายสินค้าเท่านั้น</p>
+        </div>
+
+        <button type="button" id="confirmReleaseBtn"
+          class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-98 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-base">
+          <span>✅ ยืนยันจ่ายของให้ลูกค้า</span>
+        </button>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+    STAFF VERIFICATION PORTAL • MTL PARTY 2026
+  </footer>
+
+  <script>
+    // URL Webhook ฝั่ง n8n ที่รับคำสั่งตัดรับของ
+    const N8N_CLAIM_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-claimpo";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderIdsParam = urlParams.get('orders') || '';
+    const userIdParam = urlParams.get('uid') || '';
+    const orderList = orderIdsParam ? orderIdsParam.split(',').filter(Boolean) : [];
+
+    const badgeContainer = document.getElementById('orderBadgeContainer');
+    if (orderList.length > 0) {
+      badgeContainer.innerHTML = orderList.map(id => `
+        <span class="bg-blue-900/60 text-blue-300 border border-blue-700/60 font-mono text-xs font-bold px-2.5 py-1 rounded-lg">
+          🏷️ ${id}
+        </span>
+      `).join('');
+    } else {
+      badgeContainer.innerHTML = `<span class="text-xs text-rose-400">❌ ไม่พบข้อมูลออเดอร์ใน QR</span>`;
+      document.getElementById('confirmReleaseBtn').disabled = true;
+    }
+
+    document.getElementById('confirmReleaseBtn').addEventListener('click', async () => {
+      const pin = document.getElementById('staffPinInput').value.trim();
+
+      if (pin.length !== 4) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'กรุณากรอก PIN 4 หลัก',
+          text: 'รหัสผ่านเจ้าหน้าที่ต้องเป็นตัวเลข 4 หลักค่ะ',
+          background: '#1e293b',
+          color: '#ffffff'
+        });
+        return;
+      }
+
+      const btn = document.getElementById('confirmReleaseBtn');
+      btn.disabled = true;
+      btn.innerText = "กำลังตรวจสอบ PIN และบันทึก...";
+
+      try {
+        const response = await fetch(N8N_CLAIM_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            staff_pin: pin,
+            order_ids: orderList,
+            line_user_id: userIdParam,
+            claimed_at: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ')
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          await Swal.fire({
+            icon: 'success',
+            title: 'จ่ายสินค้าสำเร็จ!',
+            text: `ตัดจ่ายสินค้าจำนวน ${orderList.length} ออเดอร์เรียบร้อยแล้วค่ะ`,
+            background: '#1e293b',
+            color: '#ffffff',
+            confirmButtonColor: '#059669'
+          });
+
+          // ปิดหน้าต่างหรือรีเฟรช
+          window.location.href = "about:blank";
+          window.close();
+
+        } else {
+          throw new Error(result.message || 'รหัส PIN ไม่ถูกต้อง หรือเกิดข้อผิดพลาด');
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'ไม่สามารถทำรายการได้',
+          text: err.message || 'รหัส PIN ผิดพลาด กรุณาตรวจสอบอีกครั้ง',
+          background: '#1e293b',
+          color: '#ffffff',
+          confirmButtonColor: '#e11d48'
+        });
+        btn.disabled = false;
+        btn.innerText = "✅ ยืนยันจ่ายของให้ลูกค้า";
+      }
+    });
+  </script>
+</body>
+</html>
