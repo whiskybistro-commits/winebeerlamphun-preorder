@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>เจ้าหน้าที่จ่ายสินค้า - MTL PARTY 2026</title>
 
+  <!-- Favicon & App Icons -->
   <link rel="apple-touch-icon" sizes="180x180" href="./check-apple-touch-icon.png?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="./check-favicon-32x32.png?v=2">
   <link rel="icon" type="image/png" sizes="16x16" href="./check-favicon-16x16.png?v=2">
@@ -16,6 +17,7 @@
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Tailwind CSS & SweetAlert2 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -31,7 +33,7 @@
 <body class="bg-slate-900 min-h-screen text-slate-100 flex flex-col justify-between">
 
   <div>
-    <!-- Header สำหรับ Staff -->
+    <!-- Header สำหรับเจ้าหน้าที่ -->
     <header class="bg-slate-800 border-b border-slate-700 py-4 px-4 text-center shadow-lg">
       <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-amber-400 text-xs font-semibold uppercase tracking-wider mb-1">
         👮‍♂️ ระบบสำหรับเจ้าหน้าที่เท่านั้น
@@ -43,7 +45,7 @@
     <main class="max-w-md mx-auto px-4 mt-5 mb-10 w-full">
       <div class="bg-slate-800 rounded-3xl p-5 shadow-2xl border border-slate-700 space-y-4">
         
-        <!-- ข้อมูลสรุปออเดอร์ -->
+        <!-- รายการออเดอร์ที่ถูกสแกนเข้ามา -->
         <div class="border-b border-slate-700 pb-3">
           <span class="text-xs text-slate-400">รายการออเดอร์ที่ลูกค้าเลือก:</span>
           <div id="orderBadgeContainer" class="flex flex-wrap gap-1.5 mt-1.5">
@@ -51,7 +53,7 @@
           </div>
         </div>
 
-        <!-- กล่องใส่ PIN พนักงาน -->
+        <!-- กล่องระบุ PIN เจ้าหน้าที่ -->
         <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 text-center">
           <label class="block text-xs font-medium text-slate-300 mb-1">
             🔑 ระบุ PIN เจ้าหน้าที่ (4 หลัก)
@@ -75,7 +77,6 @@
   </footer>
 
   <script>
-    // URL Webhook ฝั่ง n8n ที่รับคำสั่งตัดรับของ
     const N8N_CLAIM_URL = "https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-claimpo";
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -137,12 +138,11 @@
             confirmButtonColor: '#059669'
           });
 
-          // ปิดหน้าต่างหรือรีเฟรช
           window.location.href = "about:blank";
           window.close();
 
         } else {
-          throw new Error(result.message || 'รหัส PIN ไม่ถูกต้อง หรือเกิดข้อผิดพลาด');
+          throw new Error(result.message || 'รหัส PIN ไม่ถูกต้อง');
         }
       } catch (err) {
         Swal.fire({
