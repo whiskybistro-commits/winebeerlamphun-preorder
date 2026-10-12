@@ -121,8 +121,13 @@
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
               <span>🛍️</span> เลือกรายการสินค้า
             </h2>
-            <button type="button" id="clearCartBtn" class="text-xs text-rose-500 hover:text-rose-700 underline hidden">
-              ล้างตะกร้า
+            <!-- ปรับปรุงปุ่มล้างตะกร้าแบบ Modern Pill Shape -->
+            <button type="button" id="clearCartBtn" 
+              class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-medium text-rose-700 transition duration-150 shadow-xs">
+              <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>ล้างตะกร้า</span>
             </button>
           </div>
 
@@ -141,7 +146,7 @@
             </button>
           </div>
 
-          <!-- กล่องรายการสินค้า (รองรับหัวข้อคั่นหมวดหมู่) -->
+          <!-- กล่องรายการสินค้า (คั่นหมวดหมู่ในแท็บ "ทั้งหมด") -->
           <div id="productList" class="space-y-4">
             <div class="text-center py-6 text-slate-400 text-sm">
               <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
@@ -342,11 +347,13 @@
     document.getElementById('clearCartBtn').addEventListener('click', () => {
       Swal.fire({
         title: 'ยืนยันล้างตะกร้า?',
-        text: 'รายการสินค้าทั้งหมดที่เลือกไว้จะถูกรีเซ็ต',
+        text: 'รายการสินค้าทั้งหมดที่เลือกไว้จะถูกลบออก',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'ล้างตะกร้า',
-        cancelButtonText: 'ยกเลิก'
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#e11d48',
+        cancelButtonColor: '#64748b'
       }).then((res) => {
         if (res.isConfirmed) clearCartStorage();
       });
@@ -487,7 +494,6 @@
       }, { passive: false });
     }
 
-    // ฟังก์ชันสร้างการ์ด HTML สินค้าแต่ละชิ้น
     function createProductCardHTML(item) {
       const driveId = extractDriveId(item.image);
       const currentQty = selectedQuantities[item.name] || 0;
@@ -540,7 +546,7 @@
       }
     }
 
-    window.updateProductQty = function(name, change) {
+    window.updateProductQty = async function(name, change) {
       const product = allProducts.find(p => p.name === name);
       const max = (product && product.maxStock) ? parseInt(product.maxStock) : 999;
       let qty = selectedQuantities[name] || 0;
@@ -554,11 +560,26 @@
           return;
         }
       } else if (change < 0) {
-        qty += change;
-        if (qty <= 0) {
+        if (qty === 1) {
+          const confirm = await Swal.fire({
+            title: 'ยืนยันการลบสินค้า?',
+            html: `ต้องการลบ <b>"${name}"</b> ออกจากรายการใช่หรือไม่?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ใช่, ลบออก',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#64748b'
+          });
+
+          if (!confirm.isConfirmed) {
+            return;
+          }
+
           delete selectedQuantities[name];
           qty = 0;
-        } else {
+        } else if (qty > 1) {
+          qty += change;
           selectedQuantities[name] = qty;
         }
       }
@@ -568,13 +589,11 @@
       saveCartToStorage();
     };
 
-    // แสดงผลรายการสินค้า (เพิ่มหัวข้อคั่นหมวดหมู่ในแท็บ "ทั้งหมด")
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
 
       if (currentCategory === "ทั้งหมด") {
-        // ดึงหมวดหมู่ทั้งหมดที่มีสินค้า
         const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
         
         if (allProducts.length === 0) {
@@ -604,7 +623,6 @@
           }
         });
 
-        // สินค้าที่ไม่ได้ระบุหมวดหมู่
         const uncategorizedItems = allProducts.filter(p => !p.category);
         if (uncategorizedItems.length > 0) {
           fullHTML += `
@@ -624,7 +642,6 @@
         container.innerHTML = fullHTML;
 
       } else {
-        // เมื่อเลือกหมวดหมู่เฉพาะ
         const filtered = allProducts.filter(p => p.category === currentCategory);
 
         if (filtered.length === 0) {
@@ -639,7 +656,6 @@
         `;
       }
 
-      // ผูก Event Listener ให้ปุ่มในรายการสินค้า
       container.querySelectorAll('.btn-minus').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const name = e.currentTarget.dataset.name;
@@ -683,7 +699,6 @@
                 </div>
                 
                 <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-                  <!-- ปุ่ม + - ในสรุปรายการ -->
                   <div class="flex items-center border border-slate-200 rounded-lg bg-white shadow-xs">
                     <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-l-lg hover:bg-slate-100 active:scale-95 text-slate-600 font-bold transition" 
                       onclick="updateProductQty('${safeName}', -1)">-</button>
@@ -722,12 +737,25 @@
       return total;
     }
 
-    window.removeItem = function(name) {
+    window.removeItem = async function(name) {
       if (selectedQuantities[name]) {
-        delete selectedQuantities[name];
-        syncProductItemDisplay(name, 0);
-        calculateTotal();
-        saveCartToStorage();
+        const confirm = await Swal.fire({
+          title: 'ยืนยันการลบสินค้า?',
+          html: `ต้องการลบ <b>"${name}"</b> ออกจากรายการใช่หรือไม่?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'ใช่, ลบออก',
+          cancelButtonText: 'ยกเลิก',
+          confirmButtonColor: '#e11d48',
+          cancelButtonColor: '#64748b'
+        });
+
+        if (confirm.isConfirmed) {
+          delete selectedQuantities[name];
+          syncProductItemDisplay(name, 0);
+          calculateTotal();
+          saveCartToStorage();
+        }
       }
     };
 
