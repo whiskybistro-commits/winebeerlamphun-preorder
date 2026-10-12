@@ -125,40 +125,61 @@
     </main>
   </div>
 
-  <!-- Modal แสดง QR Code -->
-  <div id="qrModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center p-4">
-    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-2xl max-w-sm w-full flex flex-col items-center border border-slate-100 relative" onclick="event.stopPropagation()">
-      <button type="button" id="closeQrModalBtn" class="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold transition">
+  <!-- 🚀 Modal แสดง QR Code (ปรับเป็น Modern Electric Navy Theme) -->
+  <div id="qrModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-all duration-300">
+    <div class="relative w-full max-w-sm rounded-3xl p-6 text-center shadow-2xl overflow-hidden"
+         style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(59, 130, 246, 0.25); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 35px rgba(37, 99, 235, 0.2);"
+         onclick="event.stopPropagation()">
+      
+      <!-- แสง Ambient Glow สีน้ำเงินพื้นหลัง -->
+      <div class="absolute -top-12 -left-12 w-36 h-36 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -right-12 w-36 h-36 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- ปุ่มปิด (X) มุมขวาบน -->
+      <button type="button" id="closeQrModalBtn" 
+        class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700/60 transition active:scale-95">
         ✕
       </button>
 
-      <div class="text-center mb-3">
-        <span class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">
-          สำหรับเจ้าหน้าที่สแกนจ่ายของ
-        </span>
-        <h3 class="font-bold text-slate-900 text-lg mt-1">QR Code รับสินค้า</h3>
-        <p class="text-xs text-slate-500">แสดงหน้าจอนี้ให้พนักงานประจำจุดจ่ายเครื่องดื่ม</p>
+      <!-- หัวข้อ Modal -->
+      <div class="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full text-blue-400 text-[11px] font-semibold uppercase tracking-wider mb-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+        สำหรับเจ้าหน้าที่สแกนจ่ายของ
+      </div>
+      <h3 class="text-lg font-bold text-white tracking-tight">QR Code รับสินค้า</h3>
+      <p class="text-xs text-blue-200/60 font-light mt-0.5 mb-3">แสดงหน้าจอนี้ให้พนักงานประจำจุดจ่ายเครื่องดื่ม</p>
+
+      <!-- กรอบแสดง QR Code -->
+      <div class="relative bg-white p-4 rounded-2xl shadow-xl shadow-blue-950/40 inline-flex items-center justify-center border-2 border-blue-400/20 my-2">
+        <div id="qrcodeBox" class="flex items-center justify-center min-w-[190px] min-h-[190px]"></div>
       </div>
 
-      <div id="qrcodeBox" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/90 ring-1 ring-slate-900/5 flex items-center justify-center my-3 min-w-[210px] min-h-[210px] transition-all"></div>
-
-      <div class="w-full mt-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
-        <div class="flex justify-between">
-          <span class="text-slate-500">ผู้สั่งจอง:</span>
-          <span class="font-bold text-slate-900" id="qrModalCustomerName">-</span>
+      <!-- สรุปข้อมูลผู้รับและออเดอร์ -->
+      <div class="w-full mt-3 bg-slate-900/90 p-3.5 rounded-xl border border-blue-900/40 text-xs text-left space-y-1.5 shadow-inner">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 font-light">ผู้สั่งจอง:</span>
+          <span class="font-semibold text-slate-200" id="qrModalCustomerName">-</span>
         </div>
-        <div class="flex justify-between">
-          <span class="text-slate-500">จำนวนออเดอร์:</span>
-          <span class="font-bold text-emerald-700"><span id="qrModalOrderCount">0</span> รายการ</span>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400 font-light">จำนวนที่เลือก:</span>
+          <span class="font-bold text-blue-400"><span id="qrModalOrderCount">0</span> รายการ</span>
         </div>
-        <div class="pt-1 border-t border-slate-200 text-[11px] font-mono text-blue-900 break-all" id="qrModalOrderList">
+        <div class="pt-2 border-t border-slate-800 text-[11px] font-mono text-blue-300 break-all leading-relaxed" id="qrModalOrderList">
           -
         </div>
       </div>
 
-      <p class="text-[11px] text-amber-700 mt-3 text-center bg-amber-50 p-2 rounded-lg border border-amber-200 w-full">
-        🔒 ป้องกันการรับซ้ำ: เจ้าหน้าที่ต้องใส่รหัส PIN ประจำจุดเพื่ออนุมัติ
+      <!-- แถบแจ้งเตือนความปลอดภัย -->
+      <p class="text-[11px] text-amber-300/90 mt-3 text-center bg-amber-500/10 border border-amber-500/20 p-2 rounded-xl w-full font-light">
+        🔒 ป้องกันการรับซ้ำ: เจ้าหน้าที่ต้องระบุ PIN อนุมัติการจ่าย
       </p>
+
+      <!-- ปุ่มปิดหน้าต่าง -->
+      <button type="button" id="closeQrModalBtnBottom" 
+        class="w-full mt-3 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-medium py-3 rounded-xl shadow-lg shadow-blue-600/30 transition text-sm">
+        ปิดหน้าต่าง
+      </button>
+
     </div>
   </div>
 
@@ -338,11 +359,13 @@
 
       const qrBox = document.getElementById('qrcodeBox');
       qrBox.innerHTML = '';
+      
+      // 🎨 ปรับสีจุด QR Code เป็นสีน้ำเงินเข้มสไตล์ Midnight Navy เพื่อให้เข้ากับธีม
       qrcodeInstance = new QRCode(qrBox, {
         text: staffVerifyUrl,
         width: 190,
         height: 190,
-        colorDark: "#065f46",
+        colorDark: "#0f172a",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.M
       });
@@ -350,7 +373,11 @@
       document.getElementById('qrModal').classList.remove('hidden');
     });
 
+    // ปุ่มปิด Modal ทั้ง 2 จุด
     document.getElementById('closeQrModalBtn').addEventListener('click', () => {
+      document.getElementById('qrModal').classList.add('hidden');
+    });
+    document.getElementById('closeQrModalBtnBottom').addEventListener('click', () => {
       document.getElementById('qrModal').classList.add('hidden');
     });
 
