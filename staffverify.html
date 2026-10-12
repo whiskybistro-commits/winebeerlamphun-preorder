@@ -275,9 +275,13 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
       });
     }
 
-    // 4. กดยืนยันจ่ายของด้วย PIN
+// 4. กดยืนยันจ่ายของด้วย PIN (แก้ไขรองรับ iPhone / iOS / LINE Browser 100%)
     document.getElementById('confirmReleaseBtn').addEventListener('click', async () => {
-      const pin = document.getElementById('staffPinInput').value.trim();
+      const pinInput = document.getElementById('staffPinInput');
+      const pin = pinInput.value.trim();
+
+      // ปิดคีย์บอร์ดบน iPhone ทันที เพื่อไม่ให้ระบบค้างที่หน้าต่างคีย์บอร์ด
+      pinInput.blur();
 
       if (pin.length !== 4) {
         Swal.fire({
@@ -294,28 +298,46 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
       const btn = document.getElementById('confirmReleaseBtn');
       btn.disabled = true;
       btn.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
         </svg>
         กำลังตรวจสอบ PIN...
       `;
 
+      // ⏱️ ตั้งเวลา Timeout 15 วินาที ป้องกัน iPhone แขวนรอคำตอบตลอดกาล
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       try {
         const response = await fetch(N8N_CLAIM_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          mode: 'cors',
+          cache: 'no-cache', // ป้องกัน Safari แคชคำขอเดิม
+          signal: controller.signal,
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({
-            staff_pin: pin,
+            staff_pin: String(pin), // บังคับเป็น String ป้องกัน Error บน iOS
             order_ids: orderList,
-            line_user_id: userIdParam,
+            line_user_id: String(userIdParam || ''),
             claimed_at: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ')
           })
         });
 
-        const result = await response.json();
+        clearTimeout(timeoutId); // ยกเลิก Timeout เมื่อเซิร์ฟเวอร์ตอบกลับแล้ว
 
-        if (response.ok && result.success) {
+        // อ่านผลลัพธ์อย่างปลอดภัย
+        let result = {};
+        try {
+          result = await response.json();
+        } catch (e) {
+          result = { success: response.ok };
+        }
+
+        if (response.ok && (result.success === true || result.status === 'success' || result.message === 'success')) {
           await Swal.fire({
             icon: 'success',
             title: 'จ่ายสินค้าสำเร็จ!',
@@ -331,22 +353,33 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
           closeCurrentWindow();
 
         } else {
-          throw new Error(result.message || 'รหัส PIN ไม่ถูกต้อง');
+          throw new Error(result.message || 'รหัส PIN ไม่ถูกต้อง หรือระบบขัดข้อง');
         }
+
       } catch (err) {
+        clearTimeout(timeoutId);
+        console.error("Claim Error:", err);
+
+        let errorMsg = err.message || 'รหัส PIN ผิดพลาด กรุณาตรวจสอบอีกครั้ง';
+        if (err.name === 'AbortError') {
+          errorMsg = 'การเชื่อมต่อใช้เวลานานเกินไป กรุณากดใหม่อีกครั้งค่ะ';
+        }
+
         Swal.fire({
           icon: 'error',
           title: 'ไม่สามารถทำรายการได้',
-          text: err.message || 'รหัส PIN ผิดพลาด กรุณาตรวจสอบอีกครั้ง',
+          text: errorMsg,
           background: '#0f172a',
           color: '#ffffff',
           confirmButtonColor: '#e11d48'
         });
+
+        // คืนสถานะปุ่มกดให้กลับมากดใหม่ได้เสมอ
         btn.disabled = false;
         btn.innerHTML = "✓ ยืนยันจ่ายของให้ลูกค้า";
       }
     });
-
+    
     // ฟังก์ชันสั่งปิดหน้าจอ
     function closeCurrentWindow() {
       if (navigator.userAgent.includes('Line')) {
