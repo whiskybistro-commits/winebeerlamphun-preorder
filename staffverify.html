@@ -38,10 +38,10 @@
     }
     /* Glassmorphism */
     .glass-card {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(59, 130, 246, 0.18);
+      border: 1px solid rgba(59, 130, 246, 0.22);
     }
   </style>
 </head>
@@ -58,7 +58,7 @@
         <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
         ระบบสำหรับเจ้าหน้าที่
       </div>
-      <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">ตรวจสอบและยืนยันจ่ายสินค้า</h1>
+      <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">ตรวจสอบและจัดเตรียมจ่ายสินค้า</h1>
       <p class="text-xs text-blue-300/70 font-light mt-0.5">MTL PARTY 2026 • PORTAL</p>
     </header>
 
@@ -68,7 +68,7 @@
         <!-- รายการออเดอร์ที่ถูกสแกนเข้ามา -->
         <div class="border-b border-slate-800/80 pb-3">
           <span class="text-xs font-medium text-slate-400 flex items-center gap-1.5">
-            📦 รายการออเดอร์ที่เลือกรวม:
+            📦 รายการออเดอร์ที่ลูกค้าเลือกรับ:
           </span>
           <div id="orderBadgeContainer" class="flex flex-wrap gap-2 mt-2">
             <span class="text-xs text-slate-500">กำลังอ่านข้อมูล...</span>
@@ -83,8 +83,8 @@
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
           </div>
-          <p class="text-sm font-semibold text-slate-200">กำลังตรวจสอบข้อมูลออเดอร์...</p>
-          <p class="text-xs text-blue-300/60 mt-1">กรุณารอสักครู่ ระบบกำลังเช็คสิทธิ์จ่ายสินค้า</p>
+          <p class="text-sm font-semibold text-slate-200">กำลังดึงข้อมูลใบจัดสินค้า...</p>
+          <p class="text-xs text-blue-300/60 mt-1">กรุณารอสักครู่ ระบบกำลังตรวจสอบสิทธิ์การจ่าย</p>
         </div>
 
         <!-- ⛔ กล่องแจ้งเตือนถูกบล็อก -->
@@ -99,19 +99,34 @@
           <p class="text-[11px] text-rose-400/90 font-medium">กรุณาให้ลูกค้าติดต่อจุดอำนวยการเพื่อตรวจสอบสลิปค่ะ</p>
         </div>
 
+        <!-- 📋 โซนแสดงใบจัดของ (Picking Slip Cards Container) -->
+        <div id="orderItemsSection" class="hidden space-y-3.5">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-xs font-semibold text-blue-300 flex items-center gap-1.5 uppercase tracking-wider">
+              📋 ใบจัดรายการเครื่องดื่ม
+            </span>
+            <span id="orderItemCountBadge" class="text-[11px] bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">
+              0 รายการ
+            </span>
+          </div>
+
+          <!-- รายการบัตรจัดของแต่ละออเดอร์ -->
+          <div id="pickingCardsList" class="space-y-3"></div>
+        </div>
+
         <!-- 🔑 ส่วนฟอร์มยืนยัน PIN -->
-        <div id="pinFormSection" class="hidden space-y-4">
+        <div id="pinFormSection" class="hidden space-y-4 pt-2 border-t border-slate-800/80">
           <div class="bg-slate-900/90 p-5 rounded-2xl border border-blue-900/40 text-center shadow-inner">
-            <label class="block text-xs font-medium text-blue-200/90 mb-2">
-              🔐 ระบุ PIN เจ้าหน้าที่ (4 หลัก)
+            <label class="block text-sm font-semibold text-blue-200/90 mb-1">
+              🔐 ยืนยันรหัส PIN เจ้าหน้าที่ (4 หลัก)
             </label>
+            <p class="text-[11px] text-slate-400 mb-3">เมื่อตรวจสอบและจัดของครบถ้วนแล้ว กรุณากรอกรหัส PIN</p>
             <input type="password" id="staffPinInput" maxlength="4" placeholder="••••"
-              class="pin-input w-full bg-[#050b14] border border-blue-900/60 rounded-xl py-3 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 font-mono placeholder:text-slate-700 shadow-sm transition">
-            <p class="text-[11px] text-slate-400 mt-2">เฉพาะผู้ดูแลประจำจุดจ่ายสินค้าเท่านั้น</p>
+              class="pin-input w-full bg-[#050b14] border border-blue-900/60 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 font-mono placeholder:text-slate-700 shadow-sm transition">
           </div>
 
           <button type="button" id="confirmReleaseBtn"
-            class="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 text-base">
+            class="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 text-base">
             <span>✓ ยืนยันจ่ายของให้ลูกค้า</span>
           </button>
         </div>
@@ -137,9 +152,11 @@
     const checkingCard = document.getElementById('checkingStatusCard');
     const blockedCard = document.getElementById('blockedAlertCard');
     const blockedReason = document.getElementById('blockedReasonText');
+    const orderItemsSection = document.getElementById('orderItemsSection');
+    const pickingCardsList = document.getElementById('pickingCardsList');
     const pinSection = document.getElementById('pinFormSection');
 
-    // 1. แสดง Badge ออเดอร์ (ดีไซน์สีกรมท่า-ฟ้า)
+    // 1. แสดง Badge ออเดอร์
     if (orderList.length > 0) {
       badgeContainer.innerHTML = orderList.map(id => `
         <span class="bg-blue-950/80 text-blue-300 border border-blue-500/30 font-mono text-xs font-semibold px-3 py-1.5 rounded-xl shadow-sm">
@@ -153,7 +170,7 @@
       blockedReason.innerText = "ไม่พบรหัสออเดอร์ในลิงก์ที่สแกนมา กรุณาให้ลูกค้าเปิด QR Code ใหม่อีกครั้ง";
     }
 
-    // 2. ฟังก์ชันตรวจสอบสถานะออเดอร์
+    // 2. ฟังก์ชันตรวจสอบสถานะ และ เรนเดอร์ใบจัดของ
     async function verifyOrderStatus() {
       if (orderList.length === 0) return;
 
@@ -169,6 +186,7 @@
         checkingCard.classList.add('hidden');
 
         const blockedIssues = [];
+        const validOrdersToPick = [];
 
         for (const orderId of orderList) {
           const matched = allClaimableOrders.find(o => o.Order_ID === orderId);
@@ -187,20 +205,25 @@
               blockedIssues.push(`• <b>${orderId}</b>: สถานะ "โอนเงินคืนสำเร็จ/ยกเลิกแล้ว"`);
             } else if (claimStatus === 'รับสินค้าแล้ว' || claimStatus === 'Claimed') {
               blockedIssues.push(`• <b>${orderId}</b>: ได้ทำการ "รับสินค้าแล้ว" ไปก่อนหน้านี้`);
+            } else {
+              validOrdersToPick.push(matched);
             }
           }
         }
 
         if (blockedIssues.length > 0) {
           blockedCard.classList.remove('hidden');
+          orderItemsSection.classList.add('hidden');
           pinSection.classList.add('hidden');
           blockedReason.innerHTML = blockedIssues.join('<br>');
           return;
         }
 
-        // ผ่านเงื่อนไข -> เปิดฟอร์มใส่ PIN
+        // ✅ ผ่านทุกเงื่อนไข: แสดงใบจัดสินค้าขนาดใหญ่
+        renderPickingCards(validOrdersToPick);
+
+        orderItemsSection.classList.remove('hidden');
         pinSection.classList.remove('hidden');
-        document.getElementById('staffPinInput').focus();
 
       } catch (err) {
         console.error("Verify status error:", err);
@@ -210,7 +233,49 @@
       }
     }
 
-    // 3. กดยืนยันจ่ายของด้วย PIN
+    // 3. ฟังก์ชันเรนเดอร์ใบจัดของตัวใหญ่ คมชัด
+    function renderPickingCards(orders) {
+      document.getElementById('orderItemCountBadge').innerText = `${orders.length} ออเดอร์`;
+      pickingCardsList.innerHTML = '';
+
+      orders.forEach(order => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900/90 border-2 border-blue-500/40 rounded-2xl p-4 shadow-lg space-y-3 relative overflow-hidden";
+        
+        card.innerHTML = `
+          <!-- แถบด้านบน: Order ID, Pickup Point, Pickup Code -->
+          <div class="flex justify-between items-start gap-2 border-b border-slate-800 pb-2.5">
+            <div>
+              <span class="inline-block bg-blue-500/20 text-blue-300 border border-blue-400/40 text-sm font-mono font-bold px-2.5 py-0.5 rounded-lg mb-1">
+                #${order.Order_ID}
+              </span>
+              <p class="text-xs text-slate-400">โต๊ะ: <b class="text-white text-sm">${order.Table_Number || '-'}</b> (${order.Full_Name || '-'})</p>
+            </div>
+            
+            <div class="text-right flex flex-col items-end">
+              <span class="bg-indigo-900/60 text-indigo-200 border border-indigo-400/30 text-xs font-semibold px-2 py-0.5 rounded-md mb-1">
+                📍 ${order.Pickup_Point || 'จุดรับสินค้า'}
+              </span>
+              <div class="bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-lg text-right">
+                <span class="text-[10px] text-amber-300 block leading-tight">รหัสรับของ</span>
+                <span class="text-sm font-black font-mono text-amber-400 tracking-wider">${order.Pickup_Code || '-'}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🍻 รายการสินค้าตัวใหญ่ ชัดเจน อ่านง่าย -->
+          <div>
+            <span class="text-xs text-slate-400 font-medium block mb-1.5">📦 รายการที่ต้องหยิบ:</span>
+            <div class="bg-[#050b14] p-3 rounded-xl border border-blue-900/50 text-white font-medium text-sm sm:text-base leading-relaxed whitespace-pre-line space-y-1 shadow-inner">
+${order.Order_Items || 'ไม่มีรายการระบุ'}
+            </div>
+          </div>
+        `;
+        pickingCardsList.appendChild(card);
+      });
+    }
+
+    // 4. กดยืนยันจ่ายของด้วย PIN
     document.getElementById('confirmReleaseBtn').addEventListener('click', async () => {
       const pin = document.getElementById('staffPinInput').value.trim();
 
@@ -233,7 +298,7 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
         </svg>
-        กำลังตรวจสอบ...
+        กำลังตรวจสอบ PIN...
       `;
 
       try {
@@ -282,7 +347,7 @@
       }
     });
 
-    // ฟังก์ชันปิดหน้าจอ
+    // ฟังก์ชันสั่งปิดหน้าจอ
     function closeCurrentWindow() {
       if (navigator.userAgent.includes('Line')) {
         try {
