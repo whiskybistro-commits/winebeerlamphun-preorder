@@ -125,10 +125,10 @@
     </main>
   </div>
 
-  <!-- 🚀 Modal แสดง QR Code (ปรับเป็น Modern Electric Navy Theme) -->
+  <!-- 🚀 Modal แสดง QR Code (ปรับตัวหนังสือใหญ่ ชัดเจน อ่านง่ายสำหรับพนักงาน) -->
   <div id="qrModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-all duration-300">
     <div class="relative w-full max-w-sm rounded-3xl p-6 text-center shadow-2xl overflow-hidden"
-         style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(59, 130, 246, 0.25); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 35px rgba(37, 99, 235, 0.2);"
+         style="background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(20px); border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 35px rgba(37, 99, 235, 0.25);"
          onclick="event.stopPropagation()">
       
       <!-- แสง Ambient Glow สีน้ำเงินพื้นหลัง -->
@@ -137,46 +137,54 @@
 
       <!-- ปุ่มปิด (X) มุมขวาบน -->
       <button type="button" id="closeQrModalBtn" 
-        class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700/60 transition active:scale-95">
+        class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition active:scale-95 text-base font-bold">
         ✕
       </button>
 
       <!-- หัวข้อ Modal -->
-      <div class="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full text-blue-400 text-[11px] font-semibold uppercase tracking-wider mb-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-        สำหรับเจ้าหน้าที่สแกนจ่ายของ
+      <div class="inline-flex items-center gap-1.5 bg-blue-500/15 border border-blue-500/30 px-3.5 py-1 rounded-full text-blue-300 text-xs font-semibold uppercase tracking-wider mb-2">
+        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+        สำหรับพนักงานสแกนจ่ายของ
       </div>
-      <h3 class="text-lg font-bold text-white tracking-tight">QR Code รับสินค้า</h3>
-      <p class="text-xs text-blue-200/60 font-light mt-0.5 mb-3">แสดงหน้าจอนี้ให้พนักงานประจำจุดจ่ายเครื่องดื่ม</p>
+      <h3 class="text-xl font-bold text-white tracking-tight">QR Code รับสินค้า</h3>
+      <p class="text-xs text-blue-200/70 font-light mt-0.5 mb-2">แสดงหน้าจอนี้ให้พนักงานประจำจุดจ่าย</p>
 
       <!-- กรอบแสดง QR Code -->
-      <div class="relative bg-white p-4 rounded-2xl shadow-xl shadow-blue-950/40 inline-flex items-center justify-center border-2 border-blue-400/20 my-2">
+      <div class="relative bg-white p-4 rounded-2xl shadow-xl shadow-blue-950/50 inline-flex items-center justify-center border-2 border-blue-400/25 my-1.5">
         <div id="qrcodeBox" class="flex items-center justify-center min-w-[190px] min-h-[190px]"></div>
       </div>
 
-      <!-- สรุปข้อมูลผู้รับและออเดอร์ -->
-      <div class="w-full mt-3 bg-slate-900/90 p-3.5 rounded-xl border border-blue-900/40 text-xs text-left space-y-1.5 shadow-inner">
-        <div class="flex justify-between items-center">
-          <span class="text-slate-400 font-light">ผู้สั่งจอง:</span>
-          <span class="font-semibold text-slate-200" id="qrModalCustomerName">-</span>
+      <!-- 📦 กล่องข้อมูลออเดอร์ (ขยายใหญ่ ชัดเจน อ่านง่ายมาก) -->
+      <div class="w-full mt-3 bg-slate-900/95 p-4 rounded-2xl border border-blue-900/60 text-left space-y-2.5 shadow-inner">
+        
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-slate-400">ผู้สั่งจอง:</span>
+          <span class="font-bold text-slate-100 text-base" id="qrModalCustomerName">-</span>
         </div>
-        <div class="flex justify-between items-center">
-          <span class="text-slate-400 font-light">จำนวนที่เลือก:</span>
-          <span class="font-bold text-blue-400"><span id="qrModalOrderCount">0</span> รายการ</span>
+
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-slate-400">จำนวนที่รวมจ่าย:</span>
+          <span class="font-bold text-emerald-400 text-base"><span id="qrModalOrderCount">0</span> รายการ</span>
         </div>
-        <div class="pt-2 border-t border-slate-800 text-[11px] font-mono text-blue-300 break-all leading-relaxed" id="qrModalOrderList">
-          -
+
+        <!-- โซนเลขออเดอร์แบบ Badge ใหญ่ ชัดเจน -->
+        <div class="pt-2 border-t border-slate-800">
+          <span class="text-xs text-blue-300/80 font-medium block mb-1.5">🏷️ รหัสออเดอร์ที่จ่าย:</span>
+          <div id="qrModalOrderList" class="flex flex-wrap gap-2 max-h-28 overflow-y-auto pr-1">
+            <!-- Badges จะถูกสร้างโดย JS -->
+          </div>
         </div>
+
       </div>
 
       <!-- แถบแจ้งเตือนความปลอดภัย -->
-      <p class="text-[11px] text-amber-300/90 mt-3 text-center bg-amber-500/10 border border-amber-500/20 p-2 rounded-xl w-full font-light">
-        🔒 ป้องกันการรับซ้ำ: เจ้าหน้าที่ต้องระบุ PIN อนุมัติการจ่าย
+      <p class="text-xs text-amber-300/90 mt-3 text-center bg-amber-500/10 border border-amber-500/25 p-2 rounded-xl w-full font-light">
+        🔒 พนักงานต้องระบุรหัส PIN เพื่อยืนยันการจ่ายสินค้า
       </p>
 
       <!-- ปุ่มปิดหน้าต่าง -->
       <button type="button" id="closeQrModalBtnBottom" 
-        class="w-full mt-3 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-medium py-3 rounded-xl shadow-lg shadow-blue-600/30 transition text-sm">
+        class="w-full mt-3.5 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-600/30 transition text-base">
         ปิดหน้าต่าง
       </button>
 
@@ -355,12 +363,19 @@
 
       document.getElementById('qrModalCustomerName').innerText = currentUserName;
       document.getElementById('qrModalOrderCount').innerText = selectedOrderIds.length;
-      document.getElementById('qrModalOrderList').innerText = selectedOrderIds.join(', ');
+
+      // 🏷️ สร้าง Badge แสดงเลขออเดอร์ขนาดใหญ่ อ่านง่าย คมชัด
+      const orderListContainer = document.getElementById('qrModalOrderList');
+      orderListContainer.innerHTML = selectedOrderIds.map(id => `
+        <span class="bg-blue-950 text-blue-200 border-2 border-blue-500/50 font-mono text-sm sm:text-base font-extrabold px-3 py-1 rounded-xl shadow-sm tracking-wide">
+          #${id}
+        </span>
+      `).join('');
 
       const qrBox = document.getElementById('qrcodeBox');
       qrBox.innerHTML = '';
       
-      // 🎨 ปรับสีจุด QR Code เป็นสีน้ำเงินเข้มสไตล์ Midnight Navy เพื่อให้เข้ากับธีม
+      // QR Code สี Midnight Navy คมชัดสูง
       qrcodeInstance = new QRCode(qrBox, {
         text: staffVerifyUrl,
         width: 190,
