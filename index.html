@@ -145,7 +145,7 @@
             </button>
           </div>
 
-          <!-- กล่องรายการสินค้า (รองรับ Accordion หุบ/ขยาย) -->
+          <!-- กล่องรายการสินค้า (รองรับ Accordion ย่อลง/ดูเพิ่ม) -->
           <div id="productList" class="space-y-4">
             <div class="text-center py-6 text-slate-400 text-sm">
               <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
@@ -299,7 +299,7 @@
     let selectedQuantities = {};
     let compressedSlipBase64 = "";
     
-    // ชุดเก็บสถานะหมวดหมู่ที่ถูกหุบ (Collapsed)
+    // ชุดเก็บสถานะหมวดหมู่ที่ถูกย่อลง (Collapsed)
     let collapsedCategories = new Set();
 
     function getCartStorageKey() {
@@ -591,24 +591,36 @@
       saveCartToStorage();
     };
 
-    // ฟังก์ชันสำหรับ สลับ หุบ/ขยาย แต่ละหมวดหมู่
+    // ฟังก์ชัน สลับ ย่อลง / ดูเพิ่ม แต่ละหมวดหมู่
     window.toggleCategoryAccordion = function(catKey) {
       const content = document.getElementById(`cat-content-${catKey}`);
       const chevron = document.getElementById(`cat-chevron-${catKey}`);
+      const label = document.getElementById(`cat-label-${catKey}`);
+      const badge = document.getElementById(`cat-btn-${catKey}`);
       if (!content || !chevron) return;
 
       if (content.classList.contains('hidden')) {
+        // ขยายออก -> แสดงคำว่า "ย่อลง"
         content.classList.remove('hidden');
-        chevron.classList.remove('-rotate-90');
+        chevron.classList.add('rotate-180');
+        if (label) label.innerText = 'ย่อลง';
+        if (badge) {
+          badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition duration-150 shadow-xs bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-slate-200";
+        }
         collapsedCategories.delete(catKey);
       } else {
+        // ย่อลง -> แสดงคำว่า "ดูเพิ่ม"
         content.classList.add('hidden');
-        chevron.classList.add('-rotate-90');
+        chevron.classList.remove('rotate-180');
+        if (label) label.innerText = 'ดูเพิ่ม';
+        if (badge) {
+          badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition duration-150 shadow-xs bg-blue-50 text-blue-700 border border-blue-200 group-hover:bg-blue-100";
+        }
         collapsedCategories.add(catKey);
       }
     };
 
-    // ฟังก์ชัน ขยายทั้งหมด / หุบทั้งหมด
+    // ฟังก์ชัน ดูเพิ่มทั้งหมด / ย่อลงทั้งหมด
     window.toggleAllCategories = function(expandAll) {
       const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
       if (allProducts.some(p => !p.category)) uniqueCategories.push('__uncategorized__');
@@ -617,14 +629,24 @@
         const catKey = cat.replace(/[^\wก-๙]/g, '_');
         const content = document.getElementById(`cat-content-${catKey}`);
         const chevron = document.getElementById(`cat-chevron-${catKey}`);
+        const label = document.getElementById(`cat-label-${catKey}`);
+        const badge = document.getElementById(`cat-btn-${catKey}`);
         if (content && chevron) {
           if (expandAll) {
             content.classList.remove('hidden');
-            chevron.classList.remove('-rotate-90');
+            chevron.classList.add('rotate-180');
+            if (label) label.innerText = 'ย่อลง';
+            if (badge) {
+              badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition duration-150 shadow-xs bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-slate-200";
+            }
             collapsedCategories.delete(catKey);
           } else {
             content.classList.add('hidden');
-            chevron.classList.add('-rotate-90');
+            chevron.classList.remove('rotate-180');
+            if (label) label.innerText = 'ดูเพิ่ม';
+            if (badge) {
+              badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition duration-150 shadow-xs bg-blue-50 text-blue-700 border border-blue-200 group-hover:bg-blue-100";
+            }
             collapsedCategories.add(catKey);
           }
         }
@@ -643,14 +665,29 @@
           return;
         }
 
-        // แถบเครื่องมือ "ขยายทั้งหมด / หุบทั้งหมด"
+        // แถบปุ่มแคปซูล "ดูเพิ่มทั้งหมด / ย่อลงทั้งหมด"
         let fullHTML = `
-          <div class="flex items-center justify-between px-1 pb-1 text-xs text-slate-500">
-            <span class="font-medium text-slate-600">แสดงสินค้าแยกตามหมวดหมู่</span>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="toggleAllCategories(true)" class="hover:text-blue-600 text-blue-500 underline font-medium">ขยายทั้งหมด</button>
-              <span>|</span>
-              <button type="button" onclick="toggleAllCategories(false)" class="hover:text-slate-700 text-slate-500 underline">หุบทั้งหมด</button>
+          <div class="flex items-center justify-between pb-2 px-0.5">
+            <span class="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+              แยกตามหมวดหมู่
+            </span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="toggleAllCategories(true)" 
+                class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 hover:bg-blue-100 active:scale-95 text-blue-700 border border-blue-200 transition duration-150 shadow-xs">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                <span>ดูเพิ่มทั้งหมด</span>
+              </button>
+
+              <button type="button" onclick="toggleAllCategories(false)" 
+                class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-600 border border-slate-200 transition duration-150 shadow-xs">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+                <span>ย่อลงทั้งหมด</span>
+              </button>
             </div>
           </div>
         `;
@@ -663,9 +700,9 @@
 
             fullHTML += `
               <div class="category-group ${index > 0 ? 'pt-2' : ''}">
-                <!-- หัวข้อหมวดหมู่แบบกดหุบ/ขยายได้ -->
+                <!-- หัวข้อหมวดหมู่แบบปุ่มแคปซูล ย่อลง/ดูเพิ่ม -->
                 <div onclick="toggleCategoryAccordion('${catKey}')" 
-                  class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100/70 hover:bg-slate-200/60 active:bg-slate-200 transition cursor-pointer select-none mb-2.5 border border-slate-200/60 group">
+                  class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100/90 active:bg-slate-100 transition cursor-pointer select-none mb-2.5 border border-slate-200/80 group">
                   <div class="flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-blue-600 rounded-full"></span>
                     <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight group-hover:text-blue-700 transition">${catName}</h3>
@@ -674,9 +711,14 @@
                     </span>
                   </div>
                   
-                  <div class="flex items-center gap-1.5 text-slate-400 group-hover:text-blue-600 transition">
-                    <span class="text-[11px] font-medium hidden sm:inline">หุบ/ขยาย</span>
-                    <svg id="cat-chevron-${catKey}" class="w-4 h-4 transform transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <!-- ปุ่มแคปซูลแสดงสถานะ ย่อลง / ดูเพิ่ม -->
+                  <div id="cat-btn-${catKey}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition duration-150 shadow-xs ${
+                    isCollapsed 
+                      ? 'bg-blue-50 text-blue-700 border border-blue-200 group-hover:bg-blue-100 font-semibold' 
+                      : 'bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-slate-200'
+                  }">
+                    <span id="cat-label-${catKey}">${isCollapsed ? 'ดูเพิ่ม' : 'ย่อลง'}</span>
+                    <svg id="cat-chevron-${catKey}" class="w-3.5 h-3.5 transform transition-transform duration-200 ${isCollapsed ? 'rotate-0' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
@@ -699,7 +741,7 @@
           fullHTML += `
             <div class="category-group pt-2">
               <div onclick="toggleCategoryAccordion('${catKey}')"
-                class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100/70 hover:bg-slate-200/60 active:bg-slate-200 transition cursor-pointer select-none mb-2.5 border border-slate-200/60 group">
+                class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100/90 active:bg-slate-100 transition cursor-pointer select-none mb-2.5 border border-slate-200/80 group">
                 <div class="flex items-center gap-2">
                   <span class="w-1.5 h-4 bg-slate-400 rounded-full"></span>
                   <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight group-hover:text-slate-900 transition">สินค้าอื่นๆ</h3>
@@ -708,9 +750,13 @@
                   </span>
                 </div>
                 
-                <div class="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition">
-                  <span class="text-[11px] font-medium hidden sm:inline">หุบ/ขยาย</span>
-                  <svg id="cat-chevron-${catKey}" class="w-4 h-4 transform transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div id="cat-btn-${catKey}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition duration-150 shadow-xs ${
+                  isCollapsed 
+                    ? 'bg-blue-50 text-blue-700 border border-blue-200 group-hover:bg-blue-100 font-semibold' 
+                    : 'bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-slate-200'
+                }">
+                  <span id="cat-label-${catKey}">${isCollapsed ? 'ดูเพิ่ม' : 'ย่อลง'}</span>
+                  <svg id="cat-chevron-${catKey}" class="w-3.5 h-3.5 transform transition-transform duration-200 ${isCollapsed ? 'rotate-0' : 'rotate-180'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
