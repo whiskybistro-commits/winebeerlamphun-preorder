@@ -121,7 +121,6 @@
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
               <span>🛍️</span> เลือกรายการสินค้า
             </h2>
-            <!-- ปรับปรุงปุ่มล้างตะกร้าแบบ Modern Pill Shape -->
             <button type="button" id="clearCartBtn" 
               class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-medium text-rose-700 transition duration-150 shadow-xs">
               <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +145,7 @@
             </button>
           </div>
 
-          <!-- กล่องรายการสินค้า (คั่นหมวดหมู่ในแท็บ "ทั้งหมด") -->
+          <!-- กล่องรายการสินค้า -->
           <div id="productList" class="space-y-4">
             <div class="text-center py-6 text-slate-400 text-sm">
               <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
@@ -229,7 +228,7 @@
           </div>
         </section>
 
-        <!-- 4. แนบหลักฐานการโอนเงิน -->
+        <!-- 4. แนบหลักฐานการโอนเงิน (เพิ่ม * บ่งบอกว่าจำเป็นต้องกรอก) -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
             <span>💳</span> หลักฐานการชำระเงิน
@@ -237,19 +236,19 @@
           
           <div class="max-w-md mx-auto grid grid-cols-2 gap-4 sm:gap-6 mb-5">
             <div class="min-w-0">
-              <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน</label>
+              <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน *</label>
               <input type="date" id="payDate" 
                 class="w-full min-w-0 px-2 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50/50 block text-slate-700">
             </div>
             <div class="min-w-0">
-              <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน</label>
+              <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน *</label>
               <input type="time" id="payTime" 
                 class="w-full min-w-0 px-2 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50/50 block text-slate-700">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG)</label>
+            <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG) *</label>
             <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
             
             <div id="slipPreviewContainer" class="hidden mt-4 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
@@ -837,17 +836,51 @@
     }
 
     // -------------------------------------------------------------
-    // 🚀 ยืนยันและส่งคำสั่งซื้อเข้า n8n + ป็อปอัพยืนยันเงื่อนไข
+    // 🚀 ยืนยันและส่งคำสั่งซื้อเข้า n8n + ระบบตรวจสอบสลิป/หลักฐานการเงิน
     // -------------------------------------------------------------
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      // 1. ตรวจสอบว่ามีการเลือกสินค้าหรือไม่
       const total = calculateTotal();
       if (total === 0) {
-        Swal.fire('ข้อผิดพลาด', 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนทำการสั่งซื้อค่ะ', 'warning');
+        Swal.fire({
+          icon: 'warning',
+          title: 'ยังไม่ได้เลือกสินค้า',
+          text: 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนทำการสั่งซื้อค่ะ',
+          confirmButtonColor: '#2563eb'
+        });
         return;
       }
 
+      // 2. ตรวจสอบข้อมูลการชำระเงิน (วันที่โอน, เวลาที่โอน และการแนบสลิป)
+      const payDate = document.getElementById('payDate').value.trim();
+      const payTime = document.getElementById('payTime').value.trim();
+      
+      let missingFields = [];
+      if (!payDate) missingFields.push('วันที่โอนเงิน');
+      if (!payTime) missingFields.push('เวลาที่โอนเงิน');
+      if (!compressedSlipBase64) missingFields.push('ภาพหลักฐานสลิปการโอนเงิน');
+
+      if (missingFields.length > 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'กรุณาแนบหลักฐานการชำระเงิน',
+          html: `
+            <div class="text-left text-sm text-slate-700 bg-rose-50 p-4 rounded-xl border border-rose-200 mt-2">
+              <p class="font-bold text-rose-800 mb-2">กรุณาระบุข้อมูลให้ครบถ้วนก่อนส่งแบบฟอร์ม:</p>
+              <ul class="list-disc list-inside space-y-1 text-rose-700 font-medium">
+                ${missingFields.map(field => `<li>${field}</li>`).join('')}
+              </ul>
+            </div>
+          `,
+          confirmButtonText: 'ตกลง, ไปกรอกข้อมูล',
+          confirmButtonColor: '#e11d48'
+        });
+        return; // บล็อคการส่งข้อมูลทันที
+      }
+
+      // 3. แสดง Modal ยืนยันเงื่อนไข
       const confirmResult = await Swal.fire({
         title: 'ยืนยันการสั่งจอง',
         html: `
@@ -896,9 +929,9 @@
         table_number: parseInt(tableInput.value),
         order_items: itemsBullet.join('\n'),
         total_amount: total,
-        payment_date: document.getElementById('payDate').value || '',
-        payment_time: document.getElementById('payTime').value || '',
-        slip_image_url: compressedSlipBase64 || '',
+        payment_date: payDate,
+        payment_time: payTime,
+        slip_image_url: compressedSlipBase64,
         line_user_id: lineUserId || document.getElementById('lineUserId').value || ''
       };
 
