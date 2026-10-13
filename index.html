@@ -145,7 +145,7 @@
             </button>
           </div>
 
-          <!-- กล่องรายการสินค้า -->
+          <!-- กล่องรายการสินค้า (รองรับ Accordion หุบ/ขยาย) -->
           <div id="productList" class="space-y-4">
             <div class="text-center py-6 text-slate-400 text-sm">
               <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
@@ -228,7 +228,7 @@
           </div>
         </section>
 
-        <!-- 4. แนบหลักฐานการโอนเงิน (เพิ่ม * บ่งบอกว่าจำเป็นต้องกรอก) -->
+        <!-- 4. แนบหลักฐานการโอนเงิน -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
             <span>💳</span> หลักฐานการชำระเงิน
@@ -298,6 +298,9 @@
     let currentCategory = "ทั้งหมด";
     let selectedQuantities = {};
     let compressedSlipBase64 = "";
+    
+    // ชุดเก็บสถานะหมวดหมู่ที่ถูกหุบ (Collapsed)
+    let collapsedCategories = new Set();
 
     function getCartStorageKey() {
       return 'mtl_cart_' + (lineUserId || 'guest');
@@ -588,6 +591,46 @@
       saveCartToStorage();
     };
 
+    // ฟังก์ชันสำหรับ สลับ หุบ/ขยาย แต่ละหมวดหมู่
+    window.toggleCategoryAccordion = function(catKey) {
+      const content = document.getElementById(`cat-content-${catKey}`);
+      const chevron = document.getElementById(`cat-chevron-${catKey}`);
+      if (!content || !chevron) return;
+
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        chevron.classList.remove('-rotate-90');
+        collapsedCategories.delete(catKey);
+      } else {
+        content.classList.add('hidden');
+        chevron.classList.add('-rotate-90');
+        collapsedCategories.add(catKey);
+      }
+    };
+
+    // ฟังก์ชัน ขยายทั้งหมด / หุบทั้งหมด
+    window.toggleAllCategories = function(expandAll) {
+      const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+      if (allProducts.some(p => !p.category)) uniqueCategories.push('__uncategorized__');
+
+      uniqueCategories.forEach(cat => {
+        const catKey = cat.replace(/[^\wก-๙]/g, '_');
+        const content = document.getElementById(`cat-content-${catKey}`);
+        const chevron = document.getElementById(`cat-chevron-${catKey}`);
+        if (content && chevron) {
+          if (expandAll) {
+            content.classList.remove('hidden');
+            chevron.classList.remove('-rotate-90');
+            collapsedCategories.delete(catKey);
+          } else {
+            content.classList.add('hidden');
+            chevron.classList.add('-rotate-90');
+            collapsedCategories.add(catKey);
+          }
+        }
+      });
+    };
+
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
@@ -600,21 +643,47 @@
           return;
         }
 
-        let fullHTML = '';
+        // แถบเครื่องมือ "ขยายทั้งหมด / หุบทั้งหมด"
+        let fullHTML = `
+          <div class="flex items-center justify-between px-1 pb-1 text-xs text-slate-500">
+            <span class="font-medium text-slate-600">แสดงสินค้าแยกตามหมวดหมู่</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="toggleAllCategories(true)" class="hover:text-blue-600 text-blue-500 underline font-medium">ขยายทั้งหมด</button>
+              <span>|</span>
+              <button type="button" onclick="toggleAllCategories(false)" class="hover:text-slate-700 text-slate-500 underline">หุบทั้งหมด</button>
+            </div>
+          </div>
+        `;
+
         uniqueCategories.forEach((catName, index) => {
           const itemsInCat = allProducts.filter(p => p.category === catName);
           if (itemsInCat.length > 0) {
+            const catKey = catName.replace(/[^\wก-๙]/g, '_');
+            const isCollapsed = collapsedCategories.has(catKey);
+
             fullHTML += `
-              <div class="category-group ${index > 0 ? 'pt-3' : ''}">
-                <div class="flex items-center gap-2 mb-2.5">
-                  <span class="w-1.5 h-4 bg-blue-600 rounded-full"></span>
-                  <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight">${catName}</h3>
-                  <span class="text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/60 font-medium">
-                    ${itemsInCat.length} รายการ
-                  </span>
-                  <div class="flex-1 border-b border-dashed border-slate-200 ml-1"></div>
+              <div class="category-group ${index > 0 ? 'pt-2' : ''}">
+                <!-- หัวข้อหมวดหมู่แบบกดหุบ/ขยายได้ -->
+                <div onclick="toggleCategoryAccordion('${catKey}')" 
+                  class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100/70 hover:bg-slate-200/60 active:bg-slate-200 transition cursor-pointer select-none mb-2.5 border border-slate-200/60 group">
+                  <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-4 bg-blue-600 rounded-full"></span>
+                    <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight group-hover:text-blue-700 transition">${catName}</h3>
+                    <span class="text-[11px] text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200 font-medium">
+                      ${itemsInCat.length} รายการ
+                    </span>
+                  </div>
+                  
+                  <div class="flex items-center gap-1.5 text-slate-400 group-hover:text-blue-600 transition">
+                    <span class="text-[11px] font-medium hidden sm:inline">หุบ/ขยาย</span>
+                    <svg id="cat-chevron-${catKey}" class="w-4 h-4 transform transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-                <div class="space-y-3">
+
+                <!-- กล่องรายการสินค้าของหมวดนี้ -->
+                <div id="cat-content-${catKey}" class="space-y-3 ${isCollapsed ? 'hidden' : ''}">
                   ${itemsInCat.map(createProductCardHTML).join('')}
                 </div>
               </div>
@@ -624,14 +693,30 @@
 
         const uncategorizedItems = allProducts.filter(p => !p.category);
         if (uncategorizedItems.length > 0) {
+          const catKey = '__uncategorized__';
+          const isCollapsed = collapsedCategories.has(catKey);
+
           fullHTML += `
-            <div class="category-group pt-3">
-              <div class="flex items-center gap-2 mb-2.5">
-                <span class="w-1.5 h-4 bg-slate-400 rounded-full"></span>
-                <h3 class="text-sm sm:text-base font-bold text-slate-800">สินค้าอื่นๆ</h3>
-                <div class="flex-1 border-b border-dashed border-slate-200 ml-1"></div>
+            <div class="category-group pt-2">
+              <div onclick="toggleCategoryAccordion('${catKey}')"
+                class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100/70 hover:bg-slate-200/60 active:bg-slate-200 transition cursor-pointer select-none mb-2.5 border border-slate-200/60 group">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-4 bg-slate-400 rounded-full"></span>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight group-hover:text-slate-900 transition">สินค้าอื่นๆ</h3>
+                  <span class="text-[11px] text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200 font-medium">
+                    ${uncategorizedItems.length} รายการ
+                  </span>
+                </div>
+                
+                <div class="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition">
+                  <span class="text-[11px] font-medium hidden sm:inline">หุบ/ขยาย</span>
+                  <svg id="cat-chevron-${catKey}" class="w-4 h-4 transform transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
-              <div class="space-y-3">
+
+              <div id="cat-content-${catKey}" class="space-y-3 ${isCollapsed ? 'hidden' : ''}">
                 ${uncategorizedItems.map(createProductCardHTML).join('')}
               </div>
             </div>
@@ -841,7 +926,6 @@
     document.getElementById('preorderForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // 1. ตรวจสอบว่ามีการเลือกสินค้าหรือไม่
       const total = calculateTotal();
       if (total === 0) {
         Swal.fire({
@@ -853,7 +937,6 @@
         return;
       }
 
-      // 2. ตรวจสอบข้อมูลการชำระเงิน (วันที่โอน, เวลาที่โอน และการแนบสลิป)
       const payDate = document.getElementById('payDate').value.trim();
       const payTime = document.getElementById('payTime').value.trim();
       
@@ -877,10 +960,9 @@
           confirmButtonText: 'ตกลง, ไปกรอกข้อมูล',
           confirmButtonColor: '#e11d48'
         });
-        return; // บล็อคการส่งข้อมูลทันที
+        return;
       }
 
-      // 3. แสดง Modal ยืนยันเงื่อนไข
       const confirmResult = await Swal.fire({
         title: 'ยืนยันการสั่งจอง',
         html: `
