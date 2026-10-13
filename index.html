@@ -615,32 +615,6 @@
       }
     };
 
-    // ฟังก์ชัน ดูทั้งหมด / ย่อทั้งหมด
-    window.toggleAllCategories = function(expandAll) {
-      const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
-      if (allProducts.some(p => !p.category)) uniqueCategories.push('__uncategorized__');
-
-      uniqueCategories.forEach(cat => {
-        const catKey = cat.replace(/[^\wก-๙]/g, '_');
-        const content = document.getElementById(`cat-content-${catKey}`);
-        const btn = document.getElementById(`cat-toggle-btn-${catKey}`);
-        const icon = document.getElementById(`cat-icon-${catKey}`);
-        if (content && btn && icon) {
-          if (expandAll) {
-            content.classList.remove('hidden');
-            btn.className = "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 bg-slate-50 border-slate-200 text-slate-500 group-hover:bg-slate-100 group-hover:text-slate-700 shadow-2xs";
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/>';
-            collapsedCategories.delete(catKey);
-          } else {
-            content.classList.add('hidden');
-            btn.className = "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 bg-blue-50 border-blue-200 text-blue-600 shadow-2xs";
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>';
-            collapsedCategories.add(catKey);
-          }
-        }
-      });
-    };
-
     function renderProducts() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
@@ -663,6 +637,7 @@
 
             fullHTML += `
               <div class="category-group ${index > 0 ? 'pt-2' : ''}">
+                <!-- หัวข้อหมวดหมู่แบบคลีนพร้อมปุ่มกลม - / + -->
                 <div onclick="toggleCategoryAccordion('${catKey}')" 
                   class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50/90 active:scale-[0.99] transition cursor-pointer select-none mb-2 border border-slate-200/80 group shadow-xs">
                   <div class="flex items-center gap-2.5 overflow-hidden mr-2">
@@ -673,6 +648,7 @@
                     </span>
                   </div>
                   
+                  <!-- ปุ่มกลม Minimal Clean: - หรือ + -->
                   <div id="cat-toggle-btn-${catKey}" class="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 shadow-2xs ${
                     isCollapsed 
                       ? 'bg-blue-50 border-blue-200 text-blue-600' 
@@ -684,6 +660,7 @@
                   </div>
                 </div>
 
+                <!-- กล่องรายการสินค้าของหมวดนี้ -->
                 <div id="cat-content-${catKey}" class="space-y-3 ${isCollapsed ? 'hidden' : ''}">
                   ${itemsInCat.map(createProductCardHTML).join('')}
                 </div>
@@ -709,6 +686,7 @@
                   </span>
                 </div>
                 
+                <!-- ปุ่มกลม Minimal Clean: - หรือ + -->
                 <div id="cat-toggle-btn-${catKey}" class="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 shadow-2xs ${
                   isCollapsed 
                     ? 'bg-blue-50 border-blue-200 text-blue-600' 
