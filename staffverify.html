@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เจ้าหน้าที่จ่ายสินค้า - MTL PARTY 2026</title>
+  <title>เจ้าหน้าที่จ่ายสินค้า - MTL Christmas Celebration 2026</title>
 
   <!-- Favicon & App Icons -->
   <link rel="apple-touch-icon" sizes="180x180" href="./check-apple-touch-icon.png?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="./check-favicon-32x32.png?v=2">
   <link rel="icon" type="image/png" sizes="16x16" href="./check-favicon-16x16.png?v=2">
   <link rel="manifest" href="./site.webmanifest">
-  <meta name="theme-color" content="#030712">
+  <meta name="theme-color" content="#4a070f">
 
   <!-- Google Fonts: Prompt -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,49 +24,61 @@
   <style>
     body { 
       font-family: 'Prompt', sans-serif; 
-      background-color: #030712;
+      background-color: #0b0204;
     }
     .pin-input {
       letter-spacing: 0.6em;
       text-align: center;
       font-size: 2rem;
     }
-    /* Subtle background grid */
+    /* Festive background pattern */
     .bg-grid-pattern {
-      background-image: radial-gradient(rgba(37, 99, 235, 0.12) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(220, 38, 38, 0.12) 1px, transparent 1px);
       background-size: 24px 24px;
     }
-    /* Glassmorphism */
+    /* Glassmorphism Dark Festive */
     .glass-card {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(59, 130, 246, 0.22);
+      background: rgba(22, 6, 9, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(239, 68, 68, 0.25);
     }
   </style>
 </head>
-<body class="bg-[#030712] min-h-screen text-slate-100 flex flex-col justify-between bg-grid-pattern relative overflow-x-hidden">
+<body class="bg-[#0b0204] min-h-screen text-slate-100 flex flex-col justify-between bg-grid-pattern relative overflow-x-hidden">
 
-  <!-- แสงนีออนพื้นหลัง Ambient Glow -->
-  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/15 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-  <div class="fixed bottom-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+  <!-- แสงนีออนพื้นหลัง Ambient Glow ธีมคริสต์มาส (แดง & ทอง) -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-red-600/15 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[110px] pointer-events-none -z-10"></div>
 
   <div>
-    <!-- Header โมเดิร์นสีกรมท่า -->
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-blue-900/30 py-4 px-4 text-center shadow-lg sticky top-0 z-20">
-      <div class="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full text-blue-400 text-[11px] font-semibold uppercase tracking-wider mb-1.5 shadow-sm">
-        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-        ระบบสำหรับเจ้าหน้าที่
+    <!-- Header ธีม Christmas Dark Portal -->
+    <header class="bg-gradient-to-b from-[#2a060b] via-[#1a0407] to-[#0b0204]/90 backdrop-blur-md border-b border-red-900/40 pt-5 pb-4 px-4 text-center shadow-2xl sticky top-0 z-20">
+      
+      <!-- โลโก้งานขนาดเด่นชัด -->
+      <div class="flex justify-center mb-2.5 transition-transform hover:scale-105 duration-300">
+        <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026" 
+             class="w-44 sm:w-52 h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]">
       </div>
-      <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">ตรวจสอบและจัดเตรียมจ่ายสินค้า</h1>
-      <p class="text-xs text-blue-300/70 font-light mt-0.5">MTL PARTY 2026 • PORTAL</p>
+
+      <div class="inline-flex items-center gap-1.5 bg-red-500/15 border border-red-500/30 px-3 py-1 rounded-full text-red-300 text-[11px] font-semibold uppercase tracking-wider mb-1.5 shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        ระบบสำหรับเจ้าหน้าที่ประจำจุดจ่ายของ
+      </div>
+
+      <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">
+        ตรวจสอบและจัดเตรียมจ่ายสินค้า
+      </h1>
+      <p class="text-xs text-amber-300/80 font-light mt-0.5">
+        ✨ MTL Christmas Celebration 2026 - The Gift of Happiness ✨
+      </p>
     </header>
 
     <main class="max-w-md mx-auto px-4 mt-6 mb-10 w-full relative z-10">
       <div class="glass-card rounded-3xl p-5 shadow-2xl space-y-4">
         
         <!-- รายการออเดอร์ที่ถูกสแกนเข้ามา -->
-        <div class="border-b border-slate-800/80 pb-3">
+        <div class="border-b border-red-950/80 pb-3">
           <span class="text-xs font-medium text-slate-400 flex items-center gap-1.5">
             📦 รายการออเดอร์ที่ลูกค้าเลือกรับ:
           </span>
@@ -76,36 +88,36 @@
         </div>
 
         <!-- ⏳ กล่องสถานะกำลังตรวจสอบออเดอร์ -->
-        <div id="checkingStatusCard" class="bg-blue-950/30 p-6 rounded-2xl border border-blue-800/30 text-center py-8">
-          <div class="inline-flex p-3 rounded-2xl bg-blue-500/10 text-blue-400 mb-3 border border-blue-500/20 shadow-inner">
+        <div id="checkingStatusCard" class="bg-red-950/30 p-6 rounded-2xl border border-red-800/30 text-center py-8">
+          <div class="inline-flex p-3 rounded-2xl bg-red-500/10 text-red-400 mb-3 border border-red-500/20 shadow-inner">
             <svg class="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
           </div>
           <p class="text-sm font-semibold text-slate-200">กำลังดึงข้อมูลใบจัดสินค้า...</p>
-          <p class="text-xs text-blue-300/60 mt-1">กรุณารอสักครู่ ระบบกำลังตรวจสอบสิทธิ์การจ่าย</p>
+          <p class="text-xs text-rose-300/60 mt-1">กรุณารอสักครู่ ระบบกำลังตรวจสอบสิทธิ์การจ่าย</p>
         </div>
 
         <!-- ⛔ กล่องแจ้งเตือนถูกบล็อก -->
-        <div id="blockedAlertCard" class="hidden bg-rose-950/60 border border-rose-500/50 rounded-2xl p-4 text-center space-y-2.5 backdrop-blur-md">
+        <div id="blockedAlertCard" class="hidden bg-rose-950/70 border border-rose-500/50 rounded-2xl p-4 text-center space-y-2.5 backdrop-blur-md">
           <div class="w-12 h-12 bg-rose-500/20 text-rose-400 rounded-full flex items-center justify-center text-xl mx-auto border border-rose-500/30">
             ✕
           </div>
           <h2 class="text-base font-bold text-rose-300">ไม่อนุญาตให้จ่ายสินค้า</h2>
-          <div id="blockedReasonText" class="text-xs text-rose-200 leading-relaxed bg-rose-950/80 p-3 rounded-xl border border-rose-800/60 text-left font-light">
+          <div id="blockedReasonText" class="text-xs text-rose-200 leading-relaxed bg-rose-950/90 p-3 rounded-xl border border-rose-800/60 text-left font-light">
             -
           </div>
-          <p class="text-[11px] text-rose-400/90 font-medium">กรุณาให้ลูกค้าติดต่อจุดอำนวยการเพื่อตรวจสอบสลิปค่ะ</p>
+          <p class="text-[11px] text-rose-400/90 font-medium">กรุณาให้ลูกค้าติดต่อจุดอำนวยการเพื่อตรวจสอบสิทธิ์ค่ะ</p>
         </div>
 
         <!-- 📋 โซนแสดงใบจัดของ (Picking Slip Cards Container) -->
         <div id="orderItemsSection" class="hidden space-y-3.5">
           <div class="flex items-center justify-between px-1">
-            <span class="text-xs font-semibold text-blue-300 flex items-center gap-1.5 uppercase tracking-wider">
-              📋 ใบจัดรายการเครื่องดื่ม
+            <span class="text-xs font-semibold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider">
+              📋 ใบจัดรายการสินค้า / เครื่องดื่ม
             </span>
-            <span id="orderItemCountBadge" class="text-[11px] bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">
+            <span id="orderItemCountBadge" class="text-[11px] bg-red-900/60 text-red-200 px-2.5 py-0.5 rounded-full border border-red-500/30 font-mono font-bold">
               0 รายการ
             </span>
           </div>
@@ -115,19 +127,19 @@
         </div>
 
         <!-- 🔑 ส่วนฟอร์มยืนยัน PIN -->
-        <div id="pinFormSection" class="hidden space-y-4 pt-2 border-t border-slate-800/80">
-          <div class="bg-slate-900/90 p-5 rounded-2xl border border-blue-900/40 text-center shadow-inner">
-            <label class="block text-sm font-semibold text-blue-200/90 mb-1">
+        <div id="pinFormSection" class="hidden space-y-4 pt-2 border-t border-red-950/80">
+          <div class="bg-[#180508] p-5 rounded-2xl border border-red-900/50 text-center shadow-inner">
+            <label class="block text-sm font-semibold text-amber-200/95 mb-1">
               🔐 ยืนยันรหัส PIN เจ้าหน้าที่ (4 หลัก)
             </label>
-            <p class="text-[11px] text-slate-400 mb-3">เมื่อตรวจสอบและจัดของครบถ้วนแล้ว กรุณากรอกรหัส PIN</p>
+            <p class="text-[11px] text-slate-400 mb-3">เมื่อตรวจสอบและจัดของครบถ้วนแล้ว กรุณากรอกรหัส PIN เพื่อตัดจ่าย</p>
             <input type="password" id="staffPinInput" maxlength="4" placeholder="••••"
-              class="pin-input w-full bg-[#050b14] border border-blue-900/60 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 font-mono placeholder:text-slate-700 shadow-sm transition">
+              class="pin-input w-full bg-[#0d0204] border border-red-900/60 rounded-xl py-2.5 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-400 font-mono placeholder:text-slate-700 shadow-sm transition">
           </div>
 
           <button type="button" id="confirmReleaseBtn"
-            class="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 text-base">
-            <span>✓ ยืนยันจ่ายของให้ลูกค้า</span>
+            class="w-full bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 active:scale-98 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-700/30 transition-all flex items-center justify-center gap-2 text-base">
+            <span>🎄 ยืนยันจ่ายของให้ลูกค้า</span>
           </button>
         </div>
 
@@ -135,8 +147,8 @@
     </main>
   </div>
 
-  <footer class="text-center py-4 text-[11px] text-slate-500 border-t border-slate-900/80 bg-slate-950/40 backdrop-blur-sm">
-    STAFF VERIFICATION PORTAL • MTL PARTY 2026
+  <footer class="text-center py-4 text-[11px] text-slate-500 border-t border-red-950/80 bg-[#0b0204]/90 backdrop-blur-sm">
+    STAFF VERIFICATION PORTAL • MTL Christmas Celebration 2026
   </footer>
 
   <script>
@@ -159,7 +171,7 @@
     // 1. แสดง Badge ออเดอร์
     if (orderList.length > 0) {
       badgeContainer.innerHTML = orderList.map(id => `
-        <span class="bg-blue-950/80 text-blue-300 border border-blue-500/30 font-mono text-xs font-semibold px-3 py-1.5 rounded-xl shadow-sm">
+        <span class="bg-red-950/80 text-rose-200 border border-red-500/30 font-mono text-xs font-semibold px-3 py-1.5 rounded-xl shadow-sm">
           #${id}
         </span>
       `).join('');
@@ -219,7 +231,7 @@
           return;
         }
 
-        // ✅ ผ่านทุกเงื่อนไข: แสดงใบจัดสินค้าขนาดใหญ่
+        // ผ่านทุกเงื่อนไข: แสดงใบจัดสินค้าขนาดใหญ่
         renderPickingCards(validOrdersToPick);
 
         orderItemsSection.classList.remove('hidden');
@@ -240,20 +252,20 @@
 
       orders.forEach(order => {
         const card = document.createElement('div');
-        card.className = "bg-slate-900/90 border-2 border-blue-500/40 rounded-2xl p-4 shadow-lg space-y-3 relative overflow-hidden";
+        card.className = "bg-[#160508] border-2 border-red-500/40 rounded-2xl p-4 shadow-lg space-y-3 relative overflow-hidden";
         
         card.innerHTML = `
           <!-- แถบด้านบน: Order ID, Pickup Point, Pickup Code -->
-          <div class="flex justify-between items-start gap-2 border-b border-slate-800 pb-2.5">
+          <div class="flex justify-between items-start gap-2 border-b border-red-950 pb-2.5">
             <div>
-              <span class="inline-block bg-blue-500/20 text-blue-300 border border-blue-400/40 text-sm font-mono font-bold px-2.5 py-0.5 rounded-lg mb-1">
+              <span class="inline-block bg-red-500/20 text-rose-200 border border-red-400/40 text-sm font-mono font-bold px-2.5 py-0.5 rounded-lg mb-1">
                 #${order.Order_ID}
               </span>
               <p class="text-xs text-slate-400">โต๊ะ: <b class="text-white text-sm">${order.Table_Number || '-'}</b> (${order.Full_Name || '-'})</p>
             </div>
             
             <div class="text-right flex flex-col items-end">
-              <span class="bg-indigo-900/60 text-indigo-200 border border-indigo-400/30 text-xs font-semibold px-2 py-0.5 rounded-md mb-1">
+              <span class="bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-xs font-semibold px-2 py-0.5 rounded-md mb-1">
                 📍 ${order.Pickup_Point || 'จุดรับสินค้า'}
               </span>
               <div class="bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-lg text-right">
@@ -263,10 +275,10 @@
             </div>
           </div>
 
-          <!-- 🍻 รายการสินค้าตัวใหญ่ ชัดเจน อ่านง่าย -->
+          <!-- รายการสินค้าตัวใหญ่ ชัดเจน อ่านง่าย -->
           <div>
             <span class="text-xs text-slate-400 font-medium block mb-1.5">📦 รายการที่ต้องหยิบ:</span>
-            <div class="bg-[#050b14] p-3 rounded-xl border border-blue-900/50 text-white font-medium text-sm sm:text-base leading-relaxed whitespace-pre-line space-y-1 shadow-inner">
+            <div class="bg-[#0b0204] p-3 rounded-xl border border-red-950 text-white font-medium text-sm sm:text-base leading-relaxed whitespace-pre-line space-y-1 shadow-inner">
 ${order.Order_Items || 'ไม่มีรายการระบุ'}
             </div>
           </div>
@@ -275,12 +287,12 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
       });
     }
 
-// 4. กดยืนยันจ่ายของด้วย PIN (แก้ไขรองรับ iPhone / iOS / LINE Browser 100%)
+    // 4. กดยืนยันจ่ายของด้วย PIN (รองรับ iPhone / iOS / LINE In-App Browser 100%)
     document.getElementById('confirmReleaseBtn').addEventListener('click', async () => {
       const pinInput = document.getElementById('staffPinInput');
       const pin = pinInput.value.trim();
 
-      // ปิดคีย์บอร์ดบน iPhone ทันที เพื่อไม่ให้ระบบค้างที่หน้าต่างคีย์บอร์ด
+      // ปิดคีย์บอร์ดบน iPhone ทันที
       pinInput.blur();
 
       if (pin.length !== 4) {
@@ -288,9 +300,9 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
           icon: 'warning',
           title: 'กรุณากรอก PIN 4 หลัก',
           text: 'รหัสผ่านเจ้าหน้าที่ต้องเป็นตัวเลข 4 หลักค่ะ',
-          background: '#0f172a',
+          background: '#160508',
           color: '#ffffff',
-          confirmButtonColor: '#2563eb'
+          confirmButtonColor: '#dc2626'
         });
         return;
       }
@@ -305,7 +317,7 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
         กำลังตรวจสอบ PIN...
       `;
 
-      // ⏱️ ตั้งเวลา Timeout 15 วินาที ป้องกัน iPhone แขวนรอคำตอบตลอดกาล
+      // ⏱️ Timeout 15 วินาที
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -313,23 +325,22 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
         const response = await fetch(N8N_CLAIM_URL, {
           method: 'POST',
           mode: 'cors',
-          cache: 'no-cache', // ป้องกัน Safari แคชคำขอเดิม
+          cache: 'no-cache',
           signal: controller.signal,
           headers: { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            staff_pin: String(pin), // บังคับเป็น String ป้องกัน Error บน iOS
+            staff_pin: String(pin),
             order_ids: orderList,
             line_user_id: String(userIdParam || ''),
             claimed_at: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }).replace('T', ' ')
           })
         });
 
-        clearTimeout(timeoutId); // ยกเลิก Timeout เมื่อเซิร์ฟเวอร์ตอบกลับแล้ว
+        clearTimeout(timeoutId);
 
-        // อ่านผลลัพธ์อย่างปลอดภัย
         let result = {};
         try {
           result = await response.json();
@@ -342,9 +353,9 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
             icon: 'success',
             title: 'จ่ายสินค้าสำเร็จ!',
             text: `ตัดจ่ายสินค้าจำนวน ${orderList.length} ออเดอร์เรียบร้อยแล้วค่ะ`,
-            background: '#0f172a',
+            background: '#160508',
             color: '#ffffff',
-            confirmButtonColor: '#2563eb',
+            confirmButtonColor: '#16a34a',
             confirmButtonText: 'เสร็จสิ้น',
             timer: 2000,
             timerProgressBar: true
@@ -369,14 +380,13 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
           icon: 'error',
           title: 'ไม่สามารถทำรายการได้',
           text: errorMsg,
-          background: '#0f172a',
+          background: '#160508',
           color: '#ffffff',
           confirmButtonColor: '#e11d48'
         });
 
-        // คืนสถานะปุ่มกดให้กลับมากดใหม่ได้เสมอ
         btn.disabled = false;
-        btn.innerHTML = "✓ ยืนยันจ่ายของให้ลูกค้า";
+        btn.innerHTML = "🎄 ยืนยันจ่ายของให้ลูกค้า";
       }
     });
     
@@ -396,13 +406,13 @@ ${order.Order_Items || 'ไม่มีรายการระบุ'}
       } catch (e) {}
 
       document.body.innerHTML = `
-        <div class="min-h-screen bg-[#030712] flex flex-col items-center justify-center p-6 text-center text-white">
-          <div class="w-20 h-20 bg-blue-600/20 text-blue-400 rounded-3xl flex items-center justify-center text-4xl mb-4 border border-blue-500/30 shadow-xl shadow-blue-500/10">
+        <div class="min-h-screen bg-[#0b0204] flex flex-col items-center justify-center p-6 text-center text-white">
+          <div class="w-20 h-20 bg-emerald-600/20 text-emerald-400 rounded-3xl flex items-center justify-center text-4xl mb-4 border border-emerald-500/30 shadow-xl shadow-emerald-500/10">
             ✓
           </div>
           <h1 class="text-2xl font-bold text-white mb-2 tracking-tight">จ่ายสินค้าสำเร็จเรียบร้อย</h1>
-          <p class="text-blue-200/60 text-sm max-w-xs mb-6 font-light">บันทึกข้อมูลแล้ว ท่านสามารถปิดแท็บหรือสแกนลูกค้ารายต่อไปได้ทันที</p>
-          <button onclick="window.close()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-blue-600/20 transition">
+          <p class="text-amber-200/80 text-sm max-w-xs mb-6 font-light">MTL Christmas Celebration 2026<br>บันทึกข้อมูลแล้ว ท่านสามารถปิดแท็บหรือสแกนลูกค้ารายต่อไปได้ทันที</p>
+          <button onclick="window.close()" class="bg-red-600 hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-red-600/20 transition">
             ปิดหน้านี้
           </button>
         </div>
