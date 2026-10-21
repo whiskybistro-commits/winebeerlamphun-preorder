@@ -16,7 +16,7 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SweetAlert2 (แจ้งเตือนสวยงาม) -->
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -33,7 +33,6 @@
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* แก้ไขปัญหาความกว้างและการทับซ้อนของ Date/Time บน Safari / iOS */
     input[type="date"], input[type="time"] {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -41,7 +40,6 @@
       min-width: 0 !important;
     }
 
-    /* ตกแต่งลวดลายคริสต์มาสด้านบน */
     .christmas-bg {
       background: radial-gradient(circle at 50% 20%, #c21829 0%, #8b0e1b 50%, #4a070f 100%);
     }
@@ -49,15 +47,47 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
 
-  <div>
-    <!-- Header Banner ธีมคริสต์มาส พร้อมโลโก้งานขนาดใหญ่เด่นชัด -->
+  <!-- 🚫 หน้าจอแจ้งปิดรับพรีออเดอร์แบบเต็มจอ (จะแสดงเมื่อเลยเวลา) -->
+  <div id="closedScreen" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
+    <div class="max-w-md w-full bg-slate-900 border-2 border-rose-600/60 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
+      
+      <!-- โลโก้หรือไอคอนเด่นชัด -->
+      <div class="w-20 h-20 bg-rose-950/80 border border-rose-500/50 rounded-full flex items-center justify-center mx-auto text-4xl shadow-lg">
+        ⛔
+      </div>
+
+      <div class="space-y-2">
+        <span class="inline-block bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs px-3 py-1 rounded-full font-medium">
+          PRE-ORDER CLOSED
+        </span>
+        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          ปิดรับการพรีออเดอร์แล้ว
+        </h2>
+        <p class="text-sm text-slate-300 leading-relaxed pt-1">
+          ระบบได้ปิดรับคำสั่งซื้อล่วงหน้าสำหรับงาน <br>
+          <strong class="text-amber-300 font-semibold">MTL Christmas Celebration 2026</strong><br>
+          ตั้งแต่วันที่ 20 ธันวาคม 2026 เวลา 00:00 น. เป็นต้นไป
+        </p>
+      </div>
+
+      <div class="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 text-xs text-slate-400">
+        หากท่านได้สั่งซื้อและโอนเงินแล้ว ระบบได้บันทึกออเดอร์ของท่านเรียบร้อยแล้วค่ะ สามารถตรวจสอบตั๋วในแชท LINE ได้ตามปกติ
+      </div>
+
+      <button type="button" onclick="closeAppWindow()" 
+        class="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg shadow-red-600/30 transition text-sm">
+        ปิดหน้าต่างนี้
+      </button>
+    </div>
+  </div>
+
+  <!-- โครงสร้างเว็บปกติ -->
+  <div id="mainWebsite">
+    <!-- Header Banner -->
     <header class="christmas-bg text-white pt-8 pb-10 px-4 text-center shadow-xl relative overflow-hidden">
-      <!-- ลวดลายประกายหิมะ/แสงไฟตกแต่งเบื้องหลัง -->
       <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
       <div class="max-w-2xl mx-auto flex flex-col items-center relative z-10">
-        
-        <!-- โลโก้งานขยายขนาดใหญ่ เด่นชัด สวยงาม -->
         <div class="transition-transform duration-300 hover:scale-105 mb-3">
           <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026 - The Gift of Happiness" 
                class="w-56 sm:w-72 md:w-80 h-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.45)] filter">
@@ -80,8 +110,8 @@
 
     <main class="max-w-2xl mx-auto px-4 mt-6 mb-16">
 
-      <!-- 🔥 กล่องแจ้งเตือนวันสุดท้ายของการพรีออเดอร์ (โทนแดงสดชัดเจน) 🔥 -->
-      <div id="deadlineContainer" class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-lg border-2 border-red-500 text-center relative overflow-hidden transition-all duration-300">
+      <!-- 🔥 กล่องข้อความแจ้งเตือนวันเดดไลน์สีแดงสด 🔥 -->
+      <div id="deadlineContainer" class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-lg border-2 border-red-500 text-center relative overflow-hidden">
         <div class="relative z-10 space-y-1">
           <div class="flex items-center justify-center gap-2 text-base sm:text-lg font-bold drop-shadow">
             <span class="text-xl animate-pulse">⏰</span>
@@ -135,7 +165,6 @@
             </div>
           </div>
 
-          <!-- แสดงจุดรับของอัตโนมัติ -->
           <div id="pickupAlert" class="hidden mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2"></div>
           <input type="hidden" id="lineUserId" value="">
         </section>
@@ -155,29 +184,24 @@
             </button>
           </div>
 
-          <!-- แถบหมวดหมู่ -->
           <div class="relative flex items-center mb-4 border-b border-slate-100 group">
             <button type="button" id="tabScrollLeft" aria-label="เลื่อนซ้าย"
               class="hidden sm:flex absolute left-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95">
               ❮
             </button>
-
             <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide items-center scroll-smooth w-full sm:mx-8"></div>
-
             <button type="button" id="tabScrollRight" aria-label="เลื่อนขวา"
               class="hidden sm:flex absolute right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95">
               ❯
             </button>
           </div>
 
-          <!-- กล่องรายการสินค้า -->
           <div id="productList" class="space-y-4">
             <div class="text-center py-6 text-slate-400 text-sm">
               <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
             </div>
           </div>
 
-          <!-- 🛒 กรอบสรุปรายการที่สั่งซื้อ -->
           <div id="orderSummaryContainer" class="hidden mt-6 bg-slate-50 rounded-2xl p-4 border border-slate-200">
             <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80">
               <span class="font-bold text-sm sm:text-base text-slate-800 flex items-center gap-1.5">
@@ -187,19 +211,14 @@
                 0 รายการ
               </span>
             </div>
-            
-            <div id="orderSummaryItems" class="divide-y divide-slate-150 space-y-2 text-xs sm:text-sm">
-              <!-- Rendered via JS -->
-            </div>
+            <div id="orderSummaryItems" class="divide-y divide-slate-150 space-y-2 text-xs sm:text-sm"></div>
           </div>
 
-          <!-- ยอดรวม -->
           <div class="mt-4 p-4 bg-red-50/80 rounded-xl flex justify-between items-center border border-red-100">
             <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
             <span class="text-2xl font-bold text-red-700"><span id="totalAmount">0</span> ฿</span>
           </div>
 
-          <!-- ⚠️ กล่องแจ้งเตือนใต้รวมยอดชำระ -->
           <div class="mt-4 p-4 sm:p-4.5 bg-amber-50/90 rounded-2xl border-2 border-amber-300 text-slate-800 leading-relaxed shadow-sm">
             <div class="flex items-start gap-2.5">
               <span class="text-2xl leading-none mt-0.5">⚠️</span>
@@ -289,35 +308,19 @@
         </button>
       </form>
     </main>
-  </div>
 
-  <!-- Modal ขยายภาพ QR Code -->
-  <div id="qrModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center p-4 transition-opacity">
-    <button type="button" id="closeQrModal" class="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold transition">
-      ✕
-    </button>
-    <div class="bg-white p-3.5 sm:p-5 rounded-3xl shadow-2xl max-w-xs sm:max-w-md w-full flex flex-col items-center transform transition-transform" onclick="event.stopPropagation()">
-      <div class="text-center mb-3">
-        <h3 class="font-bold text-slate-900 text-base">สแกน QR เพื่อชำระเงิน</h3>
-        <p class="text-xs text-slate-500">บันทึกรูปภาพหรือสแกนผ่านแอปธนาคาร</p>
-      </div>
-      <img src="./qr-payment.png" alt="QR Code ขนาดใหญ่" class="w-full h-auto rounded-2xl object-contain shadow-sm border border-slate-100">
-      <button type="button" id="closeQrModalBtn" class="mt-4 w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-xs transition">
-        ปิดหน้าต่าง
-      </button>
-    </div>
+    <footer class="footer">
+      © 2026 WINE BEER WHISKY LAMPHUN CO., LTD. All rights reserved.
+    </footer>
   </div>
-
-  <footer class="footer">
-    © 2026 WINE BEER WHISKY LAMPHUN CO., LTD. All rights reserved.
-  </footer>
 
   <script>
     const LIFF_ID = "2011938038-bo6hoPh3";
     const N8N_WEBHOOK_URL = 'https://n8n.srv1711182.hstgr.cloud/webhook/mtl2026-preoder';
     const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycbxRbDb1QzTHtrIJAyD68n5OBbuPz66FvDGPtSL3rviPU3mEO9_uanWZEWGjl4IOlV5j7g/exec";
 
-    // กำหนดเวลาปิดรับ: 20 ธันวาคม 2026 เวลา 00:00:00 น. (GMT+7)
+    // 🕒 วันเดดไลน์: 20 ธันวาคม 2026 เวลา 00:00:00 น.
+    // 💡 ถ้าต้องการทดลองดูหน้าจอปิดรับ ให้แก้ปีเป็นปีที่ผ่านมา เช่น '2020-12-20T00:00:00+07:00'
     const DEADLINE_DATE = new Date('2026-12-20T00:00:00+07:00');
 
     let lineUserId = "";
@@ -327,46 +330,40 @@
     let selectedQuantities = {};
     let compressedSlipBase64 = "";
     let isPreorderClosed = false;
-    
-    // เก็บหมวดหมู่ที่ถูกย่อลง
     let collapsedCategories = new Set();
 
+    // 🔒 ฟังก์ชันตรวจและปิดทั้งหน้าเว็บ
     function checkDeadline() {
       const now = new Date();
       if (now >= DEADLINE_DATE) {
         isPreorderClosed = true;
-        const deadlineContainer = document.getElementById('deadlineContainer');
-        if (deadlineContainer) {
-          deadlineContainer.className = "mb-6 p-4 sm:p-5 rounded-2xl bg-slate-800 text-white shadow-lg border-2 border-slate-700 text-center";
-          deadlineContainer.innerHTML = `
-            <div class="space-y-1">
-              <div class="flex items-center justify-center gap-2 text-base sm:text-lg font-bold text-rose-400">
-                <span>⛔</span>
-                <span>ปิดรับพรีออเดอร์สินค้าเรียบร้อยแล้ว</span>
-              </div>
-              <p class="text-xs sm:text-sm text-slate-300 font-light">
-                ระบบปิดรับการสั่งพรีออเดอร์ตั้งแต่วันที่ 20 ธันวาคม 2026 เวลา 00:00 น. เป็นต้นไป (Pre-Order Closed)
-              </p>
-            </div>
-          `;
+
+        // ซ่อนเนื้อหาเว็บทั้งหมด
+        const mainWebsite = document.getElementById('mainWebsite');
+        if (mainWebsite) {
+          mainWebsite.innerHTML = ''; // ลบ HTML ข้างในทิ้ง ป้องกันการแอบกรอก
+          mainWebsite.style.display = 'none';
         }
 
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.className = "w-full bg-slate-400 text-white font-semibold py-3.5 rounded-xl shadow-none cursor-not-allowed flex justify-center items-center gap-2 text-base opacity-75";
-          submitBtn.innerHTML = "<span>⛔ ปิดรับพรีออเดอร์แล้ว</span>";
+        // แสดงหน้าจอแจ้งปิดรับเต็มจอ
+        const closedScreen = document.getElementById('closedScreen');
+        if (closedScreen) {
+          closedScreen.classList.remove('hidden');
         }
+        return true;
+      }
+      return false;
+    }
 
-        // ปิดการใช้งานฟอร์ม
-        const form = document.getElementById('preorderForm');
-        if (form) {
-          Array.from(form.elements).forEach(elem => {
-            if (elem.id !== 'closeQrModal' && elem.id !== 'closeQrModalBtn') {
-              elem.disabled = true;
-            }
-          });
+    function closeAppWindow() {
+      try {
+        if (typeof liff !== 'undefined' && liff.isInClient()) {
+          liff.closeWindow();
+        } else {
+          window.close();
         }
+      } catch (e) {
+        window.close();
       }
     }
 
@@ -385,6 +382,7 @@
     }
 
     function loadCartFromStorage() {
+      if (isPreorderClosed) return;
       const saved = localStorage.getItem(getCartStorageKey());
       if (saved) {
         try {
@@ -392,13 +390,12 @@
           renderProducts();
           calculateTotal();
           toggleClearCartBtn();
-        } catch (e) {
-          console.error("Load cart error", e);
-        }
+        } catch (e) {}
       }
     }
 
     function clearCartStorage() {
+      if (isPreorderClosed) return;
       localStorage.removeItem(getCartStorageKey());
       selectedQuantities = {};
       renderProducts();
@@ -415,26 +412,31 @@
       }
     }
 
-    document.getElementById('clearCartBtn').addEventListener('click', () => {
-      if (isPreorderClosed) return;
-      Swal.fire({
-        title: 'ยืนยันล้างตะกร้า?',
-        text: 'รายการสินค้าทั้งหมดที่เลือกไว้จะถูกลบออก',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'ล้างตะกร้า',
-        cancelButtonText: 'ยกเลิก',
-        confirmButtonColor: '#e11d48',
-        cancelButtonColor: '#64748b'
-      }).then((res) => {
-        if (res.isConfirmed) clearCartStorage();
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    if (clearCartBtn) {
+      clearCartBtn.addEventListener('click', () => {
+        if (isPreorderClosed) return;
+        Swal.fire({
+          title: 'ยืนยันล้างตะกร้า?',
+          text: 'รายการสินค้าทั้งหมดที่เลือกไว้จะถูกลบออก',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'ล้างตะกร้า',
+          cancelButtonText: 'ยกเลิก',
+          confirmButtonColor: '#e11d48',
+          cancelButtonColor: '#64748b'
+        }).then((res) => {
+          if (res.isConfirmed) clearCartStorage();
+        });
       });
-    });
+    }
 
     function saveUserInfo() {
       if (isPreorderClosed) return;
+      const empIdEl = document.getElementById('employeeId');
+      if (!empIdEl) return;
       const info = {
-        empId: document.getElementById('employeeId').value.trim(),
+        empId: empIdEl.value.trim(),
         name: document.getElementById('fullName').value.trim(),
         dept: document.getElementById('department').value.trim(),
         table: document.getElementById('tableNumber').value.trim()
@@ -444,15 +446,20 @@
     }
 
     function loadUserInfo() {
+      if (isPreorderClosed) return;
       const saved = localStorage.getItem(getUserInfoStorageKey()) || localStorage.getItem('mtl_user_info_common');
       if (saved) {
         try {
           const info = JSON.parse(saved);
-          if (info.empId) document.getElementById('employeeId').value = info.empId;
-          if (info.name) document.getElementById('fullName').value = info.name;
-          if (info.dept) document.getElementById('department').value = info.dept;
-          if (info.table) {
-            document.getElementById('tableNumber').value = info.table;
+          const emp = document.getElementById('employeeId');
+          const fn = document.getElementById('fullName');
+          const dp = document.getElementById('department');
+          const tb = document.getElementById('tableNumber');
+          if (emp && info.empId) emp.value = info.empId;
+          if (fn && info.name) fn.value = info.name;
+          if (dp && info.dept) dp.value = info.dept;
+          if (tb && info.table) {
+            tb.value = info.table;
             checkPickupPoint(parseInt(info.table));
           }
         } catch (e) {}
@@ -468,7 +475,7 @@
     });
 
     async function initLiff() {
-      if (!LIFF_ID) return;
+      if (!LIFF_ID || isPreorderClosed) return;
       try {
         await liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: false });
         if (!liff.isLoggedIn()) { 
@@ -477,14 +484,17 @@
         }
         const profile = await liff.getProfile();
         lineUserId = profile.userId;
-        document.getElementById('lineUserId').value = profile.userId;
+        const lineInput = document.getElementById('lineUserId');
+        if (lineInput) lineInput.value = profile.userId;
 
         const profileCard = document.getElementById('lineProfileCard');
         if (profileCard) {
           profileCard.classList.remove('hidden');
-          document.getElementById('userName').innerText = profile.displayName || 'LINE User';
+          const nameEl = document.getElementById('userName');
+          if (nameEl) nameEl.innerText = profile.displayName || 'LINE User';
           if (profile.pictureUrl) {
-            document.getElementById('userPicture').src = profile.pictureUrl;
+            const picEl = document.getElementById('userPicture');
+            if (picEl) picEl.src = profile.pictureUrl;
           }
         }
 
@@ -507,7 +517,9 @@
     }
 
     async function loadProducts() {
+      if (isPreorderClosed) return;
       const container = document.getElementById('productList');
+      if (!container) return;
       try {
         const res = await fetch(PRODUCT_API_URL);
         allProducts = await res.json();
@@ -532,6 +544,7 @@
 
     function renderCategoryTabs() {
       const tabsContainer = document.getElementById('categoryTabs');
+      if (!tabsContainer) return;
       tabsContainer.innerHTML = '';
 
       categoriesList.forEach(cat => {
@@ -550,21 +563,6 @@
         });
         tabsContainer.appendChild(btn);
       });
-    }
-
-    const tabsContainer = document.getElementById('categoryTabs');
-    const scrollLeftBtn = document.getElementById('tabScrollLeft');
-    const scrollRightBtn = document.getElementById('tabScrollRight');
-
-    if (scrollLeftBtn && scrollRightBtn && tabsContainer) {
-      scrollLeftBtn.addEventListener('click', () => tabsContainer.scrollBy({ left: -220, behavior: 'smooth' }));
-      scrollRightBtn.addEventListener('click', () => tabsContainer.scrollBy({ left: 220, behavior: 'smooth' }));
-      tabsContainer.addEventListener('wheel', (e) => {
-        if (e.deltaY !== 0) {
-          e.preventDefault();
-          tabsContainer.scrollLeft += e.deltaY;
-        }
-      }, { passive: false });
     }
 
     function createProductCardHTML(item) {
@@ -602,11 +600,11 @@
           </div>
 
           <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1 flex-shrink-0 shadow-xs">
-            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs ${isPreorderClosed ? 'opacity-50 cursor-not-allowed' : ''}" 
-              data-name="${item.name}" ${isPreorderClosed ? 'disabled' : ''}>-</button>
+            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs" 
+              data-name="${item.name}">-</button>
             <span class="qty-display w-9 text-center font-semibold text-sm text-slate-900" id="qty_${item.name.replace(/\s+/g, '_')}">${currentQty}</span>
-            <button type="button" class="btn-plus w-8 h-8 flex items-center justify-center rounded-lg bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold transition shadow-xs ${isPreorderClosed ? 'opacity-50 cursor-not-allowed' : ''}" 
-              data-name="${item.name}" ${isPreorderClosed ? 'disabled' : ''}>+</button>
+            <button type="button" class="btn-plus w-8 h-8 flex items-center justify-center rounded-lg bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold transition shadow-xs" 
+              data-name="${item.name}">+</button>
           </div>
         </div>
       `;
@@ -614,9 +612,7 @@
 
     function syncProductItemDisplay(name, qty) {
       const displayEl = document.getElementById(`qty_${name.replace(/\s+/g, '_')}`);
-      if (displayEl) {
-        displayEl.innerText = qty;
-      }
+      if (displayEl) displayEl.innerText = qty;
     }
 
     window.updateProductQty = async function(name, change) {
@@ -645,11 +641,7 @@
             confirmButtonColor: '#e11d48',
             cancelButtonColor: '#64748b'
           });
-
-          if (!confirm.isConfirmed) {
-            return;
-          }
-
+          if (!confirm.isConfirmed) return;
           delete selectedQuantities[name];
           qty = 0;
         } else if (qty > 1) {
@@ -663,149 +655,44 @@
       saveCartToStorage();
     };
 
-    window.toggleCategoryAccordion = function(catKey) {
-      const content = document.getElementById(`cat-content-${catKey}`);
-      const btn = document.getElementById(`cat-toggle-btn-${catKey}`);
-      const icon = document.getElementById(`cat-icon-${catKey}`);
-      if (!content || !btn || !icon) return;
-
-      if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        btn.className = "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 bg-slate-50 border-slate-200 text-slate-500 group-hover:bg-slate-100 group-hover:text-slate-700 shadow-2xs";
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/>';
-        collapsedCategories.delete(catKey);
-      } else {
-        content.classList.add('hidden');
-        btn.className = "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 bg-red-50 border-red-200 text-red-600 shadow-2xs";
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>';
-        collapsedCategories.add(catKey);
-      }
-    };
-
     function renderProducts() {
       const container = document.getElementById('productList');
+      if (!container || isPreorderClosed) return;
       container.innerHTML = '';
 
       if (currentCategory === "ทั้งหมด") {
         const uniqueCategories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
-        
-        if (allProducts.length === 0) {
-          container.innerHTML = '<div class="text-center py-6 text-slate-400 text-sm">ไม่พบรายการสินค้า</div>';
-          return;
-        }
-
         let fullHTML = '';
 
         uniqueCategories.forEach((catName, index) => {
           const itemsInCat = allProducts.filter(p => p.category === catName);
           if (itemsInCat.length > 0) {
-            const catKey = catName.replace(/[^\wก-๙]/g, '_');
-            const isCollapsed = collapsedCategories.has(catKey);
-
             fullHTML += `
               <div class="category-group ${index > 0 ? 'pt-2' : ''}">
-                <div onclick="toggleCategoryAccordion('${catKey}')" 
-                  class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50/90 active:scale-[0.99] transition cursor-pointer select-none mb-2 border border-slate-200/80 group shadow-xs">
-                  <div class="flex items-center gap-2.5 overflow-hidden mr-2">
-                    <span class="w-1.5 h-4 bg-red-600 rounded-full flex-shrink-0"></span>
-                    <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight group-hover:text-red-600 transition truncate">${catName}</h3>
-                    <span class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
-                      ${itemsInCat.length}
-                    </span>
-                  </div>
-                  
-                  <div id="cat-toggle-btn-${catKey}" class="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 shadow-2xs ${
-                    isCollapsed 
-                      ? 'bg-red-50 border-red-200 text-red-600' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500 group-hover:bg-slate-100 group-hover:text-slate-700'
-                  }">
-                    <svg id="cat-icon-${catKey}" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      ${isCollapsed ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>' : '<path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/>'}
-                    </svg>
-                  </div>
+                <div class="flex items-center gap-2 p-2.5 rounded-2xl bg-white mb-2 border border-slate-200/80 shadow-xs">
+                  <span class="w-1.5 h-4 bg-red-600 rounded-full"></span>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-800">${catName}</h3>
                 </div>
-
-                <div id="cat-content-${catKey}" class="space-y-3 ${isCollapsed ? 'hidden' : ''}">
+                <div class="space-y-3">
                   ${itemsInCat.map(createProductCardHTML).join('')}
                 </div>
               </div>
             `;
           }
         });
-
-        const uncategorizedItems = allProducts.filter(p => !p.category);
-        if (uncategorizedItems.length > 0) {
-          const catKey = '__uncategorized__';
-          const isCollapsed = collapsedCategories.has(catKey);
-
-          fullHTML += `
-            <div class="category-group pt-2">
-              <div onclick="toggleCategoryAccordion('${catKey}')"
-                class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-slate-50/90 active:scale-[0.99] transition cursor-pointer select-none mb-2 border border-slate-200/80 group shadow-xs">
-                <div class="flex items-center gap-2.5 overflow-hidden mr-2">
-                  <span class="w-1.5 h-4 bg-slate-400 rounded-full flex-shrink-0"></span>
-                  <h3 class="text-sm sm:text-base font-bold text-slate-800 tracking-tight group-hover:text-slate-900 transition truncate">สินค้าอื่นๆ</h3>
-                  <span class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
-                    ${uncategorizedItems.length}
-                  </span>
-                </div>
-                
-                <div id="cat-toggle-btn-${catKey}" class="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 border flex-shrink-0 shadow-2xs ${
-                  isCollapsed 
-                    ? 'bg-red-50 border-red-200 text-red-600' 
-                    : 'bg-slate-50 border-slate-200 text-slate-500 group-hover:bg-slate-100 group-hover:text-slate-700'
-                }">
-                  <svg id="cat-icon-${catKey}" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    ${isCollapsed ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>' : '<path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/>'}
-                  </svg>
-                </div>
-              </div>
-
-              <div id="cat-content-${catKey}" class="space-y-3 ${isCollapsed ? 'hidden' : ''}">
-                ${uncategorizedItems.map(createProductCardHTML).join('')}
-              </div>
-            </div>
-          `;
-        }
-
         container.innerHTML = fullHTML;
-
       } else {
         const filtered = allProducts.filter(p => p.category === currentCategory);
-
-        if (filtered.length === 0) {
-          container.innerHTML = '<div class="text-center py-6 text-slate-400 text-sm">ไม่พบรายการสินค้าในหมวดหมู่นี้</div>';
-          return;
-        }
-
-        container.innerHTML = `
-          <div class="space-y-3">
-            ${filtered.map(createProductCardHTML).join('')}
-          </div>
-        `;
+        container.innerHTML = `<div class="space-y-3">${filtered.map(createProductCardHTML).join('')}</div>`;
       }
 
-      if (!isPreorderClosed) {
-        container.querySelectorAll('.btn-minus').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const name = e.currentTarget.dataset.name;
-            updateProductQty(name, -1);
-          });
-        });
-
-        container.querySelectorAll('.btn-plus').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const name = e.currentTarget.dataset.name;
-            updateProductQty(name, 1);
-          });
-        });
-      }
+      container.querySelectorAll('.btn-minus').forEach(btn => {
+        btn.addEventListener('click', (e) => updateProductQty(e.currentTarget.dataset.name, -1));
+      });
+      container.querySelectorAll('.btn-plus').forEach(btn => {
+        btn.addEventListener('click', (e) => updateProductQty(e.currentTarget.dataset.name, 1));
+      });
     }
-
-    const totalAmountEl = document.getElementById('totalAmount');
-    const orderSummaryContainer = document.getElementById('orderSummaryContainer');
-    const orderSummaryItems = document.getElementById('orderSummaryItems');
-    const summaryItemCount = document.getElementById('summaryItemCount');
 
     function calculateTotal() {
       let total = 0;
@@ -819,130 +706,88 @@
             const subtotal = qty * product.price;
             total += subtotal;
             totalItemsCount += qty;
-
             const safeName = name.replace(/'/g, "\\'");
 
             summaryRowsHTML += `
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 gap-2 sm:gap-3">
-                <div class="flex-1 pr-2">
-                  <p class="font-medium text-slate-800 text-xs sm:text-sm leading-tight">${name}</p>
-                  <p class="text-[11px] text-slate-500 mt-0.5">${product.price.toLocaleString()} ฿ / ${product.unit || 'ชิ้น'}</p>
+              <div class="flex items-center justify-between py-2 text-xs sm:text-sm">
+                <div>
+                  <p class="font-medium text-slate-800">${name}</p>
+                  <p class="text-[11px] text-slate-400">${product.price.toLocaleString()} ฿ x ${qty}</p>
                 </div>
-                
-                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-                  <div class="flex items-center border border-slate-200 rounded-lg bg-white shadow-xs">
-                    <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-l-lg hover:bg-slate-100 active:scale-95 text-slate-600 font-bold transition ${isPreorderClosed ? 'opacity-50 cursor-not-allowed' : ''}" 
-                      ${isPreorderClosed ? 'disabled' : `onclick="updateProductQty('${safeName}', -1)"`}>-</button>
-                    <span class="w-7 sm:w-8 text-center font-bold text-xs sm:text-sm text-slate-800">${qty}</span>
-                    <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-r-lg bg-red-50 text-red-600 hover:bg-red-100 active:scale-95 font-bold transition ${isPreorderClosed ? 'opacity-50 cursor-not-allowed' : ''}" 
-                      ${isPreorderClosed ? 'disabled' : `onclick="updateProductQty('${safeName}', 1)"`}>+</button>
-                  </div>
-
-                  <div class="flex items-center gap-2 sm:gap-3">
-                    <span class="font-bold text-xs sm:text-sm text-slate-800 w-16 sm:w-20 text-right">${subtotal.toLocaleString()} ฿</span>
-                    ${!isPreorderClosed ? `
-                    <button type="button" class="text-rose-400 hover:text-rose-600 p-1 rounded-md hover:bg-rose-50 transition" title="ลบรายการนี้" onclick="removeItem('${safeName}')">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                    ` : ''}
-                  </div>
-                </div>
+                <span class="font-bold text-slate-800">${subtotal.toLocaleString()} ฿</span>
               </div>
             `;
           }
         }
       }
 
-      totalAmountEl.innerText = total.toLocaleString();
+      const totalAmountEl = document.getElementById('totalAmount');
+      if (totalAmountEl) totalAmountEl.innerText = total.toLocaleString();
 
-      if (totalItemsCount > 0) {
-        orderSummaryContainer.classList.remove('hidden');
-        orderSummaryItems.innerHTML = summaryRowsHTML;
-        summaryItemCount.innerText = `${totalItemsCount} รายการ`;
-      } else {
-        orderSummaryContainer.classList.add('hidden');
-        orderSummaryItems.innerHTML = '';
+      const summaryContainer = document.getElementById('orderSummaryContainer');
+      const summaryItems = document.getElementById('orderSummaryItems');
+      const countEl = document.getElementById('summaryItemCount');
+
+      if (summaryContainer && summaryItems) {
+        if (totalItemsCount > 0) {
+          summaryContainer.classList.remove('hidden');
+          summaryItems.innerHTML = summaryRowsHTML;
+          if (countEl) countEl.innerText = `${totalItemsCount} รายการ`;
+        } else {
+          summaryContainer.classList.add('hidden');
+          summaryItems.innerHTML = '';
+        }
       }
 
       toggleClearCartBtn();
       return total;
     }
 
-    window.removeItem = async function(name) {
-      if (isPreorderClosed) return;
-      if (selectedQuantities[name]) {
-        const confirm = await Swal.fire({
-          title: 'ยืนยันการลบสินค้า?',
-          html: `ต้องการลบ <b>"${name}"</b> ออกจากรายการใช่หรือไม่?`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'ใช่, ลบออก',
-          cancelButtonText: 'ยกเลิก',
-          confirmButtonColor: '#e11d48',
-          cancelButtonColor: '#64748b'
-        });
-
-        if (confirm.isConfirmed) {
-          delete selectedQuantities[name];
-          syncProductItemDisplay(name, 0);
-          calculateTotal();
-          saveCartToStorage();
-        }
-      }
-    };
-
+    // สลิปโอนเงิน
     const slipFileInput = document.getElementById('slipFile');
-    const slipPreview = document.getElementById('slipPreview');
-    const slipPreviewContainer = document.getElementById('slipPreviewContainer');
+    if (slipFileInput) {
+      slipFileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const previewContainer = document.getElementById('slipPreviewContainer');
+        const slipPreview = document.getElementById('slipPreview');
+        if (!file) {
+          compressedSlipBase64 = "";
+          if (previewContainer) previewContainer.classList.add('hidden');
+          return;
+        }
 
-    slipFileInput.addEventListener('change', function(e) {
-      if (isPreorderClosed) return;
-      const file = e.target.files[0];
-      if (!file) {
-        compressedSlipBase64 = "";
-        slipPreviewContainer.classList.add('hidden');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const maxDim = 800;
-
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width, height = img.height;
+            const maxDim = 800;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
             }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          compressedSlipBase64 = canvas.toDataURL('image/jpeg', 0.7);
-          slipPreview.src = compressedSlipBase64;
-          slipPreviewContainer.classList.remove('hidden');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            compressedSlipBase64 = canvas.toDataURL('image/jpeg', 0.7);
+            if (slipPreview) slipPreview.src = compressedSlipBase64;
+            if (previewContainer) previewContainer.classList.remove('hidden');
+          };
+          img.src = event.target.result;
         };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    const tableInput = document.getElementById('tableNumber');
-    const pickupAlert = document.getElementById('pickupAlert');
+        reader.readAsDataURL(file);
+      });
+    }
 
     function checkPickupPoint(table) {
+      const pickupAlert = document.getElementById('pickupAlert');
+      if (!pickupAlert) return;
       if (!isNaN(table) && table >= 1 && table <= 350) {
         pickupAlert.className = 'mt-4 p-3 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200';
         pickupAlert.innerHTML = '📍 <strong>จุดรับสินค้า:</strong> จุดที่ 1 (สำหรับโต๊ะ 1 - 350)';
@@ -954,189 +799,86 @@
       }
     }
 
-    tableInput.addEventListener('input', () => {
-      const val = parseInt(tableInput.value);
-      checkPickupPoint(val);
-    });
-
-    const qrTrigger = document.getElementById('qrTrigger');
-    const qrModal = document.getElementById('qrModal');
-    const closeQrModal = document.getElementById('closeQrModal');
-    const closeQrModalBtn = document.getElementById('closeQrModalBtn');
-
-    if (qrTrigger && qrModal) {
-      qrTrigger.addEventListener('click', () => qrModal.classList.remove('hidden'));
-      const hideModal = () => qrModal.classList.add('hidden');
-      if (closeQrModal) closeQrModal.addEventListener('click', hideModal);
-      if (closeQrModalBtn) closeQrModalBtn.addEventListener('click', hideModal);
-      qrModal.addEventListener('click', hideModal);
+    const tableInput = document.getElementById('tableNumber');
+    if (tableInput) {
+      tableInput.addEventListener('input', () => checkPickupPoint(parseInt(tableInput.value)));
     }
 
-    // ส่งคำสั่งซื้อเข้า n8n
-    document.getElementById('preorderForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // ตรวจสอบเดดไลน์อีกครั้ง
-      if (new Date() >= DEADLINE_DATE || isPreorderClosed) {
-        Swal.fire({
-          icon: 'error',
-          title: 'ปิดรับพรีออเดอร์แล้ว',
-          text: 'ระบบปิดรับการพรีออเดอร์ตั้งแต่วันที่ 20 ธันวาคม 2026 เวลา 00:00 น. เป็นต้นไป ขออภัยในความไม่สะดวกค่ะ',
-          confirmButtonColor: '#dc2626'
-        });
-        checkDeadline();
-        return;
-      }
+    // Submit คำสั่งซื้อ
+    const form = document.getElementById('preorderForm');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (checkDeadline()) return;
 
-      const total = calculateTotal();
-      if (total === 0) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'ยังไม่ได้เลือกสินค้า',
-          text: 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนทำการสั่งซื้อค่ะ',
-          confirmButtonColor: '#dc2626'
-        });
-        return;
-      }
-
-      const payDate = document.getElementById('payDate').value.trim();
-      const payTime = document.getElementById('payTime').value.trim();
-      
-      let missingFields = [];
-      if (!payDate) missingFields.push('วันที่โอนเงิน');
-      if (!payTime) missingFields.push('เวลาที่โอนเงิน');
-      if (!compressedSlipBase64) missingFields.push('ภาพหลักฐานสลิปการโอนเงิน');
-
-      if (missingFields.length > 0) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'กรุณาแนบหลักฐานการชำระเงิน',
-          html: `
-            <div class="text-left text-sm text-slate-700 bg-rose-50 p-4 rounded-xl border border-rose-200 mt-2">
-              <p class="font-bold text-rose-800 mb-2">กรุณาระบุข้อมูลให้ครบถ้วนก่อนส่งแบบฟอร์ม:</p>
-              <ul class="list-disc list-inside space-y-1 text-rose-700 font-medium">
-                ${missingFields.map(field => `<li>${field}</li>`).join('')}
-              </ul>
-            </div>
-          `,
-          confirmButtonText: 'ตกลง, ไปกรอกข้อมูล',
-          confirmButtonColor: '#e11d48'
-        });
-        return;
-      }
-
-      const confirmResult = await Swal.fire({
-        title: 'ยืนยันการสั่งจอง',
-        html: `
-          <div class="text-left text-slate-800 space-y-2 bg-amber-50 p-4 sm:p-5 rounded-2xl border-2 border-amber-300">
-            <p class="font-bold text-slate-900 flex items-center gap-1.5 text-base sm:text-lg">
-              <span>⚠️</span> กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน
-            </p>
-            <p class="text-sm sm:text-base font-medium text-slate-700">
-              เมื่อดำเนินการชำระเงินเรียบร้อยแล้ว <span class="text-rose-600 font-bold underline decoration-rose-300">จะไม่สามารถแก้ไขรายการได้</span>
-            </p>
-            <div class="pt-2.5 border-t border-amber-200/90 space-y-2 text-xs sm:text-sm">
-              <p class="text-slate-700">
-                • กรณีต้องการ<strong class="text-rose-600 font-bold text-sm">เพิ่มรายการสินค้า:</strong> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์
-              </p>
-              <p class="text-slate-700">
-                • กรณีต้องการ<strong class="text-rose-600 font-bold text-sm">ลดรายการสินค้า:</strong> ให้ทำการ<span class="text-rose-600 font-bold underline">ยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน</span> แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง
-              </p>
-            </div>
-          </div>
-        `,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'ยืนยันสั่งซื้อ',
-        cancelButtonText: 'กลับไปตรวจสอบ',
-        confirmButtonColor: '#dc2626',
-        cancelButtonColor: '#64748b'
-      });
-
-      if (!confirmResult.isConfirmed) {
-        return;
-      }
-
-      let itemsBullet = [];
-      for (const [name, qty] of Object.entries(selectedQuantities)) {
-        if (qty > 0) {
-          const product = allProducts.find(p => p.name === name);
-          const unit = product ? (product.unit || 'ชิ้น') : 'ชิ้น';
-          itemsBullet.push(`• ${name} x ${qty} ${unit}`);
+        const total = calculateTotal();
+        if (total === 0) {
+          Swal.fire('ยังไม่ได้เลือกสินค้า', 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนค่ะ', 'warning');
+          return;
         }
-      }
 
-      const rawTableValue = tableInput.value.trim();
-      const payload = {
-        employee_id: document.getElementById('employeeId').value.trim(),
-        full_name: document.getElementById('fullName').value.trim(),
-        department: document.getElementById('department').value.trim(),
-        table_number: rawTableValue ? parseInt(rawTableValue) : null,
-        order_items: itemsBullet.join('\n'),
-        total_amount: total,
-        payment_date: payDate,
-        payment_time: payTime,
-        slip_image_url: compressedSlipBase64,
-        line_user_id: lineUserId || document.getElementById('lineUserId').value || ''
-      };
+        const payDate = document.getElementById('payDate').value.trim();
+        const payTime = document.getElementById('payTime').value.trim();
+        if (!payDate || !payTime || !compressedSlipBase64) {
+          Swal.fire('ข้อมูลไม่ครบถ้วน', 'กรุณาระบุวัน-เวลา และแนบสลิปการโอนเงินให้ครบถ้วนค่ะ', 'warning');
+          return;
+        }
 
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'กำลังส่งข้อมูล...';
-
-      try {
-        const response = await fetch(N8N_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          saveUserInfo();
-          clearCartStorage();
-          
-          document.getElementById('preorderForm').reset();
-          compressedSlipBase64 = "";
-          slipPreviewContainer.classList.add('hidden');
-          pickupAlert.className = 'hidden';
-
-          await Swal.fire({
-            title: 'สั่งจองสำเร็จ!',
-            text: result.message || 'บันทึกการสั่งจองสำเร็จเรียบร้อยแล้วค่ะ ใบยืนยันถูกส่งเข้าแชท LINE ของคุณแล้ว',
-            icon: 'success',
-            confirmButtonText: 'ปิดหน้านี้',
-            confirmButtonColor: '#16a34a',
-            allowOutsideClick: false
-          });
-
-          try {
-            if (typeof liff !== 'undefined' && liff.isInClient()) {
-              liff.closeWindow();
-            } else {
-              window.close();
-            }
-          } catch (closeErr) {
-            window.close();
+        let itemsBullet = [];
+        for (const [name, qty] of Object.entries(selectedQuantities)) {
+          if (qty > 0) {
+            const product = allProducts.find(p => p.name === name);
+            itemsBullet.push(`• ${name} x ${qty} ${product?.unit || 'ชิ้น'}`);
           }
-
-        } else {
-          Swal.fire('แจ้งเตือน', result.message || 'ไม่สามารถสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง', 'error');
         }
-      } catch (err) {
-        Swal.fire('การเชื่อมต่อล้มเหลว', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง', 'error');
-      } finally {
-        checkDeadline();
-        if (!isPreorderClosed) {
+
+        const payload = {
+          employee_id: document.getElementById('employeeId').value.trim(),
+          full_name: document.getElementById('fullName').value.trim(),
+          department: document.getElementById('department').value.trim(),
+          table_number: tableInput.value.trim() ? parseInt(tableInput.value.trim()) : null,
+          order_items: itemsBullet.join('\n'),
+          total_amount: total,
+          payment_date: payDate,
+          payment_time: payTime,
+          slip_image_url: compressedSlipBase64,
+          line_user_id: lineUserId || document.getElementById('lineUserId').value || ''
+        };
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'กำลังส่งข้อมูล...';
+
+        try {
+          const response = await fetch(N8N_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            clearCartStorage();
+            await Swal.fire('สั่งจองสำเร็จ!', result.message, 'success');
+            closeAppWindow();
+          } else {
+            Swal.fire('แจ้งเตือน', result.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+          }
+        } catch (err) {
+          Swal.fire('เชื่อมต่อล้มเหลว', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
+        } finally {
           submitBtn.disabled = false;
           submitBtn.innerText = '🎄 ยืนยันการสั่งจอง';
         }
-      }
-    });
+      });
+    }
 
+    // เริ่มต้นระบบ
     window.addEventListener('DOMContentLoaded', () => {
-      checkDeadline();
+      // ตรวจสอบเวลาก่อนอันดับแรก
+      if (checkDeadline()) return;
+
       initLiff();
       loadProducts();
       loadUserInfo();
