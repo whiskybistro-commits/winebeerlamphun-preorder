@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ขอยกเลิกออเดอร์ MTL PARTY 2026</title>
+  <title>ขอยกเลิกออเดอร์ MTL Christmas Celebration 2026 - The Gift of Happiness</title>
 
   <!-- Favicon & App Icons -->
   <link rel="apple-touch-icon" sizes="180x180" href="./x-apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./x-favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./x-favicon-16x16.png">
   <link rel="manifest" href="./site.webmanifest">
-  <meta name="theme-color" content="#991b1b">
+  <meta name="theme-color" content="#8b0e1b">
 
   <!-- Google Fonts: Prompt -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,23 +32,40 @@
       border-top: 1px solid #e2e8f0;
       background-color: #f8fafc;
     }
+    /* พื้นหลังธีมคริสต์มาส */
+    .christmas-bg {
+      background: radial-gradient(circle at 50% 20%, #c21829 0%, #8b0e1b 50%, #4a070f 100%);
+    }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
   <div>
-    <!-- Header Banner โทนสีแดงเข้ม -->
-    <header class="bg-gradient-to-r from-red-800 via-rose-900 to-red-950 text-white pt-7 pb-8 px-4 text-center shadow-lg border-b border-red-900/40">
-      <div class="max-w-2xl mx-auto flex flex-col items-center">
-        <div class="bg-white/95 backdrop-blur-sm px-8 py-3.5 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center transition-transform hover:scale-105">
-          <img src="./murata-logo.png" alt="Murata Logo" class="h-14 sm:h-[72px] w-auto object-contain">
+    <!-- Header Banner ธีมคริสต์มาส พร้อมโลโก้งานขนาดใหญ่เด่นชัด -->
+    <header class="christmas-bg text-white pt-8 pb-10 px-4 text-center shadow-xl relative overflow-hidden border-b border-red-900/50">
+      <!-- ลวดลายประกายหิมะ/แสงไฟตกแต่งเบื้องหลัง -->
+      <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+      <div class="max-w-xl mx-auto flex flex-col items-center relative z-10">
+        
+        <!-- โลโก้งานขยายขนาดใหญ่ เด่นชัด สวยงาม -->
+        <div class="transition-transform duration-300 hover:scale-105 mb-3">
+          <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026 - The Gift of Happiness" 
+               class="w-56 sm:w-72 md:w-80 h-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.45)] filter">
         </div>
 
-        <span class="bg-red-950/70 text-red-200 text-xs px-3.5 py-1 rounded-full font-medium uppercase tracking-wider border border-red-400/20">
-          งานเลี้ยงสังสรรค์พนักงาน
-        </span>
-        <h1 class="text-2xl sm:text-3xl font-bold mt-2 tracking-tight">MTL PARTY 2026</h1>
-        <p class="text-red-100 text-xs sm:text-sm mt-1 font-light">แบบฟอร์มขอยกเลิกออเดอร์และขอคืนเงิน</p>
+        <div class="inline-flex items-center gap-1.5 bg-amber-400/20 backdrop-blur-md text-amber-200 text-xs px-4 py-1 rounded-full font-medium tracking-wide border border-amber-300/30 shadow-inner">
+          <span>✨</span>
+          <span>MTL Christmas Celebration 2026 - The Gift of Happiness</span>
+          <span>✨</span>
+        </div>
+
+        <h1 class="text-xl sm:text-2xl font-bold mt-2.5 text-white tracking-tight drop-shadow-sm">
+          แบบฟอร์มขอยกเลิกออเดอร์และขอคืนเงิน
+        </h1>
+        <p class="text-rose-100 text-xs sm:text-sm mt-1 font-light opacity-90">
+          (Order Cancellation & Refund Form)
+        </p>
       </div>
     </header>
 
@@ -115,7 +132,7 @@
             <input type="hidden" id="lineUserId">
 
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">ธนาคารสำหรับรับเงินคืน <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">ธนาคารสำหรับรับเงินคืน <span class="text-red-500">*</span></label>
               <select id="bankName" required class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
                 <option value="">-- เลือกธนาคาร --</option>
                 <option value="กสิกรไทย (KBANK)">กสิกรไทย (KBANK)</option>
@@ -130,13 +147,13 @@
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">เลขที่บัญชี / เบอร์พร้อมเพย์ <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">เลขที่บัญชี / เบอร์พร้อมเพย์ <span class="text-red-500">*</span></label>
               <input type="tel" id="accountNo" required placeholder="ระบุเฉพาะตัวเลข" 
                      class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none font-mono">
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">ชื่อเจ้าของบัญชี <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อเจ้าของบัญชี <span class="text-red-500">*</span></label>
               <input type="text" id="accountName" required placeholder="ชื่อ - นามสกุล ตรงตามบัญชี" 
                      class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none">
             </div>
@@ -145,7 +162,7 @@
               💡 เมื่อส่งคำขอแล้ว สถานะจะเปลี่ยนเป็น <b>"ส่งคำขอยกเลิก/รอเงินคืน"</b> เจ้าหน้าที่จะโอนเงินคืนตามลำดับค่ะ
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-98 text-white font-medium py-3.5 rounded-xl shadow-md transition duration-150 text-base">
+            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 active:scale-98 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-red-600/25 transition duration-150 text-base">
               ยืนยันการขอยกเลิกและขอคืนเงิน
             </button>
           </form>
@@ -283,12 +300,12 @@
                 }">
                   ${isPendingCancel ? '⏳ รอโอนเงินคืน' : 'พร้อมยกเลิก'}
                 </span>
-                <p class="font-bold text-blue-700 text-xs mt-1">${Number(order.Total_Amount || 0).toLocaleString()} บาท</p>
+                <p class="font-bold text-red-700 text-xs mt-1">${Number(order.Total_Amount || 0).toLocaleString()} บาท</p>
               </div>
             </div>
 
             <div class="bg-white p-2 rounded-xl border border-slate-200 text-[11px] text-slate-600">
-              <p class="text-slate-400 mb-0.5 font-medium">โต๊ะ: ${order.Table_Number} | ${order.Department || '-'}</p>
+              <p class="text-slate-400 mb-0.5 font-medium">โต๊ะ: ${order.Table_Number || '-'} | ${order.Department || '-'}</p>
               <p class="whitespace-pre-line text-slate-700">${order.Order_Items || '-'}</p>
             </div>
           </div>
@@ -374,6 +391,7 @@
             title: 'ส่งคำขอสำเร็จ!',
             text: 'ระบบได้บันทึกคำขอยกเลิกของคุณแล้ว เจ้าหน้าที่จะดำเนินการโอนเงินคืนให้ตามลำดับค่ะ',
             icon: 'success',
+            confirmButtonColor: '#16a34a',
             confirmButtonText: 'ตกลง'
           });
 
