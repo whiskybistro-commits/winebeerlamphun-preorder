@@ -83,39 +83,39 @@
 
   <!-- โครงสร้างเว็บปกติ -->
   <div id="mainWebsite">
-     <header class="christmas-bg text-white pt-6 pb-8 px-3 sm:px-4 shadow-xl relative overflow-hidden">
+    <header class="christmas-bg text-white pt-6 pb-8 px-3 sm:px-4 shadow-xl relative overflow-hidden">
       <!-- ลายจุดพื้นหลังเดิม -->
       <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
       <div class="max-w-3xl mx-auto flex flex-col relative z-10">
 
-        <!-- แถบด้านบน: ทั้งในมือถือและคอมฯ จะเป็นแถวเดียวกัน (โลโก้ซ้ายสุด + แบนเนอร์ขวาสุด เสมอ) -->
-        <div class="w-full flex flex-row items-center justify-between gap-2 sm:gap-4 mb-4">
+        <!-- แถบด้านบน: โลโก้ + แบนเนอร์ (ปรับความสูงแบนเนอร์ให้เต็มพอดีกับโลโก้) -->
+        <div class="w-full flex flex-row items-center justify-center gap-2.5 sm:gap-4 mb-3.5">
   
-          <!-- 1. โลโก้ (ชิดซ้ายเสมอ) -->
+          <!-- 1. โลโก้งาน -->
           <div class="transition-transform duration-300 hover:scale-105 flex-shrink-0">
             <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026 - The Gift of Happiness" 
-                 class="h-10 sm:h-14 md:h-16 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] filter">
+                 class="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-[0_6px_16px_rgba(0,0,0,0.4)] filter">
           </div>
 
-          <!-- 2. ป้ายแบนเนอร์ (ชิดขวาเสมอ ปรับขนาดให้พอดีหน้าจอมือถือไม่ล้น) -->
-          <div class="inline-flex items-center gap-1.5 sm:gap-2 bg-amber-400/20 backdrop-blur-md text-amber-200 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-full border border-amber-300/30 shadow-md flex-shrink-0">
-            <span class="text-[10px] sm:text-xs">✨</span>
-            <div class="text-center leading-tight">
-              <div class="font-bold text-[10px] sm:text-xs md:text-[13px] tracking-tight sm:tracking-normal">
+         <!-- 2. ป้ายแบนเนอร์ (เพิ่มความสูง py-3 ถึง py-5 ให้สูงพอดีกับโลโก้) -->
+          <div class="inline-flex items-center gap-2 sm:gap-3 bg-amber-400/20 backdrop-blur-md text-amber-200 px-3.5 sm:px-5 py-3 sm:py-4 md:py-5 rounded-2xl sm:rounded-3xl border border-amber-300/30 shadow-md flex-shrink-0">
+            <span class="text-sm sm:text-lg md:text-xl">✨</span>
+            <div class="text-center leading-snug">
+              <div class="font-bold text-[11px] sm:text-sm md:text-base tracking-tight sm:tracking-normal">
                 MTL Christmas Celebration 2026
               </div>
-              <div class="text-[8.5px] sm:text-[10px] md:text-[11px] font-normal text-amber-100/90 mt-0.5">
+              <div class="text-[9.5px] sm:text-xs md:text-sm font-normal text-amber-100/90 mt-0.5 sm:mt-1">
                 The Gift of Happiness
               </div>
             </div>
-            <span class="text-[10px] sm:text-xs">✨</span>
+            <span class="text-sm sm:text-lg md:text-xl">✨</span>
           </div>
 
-       </div>
+        </div>
 
         <!-- ส่วนข้อความหัวข้อตรงกลาง -->
-        <div class="w-full text-center mt-1 sm:mt-2">
+        <div class="w-full text-center mt-1">
           <!-- บรรทัดที่ 1 -->
           <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow-sm">
             แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า
@@ -125,7 +125,7 @@
           <p class="text-lg sm:text-xl font-bold text-white tracking-tight drop-shadow-sm opacity-90 mt-0.5">
             (Pre-order Form)
           </p>
- 
+
           <!-- บรรทัดที่ 3 -->
           <p class="text-rose-100 text-xs sm:text-sm mt-1.5 font-light opacity-90">
             งานเลี้ยงสังสรรค์พนักงานประจำปี 2026
