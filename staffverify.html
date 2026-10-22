@@ -52,36 +52,47 @@
   <div class="fixed bottom-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[110px] pointer-events-none -z-10"></div>
 
   <div>
-    <!-- Header ธีม Christmas Dark Portal -->
-    <header class="bg-gradient-to-b from-[#2a060b] via-[#1a0407] to-[#0b0204]/90 backdrop-blur-md border-b border-red-900/40 pt-5 pb-4 px-4 text-center shadow-2xl sticky top-0 z-20">
+    <!-- Header ธีม Christmas Dark Portal (ปรับสไตล์ตามหน้าหลักล่าสุด 100%) -->
+    <header class="bg-gradient-to-b from-[#2a060b] via-[#1a0407] to-[#0b0204]/95 backdrop-blur-md border-b border-red-900/40 pt-5 pb-5 px-3 sm:px-4 text-center shadow-2xl sticky top-0 z-20">
       
-      <!-- โลโก้งานขนาดเด่นชัด -->
-      <div class="flex justify-center mb-2.5 transition-transform hover:scale-105 duration-300">
-        <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026" 
-             class="w-44 sm:w-52 h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]">
-      </div>
-
-      <div class="inline-flex items-center gap-1.5 bg-red-500/15 border border-red-500/30 px-3 py-1 rounded-full text-red-300 text-[11px] font-semibold uppercase tracking-wider mb-1.5 shadow-sm">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        ระบบสำหรับเจ้าหน้าที่ประจำจุดจ่ายของ
-      </div>
-
-      <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">
-        ตรวจสอบและจัดเตรียมจ่ายสินค้า
-      </h1>
-
-      <!-- ส่วนที่ปรับ: แยกเป็น 2 บรรทัดแบบ Block ชัดเจน 100% -->
-      <div class="flex items-center justify-center gap-2 mt-1">
-        <span class="text-amber-300">✨</span>
-        <div class="text-center leading-tight">
-          <div class="text-sm sm:text-base text-amber-300 font-semibold">
-            MTL Christmas Celebration 2026
+      <div class="max-w-3xl mx-auto flex flex-col items-center">
+        
+        <!-- แถบด้านบน: โลโก้ + แบนเนอร์ชื่องาน (วางคู่กันชิดๆ กึ่งกลางหน้าจอ) -->
+        <div class="w-full flex flex-row items-center justify-center gap-2.5 sm:gap-4 mb-3">
+          
+          <!-- 1. โลโก้งาน (ขยายขนาดขึ้น เด่นชัด สวยงาม) -->
+          <div class="transition-transform duration-300 hover:scale-105 flex-shrink-0">
+            <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026" 
+                 class="h-14 sm:h-18 md:h-20 w-auto object-contain drop-shadow-[0_6px_16px_rgba(0,0,0,0.6)]">
           </div>
-          <div class="text-xs sm:text-sm text-amber-200/80 font-normal mt-0.5">
-            The Gift of Happiness
+
+          <!-- 2. ป้ายแบนเนอร์ชื่องาน (เพิ่มความสูง + ตัวหนังสือใหญ่คมชัด) -->
+          <div class="inline-flex items-center gap-2.5 sm:gap-3.5 bg-amber-400/20 backdrop-blur-md text-amber-200 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl sm:rounded-3xl border border-amber-300/30 shadow-md flex-shrink-0">
+            <span class="text-base sm:text-xl md:text-2xl">✨</span>
+            <div class="text-center leading-snug">
+              <div class="font-bold text-xs sm:text-base md:text-lg tracking-tight sm:tracking-normal">
+                MTL Christmas Celebration 2026
+              </div>
+              <div class="text-[11px] sm:text-sm md:text-base font-normal text-amber-100/90 mt-0.5 sm:mt-1">
+                The Gift of Happiness
+              </div>
+            </div>
+            <span class="text-base sm:text-xl md:text-2xl">✨</span>
           </div>
+
         </div>
-        <span class="text-amber-300">✨</span>
+
+        <!-- แถบป้ายระบบเจ้าหน้าที่ (มีไฟเขียวกระพริบ) -->
+        <div class="inline-flex items-center gap-1.5 bg-red-500/15 border border-red-500/30 px-3 py-1 rounded-full text-red-300 text-[11px] font-semibold uppercase tracking-wider mb-2 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          ระบบสำหรับเจ้าหน้าที่ประจำจุดจ่ายของ
+        </div>
+
+        <!-- หัวข้อหน้าเว็บ -->
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">
+          ตรวจสอบและจัดเตรียมจ่ายสินค้า
+        </h1>
+
       </div>
     </header>
 
