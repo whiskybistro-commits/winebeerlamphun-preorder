@@ -140,14 +140,30 @@
 
       <!-- 🔥 กล่องข้อความแจ้งเตือนวันเดดไลน์สีแดงสด 🔥 -->
       <div id="deadlineContainer" class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-lg border-2 border-red-500 text-center relative overflow-hidden">
-        <div class="relative z-10 space-y-1">
-          <div class="flex items-center justify-center gap-2 text-base sm:text-lg font-bold drop-shadow">
-            <span class="text-xl animate-pulse">⏰</span>
-            <span>วันสุดท้ายของการพรีออเดอร์: วันเสาร์ที่ 19 ธันวาคม 2026 เวลา 23:59น.</span>
+        <div class="relative z-10 flex flex-col items-center justify-center space-y-2">
+          
+          <!-- ภาษาไทย (2 บรรทัด) -->
+          <div class="text-base sm:text-lg font-bold drop-shadow leading-snug">
+            <div class="flex items-center justify-center gap-1.5">
+              <span class="text-xl animate-pulse">⏰</span>
+              <span>วันสุดท้ายของการพรีออเดอร์:</span>
+            </div>
+            <div class="text-amber-200 font-extrabold mt-0.5">
+              วันเสาร์ที่ 19 ธันวาคม 2026 เวลา 23:59น.
+            </div>
           </div>
-          <p class="text-xs sm:text-sm text-rose-100 font-medium tracking-wide">
-            (Pre-Order Deadlines: Saturday, 19-Dec-26 at 11:59pm)
-          </p>
+
+          <!-- เส้นคั่นบางๆ เพิ่มมิติ -->
+          <div class="w-20 h-px bg-rose-400/40"></div>
+
+          <!-- ภาษาอังกฤษ (2 บรรทัด) -->
+          <div class="text-xs sm:text-sm text-rose-100 font-medium tracking-wide leading-tight opacity-90">
+            <div>Pre-Order Deadlines:</div>
+            <div class="text-rose-200 font-semibold mt-0.5">
+              Saturday, 19-Dec-26 at 11:59pm
+            </div>
+          </div>
+
         </div>
       </div>
 
