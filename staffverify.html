@@ -52,32 +52,28 @@
   <div class="fixed bottom-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[110px] pointer-events-none -z-10"></div>
 
   <div>
-    <!-- Header ธีม Christmas Dark Portal (ปรับสไตล์ตามหน้าหลักล่าสุด 100%) -->
+    <!-- Header: ระบบสำหรับเจ้าหน้าที่ประจำจุดจ่ายของ -->
     <header class="bg-gradient-to-b from-[#2a060b] via-[#1a0407] to-[#0b0204]/95 backdrop-blur-md border-b border-red-900/40 pt-5 pb-5 px-3 sm:px-4 text-center shadow-2xl sticky top-0 z-20">
       
       <div class="max-w-3xl mx-auto flex flex-col items-center">
         
-        <!-- แถบด้านบน: โลโก้ + แบนเนอร์ชื่องาน (วางคู่กันชิดๆ กึ่งกลางหน้าจอ) -->
+        <!-- แถบด้านบน: โลโก้ + แบนเนอร์ (ตัวหนังสือใหญ่เต็มกล่องพอดีโลโก้) -->
         <div class="w-full flex flex-row items-center justify-center gap-2.5 sm:gap-4 mb-3">
           
-          <!-- 1. โลโก้งาน (ขยายขนาดขึ้น เด่นชัด สวยงาม) -->
+          <!-- โลโก้ -->
           <div class="transition-transform duration-300 hover:scale-105 flex-shrink-0">
             <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026" 
-                 class="h-14 sm:h-18 md:h-20 w-auto object-contain drop-shadow-[0_6px_16px_rgba(0,0,0,0.6)]">
+                 class="h-16 sm:h-24 md:h-28 w-auto object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.6)]">
           </div>
 
-          <!-- 2. ป้ายแบนเนอร์ชื่องาน (เพิ่มความสูง + ตัวหนังสือใหญ่คมชัด) -->
-          <div class="inline-flex items-center gap-2.5 sm:gap-3.5 bg-amber-400/20 backdrop-blur-md text-amber-200 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl sm:rounded-3xl border border-amber-300/30 shadow-md flex-shrink-0">
-            <span class="text-base sm:text-xl md:text-2xl">✨</span>
-            <div class="text-center leading-snug">
-              <div class="font-bold text-xs sm:text-base md:text-lg tracking-tight sm:tracking-normal">
-                MTL Christmas Celebration 2026
-              </div>
-              <div class="text-[11px] sm:text-sm md:text-base font-normal text-amber-100/90 mt-0.5 sm:mt-1">
-                The Gift of Happiness
-              </div>
+          <!-- แบนเนอร์ (ขยายตัวหนังสือข้างในให้ใหญ่เต็มพอดี) -->
+          <div class="inline-flex flex-col justify-center items-center bg-amber-400/20 backdrop-blur-md text-amber-200 px-4 sm:px-8 py-3 sm:py-5 md:py-6 rounded-2xl sm:rounded-3xl border border-amber-300/30 shadow-md flex-shrink-0 leading-tight text-center">
+            <div class="font-extrabold text-sm sm:text-lg md:text-xl tracking-tight sm:tracking-normal drop-shadow-sm">
+              MTL Christmas Celebration 2026
             </div>
-            <span class="text-base sm:text-xl md:text-2xl">✨</span>
+            <div class="text-xs sm:text-sm md:text-base font-medium text-amber-100/95 mt-1 sm:mt-1.5 drop-shadow-xs">
+              The Gift of Happiness
+            </div>
           </div>
 
         </div>
