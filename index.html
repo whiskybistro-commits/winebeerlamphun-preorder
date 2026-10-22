@@ -83,57 +83,59 @@
 
   <!-- โครงสร้างเว็บปกติ -->
   <div id="mainWebsite">
-    <header class="christmas-bg text-white pt-8 pb-10 px-4 text-center shadow-2xl relative overflow-hidden bg-gradient-to-b from-[#2d060c] via-[#1a0407] to-[#0d0204]">
-      <!-- ลายจุดประกายดาวพื้นหลัง -->
+    <header class="christmas-bg text-white pt-8 pb-10 px-4 shadow-xl relative overflow-hidden">
+      <!-- ลายจุดพื้นหลังเดิม -->
       <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
-      <!-- แสงนีออนคริสต์มาสเรืองแสงด้านบน -->
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-36 bg-red-600/25 blur-[85px] pointer-events-none"></div>
-
-      <div class="max-w-2xl mx-auto flex flex-col items-center relative z-10 space-y-3.5">
-        
-        <!-- 1. โลโก้งาน -->
-        <div class="transition-transform duration-300 hover:scale-105">
-          <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026" 
-               class="w-52 sm:w-64 md:w-72 h-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.55)]">
-        </div>
-
-        <!-- 2. ป้ายชื่องาน (Badge 2 บรรทัด) -->
-        <div class="inline-flex items-center gap-3 bg-amber-400/15 backdrop-blur-md text-amber-200 px-5 py-2 rounded-2xl border border-amber-300/30 shadow-md">
-          <span class="text-base text-amber-300">✨</span>
-          <div class="text-center leading-tight">
-            <div style="display: block !important;" class="font-bold text-xs sm:text-sm tracking-wide text-amber-200">
-              MTL Christmas Celebration 2026
-            </div>
-            <div style="display: block !important;" class="text-[11px] sm:text-xs font-normal text-amber-100/80 mt-0.5">
-              The Gift of Happiness
-            </div>
+      <div class="max-w-3xl mx-auto flex flex-col relative z-10">
+    
+        <!-- แถบด้านบน: โลโก้ชิดซ้าย + ป้ายธีมชิดขวา -->
+        <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+      
+          <!-- โลโก้ชิดซ้าย -->
+          <div class="transition-transform duration-300 hover:scale-105">
+            <img src="./christmas-logo.png" alt="MTL Christmas Celebration 2026 - The Gift of Happiness" 
+                 class="w-48 sm:w-56 md:w-64 h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)] filter">
           </div>
-          <span class="text-base text-amber-300">✨</span>
+
+          <!-- ป้ายธีมงานชิดขวา -->
+          <div class="inline-flex items-center gap-3 bg-amber-400/20 backdrop-blur-md text-amber-200 text-sm sm:text-base px-6 py-2.5 rounded-2xl sm:rounded-full border border-amber-300/30 shadow-md flex-shrink-0">
+            <span class="text-base sm:text-lg">✨</span>
+            <div class="text-center leading-tight">
+              <div class="font-bold tracking-wide">
+                MTL Christmas Celebration 2026
+              </div>
+              <div class="text-xs sm:text-sm font-normal text-amber-100/90 mt-0.5">
+                The Gift of Happiness
+              </div>
+            </div>
+            <span class="text-base sm:text-lg">✨</span>
+          </div>
+
         </div>
 
-        <!-- 3. ส่วนข้อความหัวข้อ (บังคับตัดบรรทัดเด็ดขาด 100%) -->
-        <div class="w-full flex flex-col items-center pt-1">
-          <!-- บรรทัดที่ 1: ชื่อแบบฟอร์มหลัก -->
-          <h1 style="display: block !important;" class="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow-md">
+        <!-- ส่วนข้อความหัวข้อตรงกลาง -->
+        <div class="w-full text-center mt-2">
+          <!-- บรรทัดที่ 1 -->
+          <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow-sm">
             แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า
           </h1>
-          
-          <!-- บรรทัดที่ 2: ภาษาอังกฤษ (Pre-order Form) -->
-          <div style="display: block !important;" class="text-rose-200/90 text-xs sm:text-sm font-light mt-1 tracking-wide">
-            (Pre-order Form)
-          </div>
 
-          <!-- บรรทัดที่ 3: ชื่องานประจำปี ดีไซน์เป็น Badge มินิมอล -->
-          <div style="display: inline-flex !important;" class="items-center gap-1.5 mt-2.5 px-3.5 py-1 rounded-full bg-red-950/60 border border-red-500/30 text-rose-200 text-xs font-normal shadow-sm">
-            <span>🎄</span>
-            <span>งานเลี้ยงสังสรรค์พนักงานประจำปี 2026</span>
-          </div>
+          <!-- บรรทัดที่ 2: ตัวหนังสือขาว หนา drop-shadow และ opacity-90 -->
+          <p class="text-lg sm:text-xl font-bold text-white tracking-tight drop-shadow-sm opacity-90 mt-0.5">
+            (Pre-order Form)
+          </p>
+
+          <!-- บรรทัดที่ 3 -->
+          <p class="text-rose-100 text-xs sm:text-sm mt-1.5 font-light opacity-90">
+            งานเลี้ยงสังสรรค์พนักงานประจำปี 2026
+          </p>
         </div>
 
       </div>
     </header>
 
+    
     <main class="max-w-2xl mx-auto px-4 mt-6 mb-16">
 
       <!-- 🔥 กล่องข้อความแจ้งเตือนวันเดดไลน์สีแดงสด 🔥 -->
