@@ -879,7 +879,7 @@
       tableInput.addEventListener('input', () => checkPickupPoint(parseInt(tableInput.value)));
     }
 
-    // Submit คำสั่งซื้อ
+    // Submit คำสั่งซื้อ พร้อมกล่องแจ้งเตือนยืนยันก่อนส่ง
     const form = document.getElementById('preorderForm');
     if (form) {
       form.addEventListener('submit', async (e) => {
@@ -897,6 +897,39 @@
         const payTime = document.getElementById('payTime').value.trim();
         if (!payDate || !payTime || !compressedSlipBase64) {
           Swal.fire('ข้อมูลไม่ครบถ้วน', 'กรุณาระบุวัน-เวลา และแนบสลิปการโอนเงินให้ครบถ้วนค่ะ', 'warning');
+          return;
+        }
+
+        // 🔔 กล่องแจ้งเตือนเงื่อนไขก่อนส่งคำสั่งซื้อ
+        const confirmOrder = await Swal.fire({
+          icon: 'warning',
+          title: 'กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน',
+          html: `
+            <div class="text-left text-sm leading-relaxed space-y-2.5 mt-2">
+              <p class="font-bold text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-200">
+                ⚠️ เมื่อดำเนินการชำระเงินเรียบร้อยแล้ว จะไม่สามารถแก้ไขรายการได้
+              </p>
+              
+              <div class="bg-amber-50/90 p-3 rounded-xl border border-amber-200 text-xs text-slate-700 space-y-1.5">
+                <p>• <b>กรณีต้องการเพิ่มรายการสินค้า:</b> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์</p>
+                <p>• <b>กรณีต้องการลดรายการสินค้า:</b> ให้ทำการยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง</p>
+              </div>
+
+              <div class="text-center font-bold text-base text-slate-800 pt-1">
+                ยอดชำระทั้งหมด: <span class="text-red-600 text-xl font-black">${total.toLocaleString()} ฿</span>
+              </div>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: 'ยืนยันสั่งซื้อ',
+          cancelButtonText: 'กลับไปตรวจสอบ',
+          confirmButtonColor: '#dc2626',
+          cancelButtonColor: '#64748b',
+          reverseButtons: true
+        });
+
+        // หากผู้ใช้กด "กลับไปตรวจสอบ" หรือปิดกล่องเตือน ให้หยุดการทำงาน
+        if (!confirmOrder.isConfirmed) {
           return;
         }
 
