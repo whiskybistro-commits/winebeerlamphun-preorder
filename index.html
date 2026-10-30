@@ -19,9 +19,9 @@
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Prompt', sans-serif; }
+    body { font-family: 'Prompt', 'Noto Sans JP', sans-serif; }
     .footer {
       text-align: center;
       padding: 1.5rem 1rem;
@@ -43,6 +43,31 @@
     .christmas-bg {
       background: radial-gradient(circle at 50% 20%, #c21829 0%, #8b0e1b 50%, #4a070f 100%);
     }
+
+    /* สไตล์กล่องสลับภาษาแบบโมเดิร์น */
+    .lang-switcher-container {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+    }
+    .lang-pill {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .lang-pill.active {
+      background: #ffffff;
+      color: #991b1b;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      font-weight: 700;
+    }
+    .lang-pill:not(.active) {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .lang-pill:not(.active):hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.15);
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
@@ -51,31 +76,30 @@
   <div id="closedScreen" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
     <div class="max-w-md w-full bg-slate-900 border-2 border-rose-600/60 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
       
-      <!-- โลโก้หรือไอคอนเด่นชัด -->
       <div class="w-20 h-20 bg-rose-950/80 border border-rose-500/50 rounded-full flex items-center justify-center mx-auto text-4xl shadow-lg">
         ⛔
       </div>
 
       <div class="space-y-2">
-        <span class="inline-block bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs px-3 py-1 rounded-full font-medium">
+        <span class="inline-block bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs px-3 py-1 rounded-full font-medium" data-i18n="closedBadge">
           PRE-ORDER CLOSED
         </span>
-        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight" data-i18n="closedTitle">
           ปิดรับการพรีออเดอร์แล้ว
         </h2>
-        <p class="text-sm text-slate-300 leading-relaxed pt-1">
+        <p class="text-sm text-slate-300 leading-relaxed pt-1" data-i18n="closedDesc">
           ระบบได้ปิดรับคำสั่งซื้อล่วงหน้าสำหรับงาน <br>
           <strong class="text-amber-300 font-semibold">MTL Christmas Celebration 2026</strong><br>
           ตั้งแต่วันที่ 20 ธันวาคม 2026 เวลา 00:00 น. เป็นต้นไป
         </p>
       </div>
 
-      <div class="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 text-xs text-slate-400">
+      <div class="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 text-xs text-slate-400" data-i18n="closedNotice">
         หากท่านได้สั่งซื้อและโอนเงินแล้ว ระบบได้บันทึกออเดอร์ของท่านเรียบร้อยแล้วค่ะ สามารถตรวจสอบตั๋วในแชท LINE ได้ตามปกติ
       </div>
 
       <button type="button" onclick="closeAppWindow()" 
-        class="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg shadow-red-600/30 transition text-sm">
+        class="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 active:scale-95 text-white font-semibold py-3 rounded-xl shadow-lg shadow-red-600/30 transition text-sm" data-i18n="btnCloseWindow">
         ปิดหน้าต่างนี้
       </button>
     </div>
@@ -84,11 +108,29 @@
   <!-- โครงสร้างเว็บปกติ -->
   <div id="mainWebsite">
     <!-- Header: แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า -->
-    <header class="christmas-bg text-white pt-6 pb-8 px-3 sm:px-4 shadow-xl relative overflow-hidden">
+    <header class="christmas-bg text-white pt-3 pb-8 px-3 sm:px-4 shadow-xl relative overflow-hidden">
       <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
       <div class="max-w-3xl mx-auto flex flex-col relative z-10">
         
+        <!-- 🌐 แถบสลับภาษาดีไซน์โมเดิร์น (มุมขวาบน) -->
+        <div class="flex justify-end items-center mb-3">
+          <div class="lang-switcher-container inline-flex items-center p-1 rounded-full gap-0.5" role="group" aria-label="Language Selector">
+            <button type="button" onclick="setLanguage('th')" id="lang-btn-th" class="lang-pill active flex items-center gap-1.5 px-3 py-1 rounded-full text-xs transition duration-150">
+              <span class="text-sm">🇹🇭</span>
+              <span>TH</span>
+            </button>
+            <button type="button" onclick="setLanguage('en')" id="lang-btn-en" class="lang-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs transition duration-150">
+              <span class="text-sm">🇬🇧</span>
+              <span>EN</span>
+            </button>
+            <button type="button" onclick="setLanguage('ja')" id="lang-btn-ja" class="lang-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs transition duration-150">
+              <span class="text-sm">🇯🇵</span>
+              <span>JP</span>
+            </button>
+          </div>
+        </div>
+
         <!-- แถบด้านบน: โลโก้ + แบนเนอร์ -->
         <div class="w-full flex flex-row items-center justify-center gap-2.5 sm:gap-4 mb-3.5">
           
@@ -112,13 +154,13 @@
 
         <!-- ข้อความหัวข้อตรงกลาง -->
         <div class="w-full text-center mt-1">
-          <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow-sm">
+          <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow-sm" data-i18n="formTitle">
             แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า
           </h1>
-          <p class="text-lg sm:text-xl font-bold text-white tracking-tight drop-shadow-sm opacity-90 mt-0.5">
+          <p class="text-lg sm:text-xl font-bold text-white tracking-tight drop-shadow-sm opacity-90 mt-0.5" data-i18n="formSubTitle">
             (Pre-order Form)
           </p>
-          <p class="text-rose-100 text-xs sm:text-sm mt-1.5 font-light opacity-90">
+          <p class="text-rose-100 text-xs sm:text-sm mt-1.5 font-light opacity-90" data-i18n="partyTitle">
             งานเลี้ยงสังสรรค์พนักงานประจำปี 2026
           </p>
         </div>
@@ -128,16 +170,16 @@
     
     <main class="max-w-2xl mx-auto px-4 mt-6 mb-16">
 
-      <!-- 🔥 กล่องข้อความแจ้งเตือนวันเดดไลน์สีแดงสด 🔥 -->
+      <!-- 🔥 กล่องข้อความแจ้งเตือนวันเดดไลน์ 🔥 -->
       <div id="deadlineContainer" class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-lg border-2 border-red-500 text-center relative overflow-hidden">
         <div class="relative z-10 flex flex-col items-center justify-center space-y-2">
           
           <div class="text-base sm:text-lg font-bold drop-shadow leading-snug">
             <div class="flex items-center justify-center gap-1.5">
               <span class="text-xl animate-pulse">⏰</span>
-              <span>วันสุดท้ายของการพรีออเดอร์:</span>
+              <span data-i18n="deadlineTitle">วันสุดท้ายของการพรีออเดอร์:</span>
             </div>
-            <div class="text-amber-200 font-extrabold mt-0.5">
+            <div class="text-amber-200 font-extrabold mt-0.5" data-i18n="deadlineTimeMain">
               วันเสาร์ที่ 19 ธันวาคม 2026 เวลา 23:59น.
             </div>
           </div>
@@ -145,8 +187,8 @@
           <div class="w-20 h-px bg-rose-400/40"></div>
 
           <div class="text-xs sm:text-sm text-rose-100 font-medium tracking-wide leading-tight opacity-90">
-            <div>Pre-Order Deadlines:</div>
-            <div class="text-rose-200 font-semibold mt-0.5">
+            <div data-i18n="deadlineSubTitle">Pre-Order Deadlines:</div>
+            <div class="text-rose-200 font-semibold mt-0.5" data-i18n="deadlineTimeSub">
               Saturday, 19-Dec-26 at 11:59pm
             </div>
           </div>
@@ -159,34 +201,40 @@
         <div class="flex items-center gap-3">
           <img id="userPicture" src="" alt="LINE Avatar" class="w-10 h-10 rounded-full border border-emerald-300 object-cover shadow-inner">
           <div>
-            <p class="text-xs text-emerald-600 font-medium">เข้าสู่ระบบผ่าน LINE สำเร็จ</p>
+            <p class="text-xs text-emerald-600 font-medium" data-i18n="lineLoginSuccess">เข้าสู่ระบบผ่าน LINE สำเร็จ</p>
             <p id="userName" class="text-sm font-bold text-emerald-950">-</p>
           </div>
         </div>
-        <span class="text-xs bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-lg font-medium">เชื่อมต่อแล้ว</span>
+        <span class="text-xs bg-emerald-200 text-emerald-800 px-2.5 py-1 rounded-lg font-medium" data-i18n="lineConnected">เชื่อมต่อแล้ว</span>
       </div>
 
       <form id="preorderForm" class="space-y-6">
 
-        <!-- 1. ข้อมูลผู้สั่ง (นำเลขโต๊ะออกแล้ว) -->
+        <!-- 1. ข้อมูลผู้สั่ง -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-            <span>👤</span> ข้อมูลผู้สั่งจอง
+            <span>👤</span> <span data-i18n="secCustomer">ข้อมูลผู้สั่งจอง</span>
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Employee code (รหัสพนักงาน) *</label>
-              <input type="text" id="employeeId" required placeholder="Example: 91267 (ตัวอย่าง: 91267)"
+              <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="labelEmpId">Employee code (รหัสพนักงาน) *</label>
+              <input type="text" id="employeeId" required
+                data-placeholder-i18n="phEmpId"
+                placeholder="Example: 91267 (ตัวอย่าง: 91267)"
                 class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none uppercase text-xs sm:text-sm">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Section code (รหัสแผนก) *</label>
-              <input type="text" id="department" required placeholder="Example: MT1713 (ตัวอย่าง: MT1713)"
+              <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="labelDept">Section code (รหัสแผนก) *</label>
+              <input type="text" id="department" required
+                data-placeholder-i18n="phDept"
+                placeholder="Example: MT1713 (ตัวอย่าง: MT1713)"
                 class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none uppercase text-xs sm:text-sm">
             </div>
             <div class="sm:col-span-2">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Name – Surname (ชื่อ–นามสกุล) *</label>
-              <input type="text" id="fullName" required placeholder="Example: Somchai Mankong (ตัวอย่าง: สมชาย มั่นคง)"
+              <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="labelName">Name – Surname (ชื่อ–นามสกุล) *</label>
+              <input type="text" id="fullName" required
+                data-placeholder-i18n="phName"
+                placeholder="Example: Somchai Mankong (ตัวอย่าง: สมชาย มั่นคง)"
                 class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-xs sm:text-sm">
             </div>
           </div>
@@ -197,24 +245,24 @@
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <div class="flex justify-between items-center border-b pb-2 mb-3">
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <span>🛍️</span> เลือกรายการสินค้า
+              <span>🛍️</span> <span data-i18n="secProducts">เลือกรายการสินค้า</span>
             </h2>
             <button type="button" id="clearCartBtn" 
               class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-medium text-rose-700 transition duration-150 shadow-xs">
               <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
-              <span>ล้างตะกร้า</span>
+              <span data-i18n="btnClearCart">ล้างตะกร้า</span>
             </button>
           </div>
 
           <div class="relative flex items-center mb-4 border-b border-slate-100 group">
-            <button type="button" id="tabScrollLeft" aria-label="เลื่อนซ้าย"
+            <button type="button" id="tabScrollLeft" aria-label="Scroll left"
               class="hidden sm:flex absolute left-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95">
               ❮
             </button>
             <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide items-center scroll-smooth w-full sm:mx-8"></div>
-            <button type="button" id="tabScrollRight" aria-label="เลื่อนขวา"
+            <button type="button" id="tabScrollRight" aria-label="Scroll right"
               class="hidden sm:flex absolute right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95">
               ❯
             </button>
@@ -222,7 +270,7 @@
 
           <div id="productList" class="space-y-4">
             <div class="text-center py-6 text-slate-400 text-sm">
-              <span class="inline-block animate-spin mr-2">⏳</span> กำลังโหลดรายการสินค้า...
+              <span class="inline-block animate-spin mr-2">⏳</span> <span data-i18n="loadingProducts">กำลังโหลดรายการสินค้า...</span>
             </div>
           </div>
 
@@ -230,7 +278,7 @@
           <div id="orderSummaryContainer" class="hidden mt-6 bg-slate-50 rounded-2xl p-4 border border-slate-200">
             <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80">
               <span class="font-bold text-sm sm:text-base text-slate-800 flex items-center gap-1.5">
-                <span>📋</span> สรุปรายการสินค้าที่เลือก
+                <span>📋</span> <span data-i18n="summaryTitle">สรุปรายการสินค้าที่เลือก</span>
               </span>
               <span id="summaryItemCount" class="text-xs text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200">
                 0 รายการ
@@ -240,25 +288,26 @@
           </div>
 
           <div class="mt-4 p-4 bg-red-50/80 rounded-xl flex justify-between items-center border border-red-100">
-            <span class="font-semibold text-slate-700">ยอดชำระทั้งหมด:</span>
-            <span class="text-2xl font-bold text-red-700"><span id="totalAmount">0</span> ฿</span>
+            <span class="font-semibold text-slate-700" data-i18n="totalLabel">ยอดชำระทั้งหมด:</span>
+            <span class="text-2xl font-bold text-red-700"><span id="totalAmount">0</span> <span data-i18n="currency">฿</span></span>
           </div>
 
+          <!-- กล่องคำเตือน -->
           <div class="mt-4 p-4 sm:p-4.5 bg-amber-50/90 rounded-2xl border-2 border-amber-300 text-slate-800 leading-relaxed shadow-sm">
             <div class="flex items-start gap-2.5">
               <span class="text-2xl leading-none mt-0.5">⚠️</span>
               <div class="space-y-1.5 w-full">
-                <p class="font-bold text-slate-900 text-base sm:text-lg">
+                <p class="font-bold text-slate-900 text-base sm:text-lg" data-i18n="warnHeader">
                   กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน
                 </p>
-                <p class="text-sm sm:text-base font-medium text-slate-700">
+                <p class="text-sm sm:text-base font-medium text-slate-700" data-i18n="warnSubHeader">
                   เมื่อดำเนินการชำระเงินเรียบร้อยแล้ว <span class="text-rose-600 font-bold underline decoration-rose-300">จะไม่สามารถแก้ไขรายการได้</span>
                 </p>
                 <div class="pt-2 border-t border-amber-200/90 space-y-1.5 text-xs sm:text-sm">
-                  <p class="text-slate-700">
+                  <p class="text-slate-700" data-i18n="warnAddItem">
                     • กรณีต้องการ<strong class="text-rose-600 font-bold text-sm sm:text-base">เพิ่มรายการสินค้า:</strong> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์
                   </p>
-                  <p class="text-slate-700">
+                  <p class="text-slate-700" data-i18n="warnReduceItem">
                     • กรณีต้องการ<strong class="text-rose-600 font-bold text-sm sm:text-base">ลดรายการสินค้า:</strong> ให้ทำการ<span class="text-rose-600 font-bold underline">ยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน</span> แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง
                   </p>
                 </div>
@@ -270,10 +319,10 @@
         <!-- 3. ส่วนแสดง QR Code ชำระเงิน -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center justify-center gap-2">
-            <span>📲</span> สแกน QR Code เพื่อชำระเงิน
+            <span>📲</span> <span data-i18n="secPayment">สแกน QR Code เพื่อชำระเงิน</span>
           </h2>
 
-          <p class="text-xs sm:text-sm text-slate-500 mb-3">
+          <p class="text-xs sm:text-sm text-slate-500 mb-3" data-i18n="qrInstruction">
             กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ
           </p>
 
@@ -281,7 +330,7 @@
             <div id="qrTrigger" class="bg-white p-2.5 rounded-2xl shadow-md border border-slate-200 inline-block max-w-[260px] cursor-zoom-in transition-all hover:scale-105 hover:shadow-lg group">
               <img src="./qr-payment.png" alt="สแกน QR เพื่อชำระเงิน" class="w-full h-auto rounded-xl object-contain">
               <div class="mt-2 text-center">
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium text-red-700 bg-red-50 px-2.5 py-1 rounded-full group-hover:bg-red-100 transition">
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium text-red-700 bg-red-50 px-2.5 py-1 rounded-full group-hover:bg-red-100 transition" data-i18n="qrTapZoom">
                   🔍 แตะเพื่อดูภาพใหญ่
                 </span>
               </div>
@@ -289,9 +338,9 @@
           </div>
 
           <div class="mt-4 bg-purple-50 p-4 rounded-xl border border-purple-100 text-xs sm:text-sm text-purple-900 max-w-md mx-auto space-y-1">
-            <p class="font-bold text-base text-purple-950">บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด</p>
+            <p class="font-bold text-base text-purple-950" data-i18n="companyName">บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด</p>
             <p class="flex items-center justify-center gap-2 font-medium">
-              <span>ธนาคารไทยพาณิชย์ (SCB)</span>
+              <span data-i18n="bankName">ธนาคารไทยพาณิชย์ (SCB)</span>
               <span class="bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-mono font-bold">996-419001-4</span>
             </p>
           </div>
@@ -300,28 +349,28 @@
         <!-- 4. แนบหลักฐานการโอนเงิน -->
         <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
           <h2 class="text-lg font-bold text-slate-900 border-b pb-2 mb-4 flex items-center gap-2">
-            <span>💳</span> หลักฐานการชำระเงิน
+            <span>💳</span> <span data-i18n="secSlip">หลักฐานการชำระเงิน</span>
           </h2>
           
           <div class="max-w-md mx-auto grid grid-cols-2 gap-4 sm:gap-6 mb-5">
             <div class="min-w-0">
-              <label class="block text-xs font-medium text-slate-600 mb-1">วันที่โอน *</label>
+              <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="labelPayDate">วันที่โอน *</label>
               <input type="date" id="payDate" 
                 class="w-full min-w-0 px-2 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-red-500 focus:outline-none bg-slate-50/50 block text-slate-700">
             </div>
             <div class="min-w-0">
-              <label class="block text-xs font-medium text-slate-600 mb-1">เวลาที่โอน *</label>
+              <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="labelPayTime">เวลาที่โอน *</label>
               <input type="time" id="payTime" 
                 class="w-full min-w-0 px-2 py-2 border rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-red-500 focus:outline-none bg-slate-50/50 block text-slate-700">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">แนบภาพสลิปโอนเงิน (PNG, JPG) *</label>
+            <label class="block text-xs font-medium text-slate-600 mb-1" data-i18n="labelSlipFile">แนบภาพสลิปโอนเงิน (PNG, JPG) *</label>
             <input type="file" id="slipFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
             
             <div id="slipPreviewContainer" class="hidden mt-4 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
-              <p class="text-xs text-slate-500 mb-2 font-medium">ตัวอย่างสลิปที่แนบ:</p>
+              <p class="text-xs text-slate-500 mb-2 font-medium" data-i18n="slipPreviewTitle">ตัวอย่างสลิปที่แนบ:</p>
               <img id="slipPreview" src="" alt="Slip Preview" class="max-h-72 sm:max-h-80 w-auto mx-auto rounded-xl border border-slate-200 shadow-md object-contain">
             </div>
           </div>
@@ -329,7 +378,7 @@
 
         <!-- ปุ่มส่งแบบฟอร์ม -->
         <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 active:scale-98 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-red-600/25 transition duration-150 flex justify-center items-center gap-2 text-base">
-          <span>🎄 ยืนยันการสั่งจอง</span>
+          <span data-i18n="btnSubmit">🎄 ยืนยันการสั่งจอง</span>
         </button>
       </form>
     </main>
@@ -347,6 +396,241 @@
     // 🕒 วันเดดไลน์: 20 ธันวาคม 2026 เวลา 00:00:00 น.
     const DEADLINE_DATE = new Date('2026-12-20T00:00:00+07:00');
 
+    // ==========================================
+    // 🌐 DICTIONARY / ระบบแปลภาษา 3 ภาษา
+    // ==========================================
+    const translations = {
+      th: {
+        pageTitle: "MTL Christmas Celebration 2026 - The Gift of Happiness | ระบบพรีออเดอร์สินค้า",
+        closedBadge: "PRE-ORDER CLOSED",
+        closedTitle: "ปิดรับการพรีออเดอร์แล้ว",
+        closedDesc: "ระบบได้ปิดรับคำสั่งซื้อล่วงหน้าสำหรับงาน <br><strong class=\"text-amber-300 font-semibold\">MTL Christmas Celebration 2026</strong><br>ตั้งแต่วันที่ 20 ธันวาคม 2026 เวลา 00:00 น. เป็นต้นไป",
+        closedNotice: "หากท่านได้สั่งซื้อและโอนเงินแล้ว ระบบได้บันทึกออเดอร์ของท่านเรียบร้อยแล้วค่ะ สามารถตรวจสอบตั๋วในแชท LINE ได้ตามปกติ",
+        btnCloseWindow: "ปิดหน้าต่างนี้",
+        formTitle: "แบบฟอร์มพรีออเดอร์สินค้าล่วงหน้า",
+        formSubTitle: "(Pre-order Form)",
+        partyTitle: "งานเลี้ยงสังสรรค์พนักงานประจำปี 2026",
+        deadlineTitle: "วันสุดท้ายของการพรีออเดอร์:",
+        deadlineTimeMain: "วันเสาร์ที่ 19 ธันวาคม 2026 เวลา 23:59น.",
+        deadlineSubTitle: "Pre-Order Deadlines:",
+        deadlineTimeSub: "Saturday, 19-Dec-26 at 11:59pm",
+        lineLoginSuccess: "เข้าสู่ระบบผ่าน LINE สำเร็จ",
+        lineConnected: "เชื่อมต่อแล้ว",
+        secCustomer: "ข้อมูลผู้สั่งจอง",
+        labelEmpId: "Employee code (รหัสพนักงาน) *",
+        phEmpId: "ตัวอย่าง: 91267",
+        labelDept: "Section code (รหัสแผนก) *",
+        phDept: "ตัวอย่าง: MT1713",
+        labelName: "Name – Surname (ชื่อ–นามสกุล) *",
+        phName: "ตัวอย่าง: สมชาย มั่นคง",
+        secProducts: "เลือกรายการสินค้า",
+        btnClearCart: "ล้างตะกร้า",
+        loadingProducts: "กำลังโหลดรายการสินค้า...",
+        noProducts: "ไม่พบรายการสินค้าที่เปิดให้สั่งจองในขณะนี้",
+        loadProductsErr: "ไม่สามารถโหลดข้อมูลสินค้าได้ กรุณาลองใหม่อีกครั้ง",
+        tabAll: "ทั้งหมด",
+        unitDefault: "ชิ้น",
+        perUnit: "บาท /",
+        itemsUnit: "รายการ",
+        summaryTitle: "สรุปรายการสินค้าที่เลือก",
+        totalLabel: "ยอดชำระทั้งหมด:",
+        currency: "฿",
+        warnHeader: "กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน",
+        warnSubHeader: "เมื่อดำเนินการชำระเงินเรียบร้อยแล้ว <span class=\"text-rose-600 font-bold underline decoration-rose-300\">จะไม่สามารถแก้ไขรายการได้</span>",
+        warnAddItem: "• กรณีต้องการ<strong class=\"text-rose-600 font-bold text-sm sm:text-base\">เพิ่มรายการสินค้า:</strong> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์",
+        warnReduceItem: "• กรณีต้องการ<strong class=\"text-rose-600 font-bold text-sm sm:text-base\">ลดรายการสินค้า:</strong> ให้ทำการ<span class=\"text-rose-600 font-bold underline\">ยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน</span> แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง",
+        secPayment: "สแกน QR Code เพื่อชำระเงิน",
+        qrInstruction: "กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ",
+        qrTapZoom: "🔍 แตะเพื่อดูภาพใหญ่",
+        companyName: "บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด",
+        bankName: "ธนาคารไทยพาณิชย์ (SCB)",
+        secSlip: "หลักฐานการชำระเงิน",
+        labelPayDate: "วันที่โอน *",
+        labelPayTime: "เวลาที่โอน *",
+        labelSlipFile: "แนบภาพสลิปโอนเงิน (PNG, JPG) *",
+        slipPreviewTitle: "ตัวอย่างสลิปที่แนบ:",
+        btnSubmit: "🎄 ยืนยันการสั่งจอง",
+        submitting: "กำลังส่งข้อมูล...",
+        swalClearCartTitle: "ยืนยันล้างตะกร้า?",
+        swalClearCartText: "รายการสินค้าทั้งหมดที่เลือกไว้จะถูกลบออก",
+        swalConfirmBtn: "ยืนยัน",
+        swalCancelBtn: "ยกเลิก",
+        swalDeleteProductTitle: "ยืนยันการลบสินค้า?",
+        swalDeleteProductText: (name) => `ต้องการลบ <b>"${name}"</b> ออกจากรายการใช่หรือไม่?`,
+        swalDeleteBtn: "ลบออก",
+        swalMaxLimitTitle: "ข้อจำกัด",
+        swalMaxLimitText: (max) => `สินค้านี้สั่งได้สูงสุด ${max} ชิ้น`,
+        swalNoItemTitle: "ยังไม่ได้เลือกสินค้า",
+        swalNoItemText: "กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนค่ะ",
+        swalIncompleteTitle: "ข้อมูลไม่ครบถ้วน",
+        swalIncompleteText: "กรุณาระบุวัน-เวลา และแนบสลิปการโอนเงินให้ครบถ้วนค่ะ",
+        swalConfirmOrderTitle: "กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน",
+        swalConfirmOrderSub: "⚠️ เมื่อดำเนินการชำระเงินเรียบร้อยแล้ว จะไม่สามารถแก้ไขรายการได้",
+        swalConfirmAdd: "• <b>กรณีต้องการเพิ่มรายการสินค้า:</b> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์",
+        swalConfirmReduce: "• <b>กรณีต้องการลดรายการสินค้า:</b> ให้ทำการยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง",
+        swalConfirmTotal: "ยอดชำระทั้งหมด:",
+        swalSubmitOrder: "ยืนยันสั่งซื้อ",
+        swalBackToCheck: "กลับไปตรวจสอบ",
+        swalSuccessTitle: "สั่งจองสำเร็จ!",
+        swalErrorTitle: "แจ้งเตือน",
+        swalConnErrorTitle: "เชื่อมต่อล้มเหลว",
+        swalConnErrorText: "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้"
+      },
+      en: {
+        pageTitle: "MTL Christmas Celebration 2026 - The Gift of Happiness | Pre-order System",
+        closedBadge: "PRE-ORDER CLOSED",
+        closedTitle: "Pre-orders are now closed",
+        closedDesc: "The pre-order system for <br><strong class=\"text-amber-300 font-semibold\">MTL Christmas Celebration 2026</strong><br>closed on December 20, 2026 at 00:00 AM.",
+        closedNotice: "If you have already paid, your order is secured. You can view your ticket in the LINE chat as usual.",
+        btnCloseWindow: "Close Window",
+        formTitle: "Pre-order Merchandise Form",
+        formSubTitle: "(Pre-order Form)",
+        partyTitle: "Annual Employee Party 2026",
+        deadlineTitle: "Order Deadline:",
+        deadlineTimeMain: "Saturday, 19 December 2026 at 11:59 PM",
+        deadlineSubTitle: "Pre-Order Deadlines:",
+        deadlineTimeSub: "Saturday, 19-Dec-26 at 11:59pm",
+        lineLoginSuccess: "LINE Login Successful",
+        lineConnected: "Connected",
+        secCustomer: "Employee Information",
+        labelEmpId: "Employee Code *",
+        phEmpId: "e.g. 91267",
+        labelDept: "Section Code *",
+        phDept: "e.g. MT1713",
+        labelName: "Full Name *",
+        phName: "e.g. Somchai Mankong",
+        secProducts: "Select Items",
+        btnClearCart: "Clear Cart",
+        loadingProducts: "Loading products...",
+        noProducts: "No products available for pre-order at this moment.",
+        loadProductsErr: "Unable to load products. Please try again later.",
+        tabAll: "All",
+        unitDefault: "item",
+        perUnit: "THB /",
+        itemsUnit: "items",
+        summaryTitle: "Selected Items Summary",
+        totalLabel: "Grand Total:",
+        currency: "THB",
+        warnHeader: "Please double check your items and total payment",
+        warnSubHeader: "Once payment is completed, <span class=\"text-rose-600 font-bold underline decoration-rose-300\">orders cannot be modified</span>",
+        warnAddItem: "• To <strong class=\"text-rose-600 font-bold text-sm sm:text-base\">add more items:</strong> Please place a new pre-order.",
+        warnReduceItem: "• To <strong class=\"text-rose-600 font-bold text-sm sm:text-base\">remove items:</strong> Please <span class=\"text-rose-600 font-bold underline\">cancel the previous order for a refund first</span>, then place a new one.",
+        secPayment: "Scan QR Code for Payment",
+        qrInstruction: "Please scan the QR code below to pay the exact total amount. Thank you!",
+        qrTapZoom: "🔍 Tap to enlarge",
+        companyName: "Wine Beer Whisky Lamphun Co., Ltd.",
+        bankName: "Siam Commercial Bank (SCB)",
+        secSlip: "Payment Proof",
+        labelPayDate: "Transfer Date *",
+        labelPayTime: "Transfer Time *",
+        labelSlipFile: "Upload Payment Slip (PNG, JPG) *",
+        slipPreviewTitle: "Slip Preview:",
+        btnSubmit: "🎄 Confirm Pre-order",
+        submitting: "Submitting...",
+        swalClearCartTitle: "Clear shopping cart?",
+        swalClearCartText: "All selected items will be removed.",
+        swalConfirmBtn: "Confirm",
+        swalCancelBtn: "Cancel",
+        swalDeleteProductTitle: "Remove Item?",
+        swalDeleteProductText: (name) => `Are you sure you want to remove <b>"${name}"</b> from your cart?`,
+        swalDeleteBtn: "Remove",
+        swalMaxLimitTitle: "Order Limit",
+        swalMaxLimitText: (max) => `Maximum quantity allowed is ${max} items`,
+        swalNoItemTitle: "No Items Selected",
+        swalNoItemText: "Please select at least 1 item before proceeding.",
+        swalIncompleteTitle: "Incomplete Information",
+        swalIncompleteText: "Please provide payment date/time and attach your payment slip.",
+        swalConfirmOrderTitle: "Please review your order and total amount",
+        swalConfirmOrderSub: "⚠️ Once submitted, changes cannot be made directly.",
+        swalConfirmAdd: "• <b>To add items:</b> Place an additional pre-order.",
+        swalConfirmReduce: "• <b>To reduce items:</b> Cancel this order for refund first, then place a new order.",
+        swalConfirmTotal: "Total Amount:",
+        swalSubmitOrder: "Confirm Order",
+        swalBackToCheck: "Review Again",
+        swalSuccessTitle: "Order Successful!",
+        swalErrorTitle: "Notice",
+        swalConnErrorTitle: "Connection Failed",
+        swalConnErrorText: "Could not connect to the server."
+      },
+      ja: {
+        pageTitle: "MTL クリスマスセレブレーション 2026 - The Gift of Happiness | 事前予約システム",
+        closedBadge: "PRE-ORDER CLOSED",
+        closedTitle: "事前予約受付は終了しました",
+        closedDesc: "<strong class=\"text-amber-300 font-semibold\">MTL Christmas Celebration 2026</strong> の事前注文受付は<br>2026年12月20日 00:00 をもって終了いたしました。",
+        closedNotice: "既にお支払い済みのご注文は確定しております。LINEチャットよりチケットをご確認いただけます。",
+        btnCloseWindow: "ウィンドウを閉じる",
+        formTitle: "商品事前予約フォーム",
+        formSubTitle: "(Pre-order Form)",
+        partyTitle: "2026年度 従業員懇親パーティー",
+        deadlineTitle: "事前予約の締切日時:",
+        deadlineTimeMain: "2026年12月19日（土）23:59まで",
+        deadlineSubTitle: "Pre-Order Deadlines:",
+        deadlineTimeSub: "Saturday, 19-Dec-26 at 11:59pm",
+        lineLoginSuccess: "LINEログイン完了",
+        lineConnected: "連携中",
+        secCustomer: "ご注文者情報",
+        labelEmpId: "社員番号 (Employee code) *",
+        phEmpId: "例: 91267",
+        labelDept: "部署コード (Section code) *",
+        phDept: "例: MT1713",
+        labelName: "氏名 (Name – Surname) *",
+        phName: "例: Somchai Mankong",
+        secProducts: "商品選択",
+        btnClearCart: "カートを空にする",
+        loadingProducts: "商品情報を読み込み中...",
+        noProducts: "現在予約可能な商品はございません。",
+        loadProductsErr: "商品データの読み込みに失敗しました。再試行してください。",
+        tabAll: "すべて",
+        unitDefault: "個",
+        perUnit: "THB /",
+        itemsUnit: "点",
+        summaryTitle: "選択した商品の確認",
+        totalLabel: "お支払い合計金額:",
+        currency: "THB",
+        warnHeader: "ご注文内容とお支払い金額をご確認ください",
+        warnSubHeader: "お支払い完了後は、<span class=\"text-rose-600 font-bold underline decoration-rose-300\">ご注文内容の修正・変更はできません</span>",
+        warnAddItem: "• <strong class=\"text-rose-600 font-bold text-sm sm:text-base\">商品を追加する場合:</strong> 追加で新規プレオーダーを1件ご注文ください。",
+        warnReduceItem: "• <strong class=\"text-rose-600 font-bold text-sm sm:text-base\">商品を減らす場合:</strong> 先の注文を<span class=\"text-rose-600 font-bold underline\">キャンセルして返金を受けてから</span>、改めて再注文してください。",
+        secPayment: "QRコード決済（スキャン）",
+        qrInstruction: "下記のQRコードをスキャンし、合計金額をお振込みください。",
+        qrTapZoom: "🔍 タップして拡大表示",
+        companyName: "Wine Beer Whisky Lamphun Co., Ltd.",
+        bankName: "サイアムコマーシャル銀行 (SCB)",
+        secSlip: "お振込み明細（スリップ）",
+        labelPayDate: "お振込日 *",
+        labelPayTime: "お振込時刻 *",
+        labelSlipFile: "振込受領証の添付 (PNG, JPG) *",
+        slipPreviewTitle: "添付スリップのプレビュー:",
+        btnSubmit: "🎄 予約を確定する",
+        submitting: "送信中...",
+        swalClearCartTitle: "カートをリセットしますか？",
+        swalClearCartText: "選択されているすべての商品がカートから削除されます。",
+        swalConfirmBtn: "確定",
+        swalCancelBtn: "キャンセル",
+        swalDeleteProductTitle: "商品を削除しますか？",
+        swalDeleteProductText: (name) => `<b>"${name}"</b> をカートから削除してもよろしいですか？`,
+        swalDeleteBtn: "削除する",
+        swalMaxLimitTitle: "注文制限",
+        swalMaxLimitText: (max) => `この商品は最大 ${max} 個まで注文可能です。`,
+        swalNoItemTitle: "商品が選択されていません",
+        swalNoItemText: "1点以上の商品を選択してください。",
+        swalIncompleteTitle: "入力内容に不備があります",
+        swalIncompleteText: "お振込の日時を入力し、振込証明スリップを添付してください。",
+        swalConfirmOrderTitle: "注文内容とお支払い金額をご確認ください",
+        swalConfirmOrderSub: "⚠️ 送信後、注文内容の変更は行えません。",
+        swalConfirmAdd: "• <b>商品追加:</b> 新規で追加のご注文を行ってください。",
+        swalConfirmReduce: "• <b>商品削減:</b> 先の注文をキャンセル・返金した上で再注文してください。",
+        swalConfirmTotal: "お支払い合計金額:",
+        swalSubmitOrder: "注文を確定する",
+        swalBackToCheck: "戻って確認する",
+        swalSuccessTitle: "予約が完了しました！",
+        swalErrorTitle: "お知らせ",
+        swalConnErrorTitle: "通信エラー",
+        swalConnErrorText: "サーバーに接続できませんでした。"
+      }
+    };
+
+    let currentLang = localStorage.getItem('mtl_lang') || 'th';
     let lineUserId = "";
     let allProducts = [];
     let categoriesList = [];
@@ -354,7 +638,57 @@
     let selectedQuantities = {};
     let compressedSlipBase64 = "";
     let isPreorderClosed = false;
-    let collapsedCategories = new Set();
+
+    function t(key, ...args) {
+      const dict = translations[currentLang] || translations.th;
+      const val = dict[key] !== undefined ? dict[key] : (translations.th[key] || key);
+      if (typeof val === 'function') {
+        return val(...args);
+      }
+      return val;
+    }
+
+    function setLanguage(lang) {
+      if (!translations[lang]) return;
+      currentLang = lang;
+      localStorage.setItem('mtl_lang', lang);
+      document.documentElement.lang = lang;
+      applyLanguageUI();
+    }
+
+    function applyLanguageUI() {
+      // อัปเดตสไตล์ปุ่มสลับภาษา
+      ['th', 'en', 'ja'].forEach(l => {
+        const btn = document.getElementById(`lang-btn-${l}`);
+        if (btn) {
+          if (l === currentLang) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        }
+      });
+
+      // ตั้ง title หน้าเว็บ
+      document.title = t('pageTitle');
+
+      // อัปเดตข้อความที่มี data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.innerHTML = t(key);
+      });
+
+      // อัปเดต placeholder
+      document.querySelectorAll('[data-placeholder-i18n]').forEach(el => {
+        const key = el.getAttribute('data-placeholder-i18n');
+        el.placeholder = t(key);
+      });
+
+      // รีเรนเดอร์หมวดหมู่และสินค้าเพื่อให้ป้ายภาษาอัปเดต
+      renderCategoryTabs();
+      renderProducts();
+      calculateTotal();
+    }
 
     // 🔒 ฟังก์ชันตรวจและปิดทั้งหน้าเว็บ
     function checkDeadline() {
@@ -439,12 +773,12 @@
       clearCartBtn.addEventListener('click', () => {
         if (isPreorderClosed) return;
         Swal.fire({
-          title: 'ยืนยันล้างตะกร้า?',
-          text: 'รายการสินค้าทั้งหมดที่เลือกไว้จะถูกลบออก',
+          title: t('swalClearCartTitle'),
+          text: t('swalClearCartText'),
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'ล้างตะกร้า',
-          cancelButtonText: 'ยกเลิก',
+          confirmButtonText: t('swalConfirmBtn'),
+          cancelButtonText: t('swalCancelBtn'),
           confirmButtonColor: '#e11d48',
           cancelButtonColor: '#64748b'
         }).then((res) => {
@@ -541,7 +875,7 @@
         allProducts = await res.json();
 
         if (!allProducts || allProducts.length === 0) {
-          container.innerHTML = '<div class="text-center py-4 text-slate-500 text-sm">ไม่พบรายการสินค้าที่เปิดให้สั่งจองในขณะนี้</div>';
+          container.innerHTML = `<div class="text-center py-4 text-slate-500 text-sm">${t('noProducts')}</div>`;
           return;
         }
 
@@ -554,7 +888,7 @@
 
       } catch (err) {
         console.error("Load products error:", err);
-        container.innerHTML = '<div class="text-center py-4 text-rose-500 text-sm">ไม่สามารถโหลดข้อมูลสินค้าได้ กรุณาลองใหม่อีกครั้ง</div>';
+        container.innerHTML = `<div class="text-center py-4 text-rose-500 text-sm">${t('loadProductsErr')}</div>`;
       }
     }
 
@@ -564,6 +898,7 @@
       tabsContainer.innerHTML = '';
 
       categoriesList.forEach(cat => {
+        const displayLabel = (cat === "ทั้งหมด") ? t('tabAll') : cat;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `px-5 py-2 sm:px-6 rounded-2xl text-sm sm:text-base font-semibold whitespace-nowrap transition-all duration-150 flex-shrink-0 active:scale-95 ${
@@ -571,7 +906,7 @@
             ? 'bg-red-600 text-white shadow-md shadow-red-500/25 border-2 border-red-600' 
             : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border-2 border-transparent'
         }`;
-        btn.innerText = cat;
+        btn.innerText = displayLabel;
         btn.addEventListener('click', () => {
           currentCategory = cat;
           renderCategoryTabs();
@@ -584,7 +919,7 @@
     function createProductCardHTML(item) {
       const driveId = extractDriveId(item.image);
       const currentQty = selectedQuantities[item.name] || 0;
-      const unitName = item.unit || 'ชิ้น';
+      const unitName = item.unit || t('unitDefault');
 
       let primaryImgUrl = '';
       let fallbackImgUrl = '';
@@ -610,7 +945,7 @@
               <p class="font-medium text-slate-900 text-sm sm:text-base leading-snug line-clamp-2">${item.name}</p>
               <div class="mt-1 flex items-baseline gap-1">
                 <span class="text-base sm:text-lg font-bold text-red-600">${item.price.toLocaleString()}</span>
-                <span class="text-xs text-slate-500 font-normal">บาท / ${unitName}</span>
+                <span class="text-xs text-slate-500 font-normal">${t('perUnit')} ${unitName}</span>
               </div>
             </div>
           </div>
@@ -634,12 +969,12 @@
     window.deleteEntireProduct = async function(name) {
       if (isPreorderClosed) return;
       const confirm = await Swal.fire({
-        title: 'ยืนยันการลบสินค้า?',
-        html: `ต้องการลบ <b>"${name}"</b> ออกจากรายการใช่หรือไม่?`,
+        title: t('swalDeleteProductTitle'),
+        html: t('swalDeleteProductText', name),
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'ลบออก',
-        cancelButtonText: 'ยกเลิก',
+        confirmButtonText: t('swalDeleteBtn'),
+        cancelButtonText: t('swalCancelBtn'),
         confirmButtonColor: '#e11d48',
         cancelButtonColor: '#64748b'
       });
@@ -662,7 +997,7 @@
           qty += change;
           selectedQuantities[name] = qty;
         } else {
-          Swal.fire('ข้อจำกัด', `สินค้านี้สั่งได้สูงสุด ${max} ชิ้น`, 'info');
+          Swal.fire(t('swalMaxLimitTitle'), t('swalMaxLimitText', max), 'info');
           return;
         }
       } else if (change < 0) {
@@ -737,7 +1072,7 @@
               <div class="flex items-center justify-between py-2.5 gap-2 text-xs sm:text-sm">
                 <div class="min-w-0 flex-1">
                   <p class="font-medium text-slate-800 truncate">${name}</p>
-                  <p class="text-[11px] text-slate-400">${product.price.toLocaleString()} ฿ / ${product.unit || 'ชิ้น'}</p>
+                  <p class="text-[11px] text-slate-400">${product.price.toLocaleString()} ${t('currency')} / ${product.unit || t('unitDefault')}</p>
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -756,7 +1091,7 @@
                   </div>
 
                   <span class="font-bold text-slate-800 text-xs sm:text-sm min-w-[55px] text-right">
-                    ${subtotal.toLocaleString()} ฿
+                    ${subtotal.toLocaleString()} ${t('currency')}
                   </span>
 
                   <button type="button" onclick="deleteEntireProduct('${safeName}')" 
@@ -784,7 +1119,7 @@
         if (totalItemsCount > 0) {
           summaryContainer.classList.remove('hidden');
           summaryItems.innerHTML = summaryRowsHTML;
-          if (countEl) countEl.innerText = `${totalItemsCount} รายการ`;
+          if (countEl) countEl.innerText = `${totalItemsCount} ${t('itemsUnit')}`;
         } else {
           summaryContainer.classList.add('hidden');
           summaryItems.innerHTML = '';
@@ -847,39 +1182,39 @@
 
         const total = calculateTotal();
         if (total === 0) {
-          Swal.fire('ยังไม่ได้เลือกสินค้า', 'กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนค่ะ', 'warning');
+          Swal.fire(t('swalNoItemTitle'), t('swalNoItemText'), 'warning');
           return;
         }
 
         const payDate = document.getElementById('payDate').value.trim();
         const payTime = document.getElementById('payTime').value.trim();
         if (!payDate || !payTime || !compressedSlipBase64) {
-          Swal.fire('ข้อมูลไม่ครบถ้วน', 'กรุณาระบุวัน-เวลา และแนบสลิปการโอนเงินให้ครบถ้วนค่ะ', 'warning');
+          Swal.fire(t('swalIncompleteTitle'), t('swalIncompleteText'), 'warning');
           return;
         }
 
         const confirmOrder = await Swal.fire({
           icon: 'warning',
-          title: 'กรุณาตรวจสอบรายการสินค้าและยอดชำระของท่าน',
+          title: t('swalConfirmOrderTitle'),
           html: `
             <div class="text-left text-sm leading-relaxed space-y-2.5 mt-2">
               <p class="font-bold text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-200">
-                ⚠️ เมื่อดำเนินการชำระเงินเรียบร้อยแล้ว จะไม่สามารถแก้ไขรายการได้
+                ${t('swalConfirmOrderSub')}
               </p>
               
               <div class="bg-amber-50/90 p-3 rounded-xl border border-amber-200 text-xs text-slate-700 space-y-1.5">
-                <p>• <b>กรณีต้องการเพิ่มรายการสินค้า:</b> ให้ทำการสั่งพรีออเดอร์เพิ่มอีก 1 ออเดอร์</p>
-                <p>• <b>กรณีต้องการลดรายการสินค้า:</b> ให้ทำการยกเลิกพรีออเดอร์แรกเพื่อรับเงินคืนก่อน แล้วจึงทำการสั่งพรีออเดอร์ใหม่อีกครั้ง</p>
+                <p>${t('swalConfirmAdd')}</p>
+                <p>${t('swalConfirmReduce')}</p>
               </div>
 
               <div class="text-center font-bold text-base text-slate-800 pt-1">
-                ยอดชำระทั้งหมด: <span class="text-red-600 text-xl font-black">${total.toLocaleString()} ฿</span>
+                ${t('swalConfirmTotal')} <span class="text-red-600 text-xl font-black">${total.toLocaleString()} ${t('currency')}</span>
               </div>
             </div>
           `,
           showCancelButton: true,
-          confirmButtonText: 'ยืนยันสั่งซื้อ',
-          cancelButtonText: 'กลับไปตรวจสอบ',
+          confirmButtonText: t('swalSubmitOrder'),
+          cancelButtonText: t('swalBackToCheck'),
           confirmButtonColor: '#dc2626',
           cancelButtonColor: '#64748b',
           reverseButtons: true
@@ -893,7 +1228,7 @@
         for (const [name, qty] of Object.entries(selectedQuantities)) {
           if (qty > 0) {
             const product = allProducts.find(p => p.name === name);
-            itemsBullet.push(`• ${name} x ${qty} ${product?.unit || 'ชิ้น'}`);
+            itemsBullet.push(`• ${name} x ${qty} ${product?.unit || t('unitDefault')}`);
           }
         }
 
@@ -911,7 +1246,7 @@
 
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
-        submitBtn.innerText = 'กำลังส่งข้อมูล...';
+        submitBtn.innerText = t('submitting');
 
         try {
           const response = await fetch(N8N_WEBHOOK_URL, {
@@ -923,22 +1258,23 @@
 
           if (response.ok && result.success) {
             clearCartStorage();
-            await Swal.fire('สั่งจองสำเร็จ!', result.message, 'success');
+            await Swal.fire(t('swalSuccessTitle'), result.message, 'success');
             closeAppWindow();
           } else {
-            Swal.fire('แจ้งเตือน', result.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+            Swal.fire(t('swalErrorTitle'), result.message || 'Error occurred', 'error');
           }
         } catch (err) {
-          Swal.fire('เชื่อมต่อล้มเหลว', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
+          Swal.fire(t('swalConnErrorTitle'), t('swalConnErrorText'), 'error');
         } finally {
           submitBtn.disabled = false;
-          submitBtn.innerText = '🎄 ยืนยันการสั่งจอง';
+          submitBtn.innerText = t('btnSubmit');
         }
       });
     }
 
     // เริ่มต้นระบบ
     window.addEventListener('DOMContentLoaded', () => {
+      applyLanguageUI();
       if (checkDeadline()) return;
 
       initLiff();
