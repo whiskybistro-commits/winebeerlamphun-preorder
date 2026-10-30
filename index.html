@@ -931,6 +931,23 @@
       });
     }
 
+    // 🖱️ เพิ่มการควบคุมปุ่มเลื่อนหมวดหมู่ ซ้าย-ขวา สำหรับหน้าจอคอมพิวเตอร์
+    const tabScrollLeftBtn = document.getElementById('tabScrollLeft');
+    const tabScrollRightBtn = document.getElementById('tabScrollRight');
+    const categoryTabsContainer = document.getElementById('categoryTabs');
+
+    if (tabScrollLeftBtn && categoryTabsContainer) {
+      tabScrollLeftBtn.addEventListener('click', () => {
+        categoryTabsContainer.scrollBy({ left: -220, behavior: 'smooth' });
+      });
+    }
+
+    if (tabScrollRightBtn && categoryTabsContainer) {
+      tabScrollRightBtn.addEventListener('click', () => {
+        categoryTabsContainer.scrollBy({ left: 220, behavior: 'smooth' });
+      });
+    }
+    
     function createProductCardHTML(item) {
       const driveId = extractDriveId(item.image);
       const currentQty = selectedQuantities[item.name] || 0;
