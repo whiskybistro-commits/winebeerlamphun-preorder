@@ -248,7 +248,7 @@
               <span>🛍️</span> <span data-i18n="secProducts">เลือกรายการสินค้า</span>
             </h2>
             <button type="button" id="clearCartBtn" 
-              class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-medium text-rose-700 transition duration-150 shadow-xs">
+              class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-medium text-rose-700 transition duration-150 shadow-xs cursor-pointer">
               <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
@@ -258,12 +258,12 @@
 
           <div class="relative flex items-center mb-4 border-b border-slate-100 group">
             <button type="button" id="tabScrollLeft" aria-label="Scroll left"
-              class="hidden sm:flex absolute left-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95">
+              class="hidden sm:flex absolute left-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95 cursor-pointer">
               ❮
             </button>
             <div id="categoryTabs" class="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide items-center scroll-smooth w-full sm:mx-8"></div>
             <button type="button" id="tabScrollRight" aria-label="Scroll right"
-              class="hidden sm:flex absolute right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95">
+              class="hidden sm:flex absolute right-0 z-10 w-8 h-8 items-center justify-center rounded-full bg-white/95 shadow-md border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-slate-50 transition active:scale-95 cursor-pointer">
               ❯
             </button>
           </div>
@@ -442,6 +442,7 @@
         secPayment: "สแกน QR Code เพื่อชำระเงิน",
         qrInstruction: "กรุณาสแกน QR Code ด้านล่างนี้เพื่อชำระเงินตามยอดรวมที่ปรากฏ ขอบคุณค่ะ",
         qrTapZoom: "🔍 แตะเพื่อดูภาพใหญ่",
+        qrModalTitle: "สแกนเพื่อชำระเงิน",
         companyName: "บริษัท ไวน์ เบียร์ วิสกี้ ลำพูน จำกัด",
         bankName: "ธนาคารไทยพาณิชย์ (SCB)",
         secSlip: "หลักฐานการชำระเงิน",
@@ -518,6 +519,7 @@
         secPayment: "Scan QR Code for Payment",
         qrInstruction: "Please scan the QR code below to pay the exact total amount. Thank you!",
         qrTapZoom: "🔍 Tap to enlarge",
+        qrModalTitle: "Scan to Pay",
         companyName: "Wine Beer Whisky Lamphun Co., Ltd.",
         bankName: "Siam Commercial Bank (SCB)",
         secSlip: "Payment Proof",
@@ -594,6 +596,7 @@
         secPayment: "QRコード決済（スキャン）",
         qrInstruction: "下記のQRコードをスキャンし、合計金額をお振込みください。",
         qrTapZoom: "🔍 タップして拡大表示",
+        qrModalTitle: "スキャンしてお支払い",
         companyName: "Wine Beer Whisky Lamphun Co., Ltd.",
         bankName: "サイアムコマーシャル銀行 (SCB)",
         secSlip: "お振込み明細（スリップ）",
@@ -648,7 +651,7 @@
       return val;
     }
 
-    // 🌟 เพิ่มฟังก์ชันดึงชื่อสินค้าตามภาษาที่เลือก รองรับทั้ง Product_Name_EN และ Product_Name_JP
+    // 🌟 ดึงชื่อสินค้าตามภาษาที่เลือก
     function getProductLocalizedName(product) {
       if (!product) return '';
       if (currentLang === 'en') {
@@ -668,7 +671,6 @@
     }
 
     function applyLanguageUI() {
-      // อัปเดตสไตล์ปุ่มสลับภาษา
       ['th', 'en', 'ja'].forEach(l => {
         const btn = document.getElementById(`lang-btn-${l}`);
         if (btn) {
@@ -680,28 +682,23 @@
         }
       });
 
-      // ตั้ง title หน้าเว็บ
       document.title = t('pageTitle');
 
-      // อัปเดตข้อความที่มี data-i18n
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         el.innerHTML = t(key);
       });
 
-      // อัปเดต placeholder
       document.querySelectorAll('[data-placeholder-i18n]').forEach(el => {
         const key = el.getAttribute('data-placeholder-i18n');
         el.placeholder = t(key);
       });
 
-      // รีเรนเดอร์หมวดหมู่และสินค้าเพื่อให้ป้ายภาษาอัปเดตทันที
       renderCategoryTabs();
       renderProducts();
       calculateTotal();
     }
 
-    // 🔒 ฟังก์ชันตรวจและปิดทั้งหน้าเว็บ
     function checkDeadline() {
       const now = new Date();
       if (now >= DEADLINE_DATE) {
@@ -931,7 +928,7 @@
       });
     }
 
-    // 🖱️ เพิ่มการควบคุมปุ่มเลื่อนหมวดหมู่ ซ้าย-ขวา สำหรับหน้าจอคอมพิวเตอร์
+    // 🖱️ ปุ่มเลื่อนหมวดหมู่ด้วยปุ่มซ้าย-ขวาบนจอคอมพิวเตอร์
     const tabScrollLeftBtn = document.getElementById('tabScrollLeft');
     const tabScrollRightBtn = document.getElementById('tabScrollRight');
     const categoryTabsContainer = document.getElementById('categoryTabs');
@@ -947,13 +944,33 @@
         categoryTabsContainer.scrollBy({ left: 220, behavior: 'smooth' });
       });
     }
-    
+
+    // 🔍 แตะที่ภาพ QR Code เพื่อดูภาพขยาย
+    const qrTrigger = document.getElementById('qrTrigger');
+    if (qrTrigger) {
+      qrTrigger.addEventListener('click', () => {
+        Swal.fire({
+          title: t('qrModalTitle'),
+          imageUrl: './qr-payment.png',
+          imageAlt: 'QR Code Payment',
+          imageWidth: 320,
+          imageHeight: 'auto',
+          showCloseButton: true,
+          showConfirmButton: false,
+          background: '#ffffff',
+          padding: '1.5rem',
+          customClass: {
+            popup: 'rounded-3xl shadow-2xl border border-slate-100',
+            image: 'rounded-2xl border border-slate-200'
+          }
+        });
+      });
+    }
+
     function createProductCardHTML(item) {
       const driveId = extractDriveId(item.image);
       const currentQty = selectedQuantities[item.name] || 0;
       const unitName = item.unit || t('unitDefault');
-      
-      // 🌟 ใช้ชื่อสินค้าตามภาษาที่เลือก
       const displayName = getProductLocalizedName(item);
 
       let primaryImgUrl = '';
@@ -986,10 +1003,10 @@
           </div>
 
           <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1 flex-shrink-0 shadow-xs">
-            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs" 
+            <button type="button" class="btn-minus w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold transition shadow-xs cursor-pointer" 
               data-name="${item.name}">-</button>
             <span class="qty-display w-9 text-center font-semibold text-sm text-slate-900" id="qty_${item.name.replace(/\s+/g, '_')}">${currentQty}</span>
-            <button type="button" class="btn-plus w-8 h-8 flex items-center justify-center rounded-lg bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold transition shadow-xs" 
+            <button type="button" class="btn-plus w-8 h-8 flex items-center justify-center rounded-lg bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold transition shadow-xs cursor-pointer" 
               data-name="${item.name}">+</button>
           </div>
         </div>
@@ -1105,8 +1122,6 @@
             total += subtotal;
             totalItemsCount += qty;
             const safeName = name.replace(/'/g, "\\'");
-            
-            // 🌟 ใช้ชื่อสินค้าตามภาษาที่เลือกในใบสรุปรายการ
             const displayName = getProductLocalizedName(product);
 
             summaryRowsHTML += `
@@ -1120,13 +1135,13 @@
                   <div class="flex items-center border border-slate-200 rounded-lg bg-white p-0.5 shadow-2xs">
                     <button type="button" onclick="updateProductQty('${safeName}', -1)" 
                       title="ลดจำนวน"
-                      class="w-6 h-6 flex items-center justify-center rounded text-slate-600 hover:bg-slate-100 active:scale-90 font-bold transition text-xs">
+                      class="w-6 h-6 flex items-center justify-center rounded text-slate-600 hover:bg-slate-100 active:scale-90 font-bold transition text-xs cursor-pointer">
                       -
                     </button>
                     <span class="w-6 text-center font-bold text-xs text-slate-800">${qty}</span>
                     <button type="button" onclick="updateProductQty('${safeName}', 1)" 
                       title="เพิ่มจำนวน"
-                      class="w-6 h-6 flex items-center justify-center rounded bg-red-50 text-red-600 hover:bg-red-100 active:scale-90 font-bold transition text-xs">
+                      class="w-6 h-6 flex items-center justify-center rounded bg-red-50 text-red-600 hover:bg-red-100 active:scale-90 font-bold transition text-xs cursor-pointer">
                       +
                     </button>
                   </div>
@@ -1137,7 +1152,7 @@
 
                   <button type="button" onclick="deleteEntireProduct('${safeName}')" 
                     title="ลบรายการนี้ออก"
-                    class="p-1 text-slate-400 hover:text-rose-600 active:scale-90 transition rounded-md hover:bg-rose-50">
+                    class="p-1 text-slate-400 hover:text-rose-600 active:scale-90 transition rounded-md hover:bg-rose-50 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
