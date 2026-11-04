@@ -332,12 +332,9 @@
                   <p class="text-sm font-bold text-slate-900 leading-snug">${order.Full_Name || '-'} <span class="text-xs font-normal text-slate-500">(${order.Employee_ID || '-'})</span></p>
                 </div>
                 <div class="text-right flex-shrink-0">
-                  <span class="inline-block bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2 py-0.5 rounded-lg border border-emerald-200">
-                    ${order.Pickup_Point || 'จุดรับสินค้า'}
-                  </span>
-                  <div class="mt-0.5 text-right">
+                  <div class="bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-xl text-right">
                     <span class="text-[10px] text-slate-500 font-medium block">รหัสรับสินค้า:</span>
-                    <span class="text-xs font-extrabold text-rose-600 tracking-tight font-mono">${order.Pickup_Code || '-'}</span>
+                    <span class="text-sm font-extrabold text-rose-600 tracking-tight font-mono">${order.Pickup_Code || '-'}</span>
                   </div>
                 </div>
               </div>
