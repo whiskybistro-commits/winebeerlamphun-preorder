@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -1281,10 +1281,24 @@
         }
 
         let itemsBullet = [];
+        let itemsDetail = []; // เก็บ Array ของสินค้าแยกแต่ละรายการ
+
         for (const [name, qty] of Object.entries(selectedQuantities)) {
           if (qty > 0) {
             const product = allProducts.find(p => p.name === name);
-            itemsBullet.push(`• ${name} x ${qty} ${product?.unit || 'ชิ้น'}`);
+            const unitName = product?.unit || 'ชิ้น';
+          const price = product?.price || 0;
+    
+            itemsBullet.push(`• ${name} x ${qty} ${unitName}`);
+    
+            // บันทึกแยกรายชิ้น
+            itemsDetail.push({
+              product_name: name,
+              quantity: Number(qty),
+              unit: unitName,
+              price: price,
+              subtotal: Number(qty) * price
+            });
           }
         }
 
@@ -1293,6 +1307,7 @@
           full_name: document.getElementById('fullName').value.trim(),
           department: document.getElementById('department').value.trim(),
           order_items: itemsBullet.join('\n'),
+          items_detail: itemsDetail, // 👈 ส่งรายการแยกชิ้นไปด้วย
           total_amount: total,
           payment_date: payDate,
           payment_time: payTime,
